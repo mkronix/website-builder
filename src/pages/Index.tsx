@@ -1,13 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from 'react';
+import { EditorSidebar } from '@/components/editor/EditorSidebar';
+import { EditorCanvas } from '@/components/editor/EditorCanvas';
+import { EditorHeader } from '@/components/editor/EditorHeader';
+import { EditorProvider } from '@/contexts/EditorContext';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <EditorProvider>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <EditorHeader />
+        <div className="flex flex-1 overflow-hidden">
+          <EditorSidebar />
+          <EditorCanvas />
+        </div>
       </div>
-    </div>
+    </EditorProvider>
   );
 };
 
