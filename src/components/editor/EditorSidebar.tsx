@@ -45,7 +45,7 @@ export const EditorSidebar = () => {
     }
   };
   return <div className="w-80 bg-[#1c1c1c] border-r border-gray-700 flex flex-col">
-      <div className="flex border-b flex-wrap ">
+      <div className="flex flex-wrap ">
         {tabs.map(tab => {
         const Icon = tab.icon;
         return <Button key={tab.id} variant={activeTab === tab.id ? 'default' : 'ghost'} size="sm" onClick={() => setActiveTab(tab.id)} className={`flex-1 rounded-none border-0 ${activeTab === tab.id ? 'bg-[#272725] text-white border-b-2 border-blue-500' : 'text-gray-400 hover:text-white hover:bg-[#272725]'}`}>
