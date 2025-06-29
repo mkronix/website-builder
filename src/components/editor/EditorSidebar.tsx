@@ -44,7 +44,7 @@ export const EditorSidebar = () => {
         return null;
     }
   };
-  return <div className="w-80 bg-[#1c1c1c] border-r border-gray-700 flex flex-col">
+  return <div className="w-60 bg-[#1c1c1c] border-r border-gray-700 flex flex-col">
       <div className="flex flex-wrap ">
         {tabs.map(tab => {
         const Icon = tab.icon;
