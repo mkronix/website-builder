@@ -154,7 +154,7 @@ export const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {websiteData.user_activity.slice(0, 5).map((activity) => (
+              {websiteData.user_activities.slice(0, 5).map((activity) => (
                 <div key={activity.id} className="flex items-center justify-between p-3 bg-[#1c1c1c] rounded-lg">
                   <div>
                     <p className="text-white font-medium">{activity.action_type}</p>

@@ -190,7 +190,7 @@ export const TemplatesPage = () => {
                   size="sm" 
                   variant="ghost" 
                   className="flex-1 text-blue-400 hover:text-blue-300"
-                  onClick={() => window.open(template.preview_url || '#', '_blank')}
+                  onClick={() => window.open('#', '_blank')}
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
