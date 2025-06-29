@@ -1,11 +1,14 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import websiteData from '@/data/data.json';
+import { ProjectService, Project } from '@/services/projectService';
 
 export interface Component {
   id: string;
   type: string;
   props: Record<string, any>;
   content?: string;
+  reactCode?: string;
+  customizableProps?: Record<string, any>;
 }
 
 export interface Page {
@@ -34,6 +37,7 @@ export interface EditorState {
 
 interface EditorContextType {
   state: EditorState;
+  currentProject: Project | null;
   updatePage: (pageId: string, updates: Partial<Page>) => void;
   addComponent: (pageId: string, component: Component) => void;
   updateComponent: (pageId: string, componentId: string, updates: Partial<Component>) => void;
@@ -46,6 +50,10 @@ interface EditorContextType {
   setCurrentPage: (pageId: string) => void;
   toggleDarkMode: () => void;
   updateProject: (updates: Partial<EditorState>) => void;
+  saveProject: (name?: string, description?: string) => void;
+  loadProject: (projectId: string) => void;
+  loadTemplate: (template: any) => void;
+  createNewProject: (name: string, description?: string) => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -61,31 +69,13 @@ export const useEditor = () => {
 export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<EditorState>({
     currentPage: 'home',
-    pages: websiteData.projects[0]?.pages || [
+    pages: [
       {
         id: 'home',
         name: 'Home',
         slug: '/',
         components: [],
-      },
-      {
-        id: 'about',
-        name: 'About', 
-        slug: '/about',
-        components: [],
-      },
-      {
-        id: 'services',
-        name: 'Services',
-        slug: '/services', 
-        components: [],
-      },
-      {
-        id: 'contact',
-        name: 'Contact',
-        slug: '/contact',
-        components: [],
-      },
+      }
     ],
     selectedComponent: null,
     theme: {
@@ -95,8 +85,97 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       textColor: '#1F2937',
     },
     previewMode: 'desktop',
-    isDarkMode: websiteData.system_settings?.auto_save_interval ? false : false,
+    isDarkMode: false,
   });
+
+  const [currentProject, setCurrentProject] = useState<Project | null>(null);
+
+  // Load current project on mount
+  useEffect(() => {
+    const currentProjectId = ProjectService.getCurrentProject();
+    if (currentProjectId) {
+      const project = ProjectService.getProject(currentProjectId);
+      if (project) {
+        setCurrentProject(project);
+        setState(prev => ({
+          ...prev,
+          pages: project.pages,
+          theme: project.theme,
+          template: project.template_id
+        }));
+      }
+    }
+  }, []);
+
+  // Auto-save project changes
+  useEffect(() => {
+    if (currentProject) {
+      const updatedProject = {
+        ...currentProject,
+        pages: state.pages,
+        theme: state.theme,
+        updated_at: new Date().toISOString()
+      };
+      ProjectService.saveProject(updatedProject);
+      setCurrentProject(updatedProject);
+    }
+  }, [state.pages, state.theme]);
+
+  const createNewProject = (name: string, description?: string) => {
+    const newProject = ProjectService.createProjectFromState(state, name, description);
+    ProjectService.saveProject(newProject);
+    ProjectService.setCurrentProject(newProject.id);
+    setCurrentProject(newProject);
+  };
+
+  const saveProject = (name?: string, description?: string) => {
+    if (currentProject) {
+      const updatedProject = {
+        ...currentProject,
+        name: name || currentProject.name,
+        description: description || currentProject.description,
+        pages: state.pages,
+        theme: state.theme,
+        updated_at: new Date().toISOString()
+      };
+      ProjectService.saveProject(updatedProject);
+      setCurrentProject(updatedProject);
+    } else if (name) {
+      createNewProject(name, description);
+    }
+  };
+
+  const loadProject = (projectId: string) => {
+    const project = ProjectService.getProject(projectId);
+    if (project) {
+      setCurrentProject(project);
+      ProjectService.setCurrentProject(project.id);
+      setState(prev => ({
+        ...prev,
+        pages: project.pages,
+        theme: project.theme,
+        currentPage: project.pages[0]?.id || 'home',
+        selectedComponent: null,
+        template: project.template_id
+      }));
+    }
+  };
+
+  const loadTemplate = (template: any) => {
+    const templateProject = ProjectService.createProjectFromTemplate(template, `${template.name} Project`);
+    ProjectService.saveProject(templateProject);
+    ProjectService.setCurrentProject(templateProject.id);
+    setCurrentProject(templateProject);
+    
+    setState(prev => ({
+      ...prev,
+      pages: templateProject.pages,
+      theme: templateProject.theme,
+      currentPage: templateProject.pages[0]?.id || 'home',
+      selectedComponent: null,
+      template: template.id
+    }));
+  };
 
   const updateProject = (updates: Partial<EditorState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -189,6 +268,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     <EditorContext.Provider
       value={{
         state,
+        currentProject,
         updatePage,
         addComponent,
         updateComponent,
@@ -201,6 +281,10 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setCurrentPage,
         toggleDarkMode,
         updateProject,
+        saveProject,
+        loadProject,
+        loadTemplate,
+        createNewProject,
       }}
     >
       {children}

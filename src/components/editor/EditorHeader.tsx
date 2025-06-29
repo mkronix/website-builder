@@ -1,164 +1,147 @@
+
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Save, 
-  Download, 
   Eye, 
   Monitor, 
   Tablet, 
-  Smartphone,
-  Settings,
-  FolderOpen,
-  FileText,
-  BarChart3
+  Smartphone, 
+  ArrowLeft,
+  FolderOpen
 } from 'lucide-react';
-import { UserDashboard } from '@/components/dashboard/UserDashboard';
-import { ProjectsPage } from '@/components/projects/ProjectsPage';
-import { TemplatesPage } from '@/components/templates/TemplatesPage';
-import { SettingsPage } from '@/components/settings/SettingsPage';
-
-type ViewType = 'editor' | 'dashboard' | 'projects' | 'templates' | 'settings';
 
 export const EditorHeader = () => {
-  const { state, updateProject } = useEditor();
-  const [currentView, setCurrentView] = useState<ViewType>('editor');
-  const [viewportSize, setViewportSize] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const navigate = useNavigate();
+  const { state, setPreviewMode, saveProject, currentProject } = useEditor();
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [projectName, setProjectName] = useState(currentProject?.name || '');
+  const [projectDescription, setProjectDescription] = useState(currentProject?.description || '');
 
   const handleSave = () => {
-    console.log('Saving project...', state);
-  };
-
-  const handleExport = () => {
-    console.log('Exporting project...', state);
-  };
-
-  const isViewActive = (view: ViewType) => currentView === view;
-
-  const renderViewContent = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return <UserDashboard />;
-      case 'projects':
-        return <ProjectsPage />;
-      case 'templates':
-        return <TemplatesPage />;
-      case 'settings':
-        return <SettingsPage />;
-      default:
-        return null;
+    if (projectName.trim()) {
+      saveProject(projectName, projectDescription);
+      setShowSaveDialog(false);
     }
   };
 
-  if (currentView !== 'editor') {
-    return (
-      <div className="h-screen bg-[#1c1c1c]">
-        <div className="bg-[#272725] border-b border-gray-700 px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-semibold text-white">Website Builder</h1>
-              <div className="flex space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentView('editor')}
-                  className="text-gray-300 hover:text-white hover:bg-[#1c1c1c]"
-                >
-                  <Monitor className="w-4 h-4 mr-2" />
-                  Editor
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentView('dashboard')}
-                  className={isViewActive('dashboard') ? 'text-white bg-[#1c1c1c]' : 'text-gray-300 hover:text-white hover:bg-[#1c1c1c]'}
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Dashboard
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentView('projects')}
-                  className={isViewActive('projects') ? 'text-white bg-[#1c1c1c]' : 'text-gray-300 hover:text-white hover:bg-[#1c1c1c]'}
-                >
-                  <FolderOpen className="w-4 h-4 mr-2" />
-                  Projects
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentView('templates')}
-                  className={isViewActive('templates') ? 'text-white bg-[#1c1c1c]' : 'text-gray-300 hover:text-white hover:bg-[#1c1c1c]'}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Templates
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentView('settings')}
-                  className={isViewActive('settings') ? 'text-white bg-[#1c1c1c]' : 'text-gray-300 hover:text-white hover:bg-[#1c1c1c]'}
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {renderViewContent()}
-      </div>
-    );
-  }
+  const previewModes = [
+    { mode: 'desktop' as const, icon: Monitor, label: 'Desktop' },
+    { mode: 'tablet' as const, icon: Tablet, label: 'Tablet' },
+    { mode: 'mobile' as const, icon: Smartphone, label: 'Mobile' },
+  ];
 
   return (
-    <div className="bg-[#272725] border-b border-gray-700 px-6 py-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-semibold text-white">Website Builder</h1>
-          <Badge variant="secondary" className="bg-blue-500 text-white">
-            {state.currentPage}
-          </Badge>
+    <>
+      <header className="bg-[#1c1c1c] border-b border-gray-700 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="text-gray-400 hover:text-white"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Dashboard
+          </Button>
+          
+          <div className="flex items-center gap-2">
+            <FolderOpen className="w-4 h-4 text-gray-400" />
+            <span className="text-white font-medium">
+              {currentProject?.name || 'Untitled Project'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center space-x-4">
-          <Select onValueChange={(value) => updateProject({ ...state, template: value })}>
-            <SelectTrigger className="bg-[#1c1c1c] text-white border-gray-600 w-[180px]">
-              <SelectValue placeholder="Select a template" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#1c1c1c] text-white border-gray-600">
-              <SelectItem value="default">Default Template</SelectItem>
-              <SelectItem value="minimal">Minimal Template</SelectItem>
-              <SelectItem value="modern">Modern Template</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="icon" className="bg-[#1c1c1c] text-white border-gray-600 hover:bg-gray-600">
-              <Save className="w-4 h-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="bg-[#1c1c1c] text-white border-gray-600 hover:bg-gray-600">
-              <Download className="w-4 h-4" />
-            </Button>
+
+        <div className="flex items-center gap-3">
+          {/* Preview Mode Toggle */}
+          <div className="flex items-center bg-[#272725] rounded-lg p-1">
+            {previewModes.map(({ mode, icon: Icon, label }) => (
+              <Button
+                key={mode}
+                variant={state.previewMode === mode ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setPreviewMode(mode)}
+                className={`px-3 py-1 ${
+                  state.previewMode === mode 
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+              </Button>
+            ))}
           </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="bg-[#1c1c1c] text-white border-gray-600 hover:bg-gray-600" onClick={() => setViewportSize('desktop')}>
-              <Monitor className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="bg-[#1c1c1c] text-white border-gray-600 hover:bg-gray-600" onClick={() => setViewportSize('tablet')}>
-              <Tablet className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="bg-[#1c1c1c] text-white border-gray-600 hover:bg-gray-600" onClick={() => setViewportSize('mobile')}>
-              <Smartphone className="w-4 h-4" />
-            </Button>
-          </div>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-            <Eye className="w-4 h-4 mr-2" />
-            Preview
+
+          <Button
+            onClick={() => setShowSaveDialog(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            Save Project
           </Button>
         </div>
-      </div>
-    </div>
+      </header>
+
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {currentProject ? 'Update Project' : 'Save Project'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Project Name
+              </label>
+              <Input
+                placeholder="Enter project name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Description (Optional)
+              </label>
+              <Textarea
+                placeholder="Enter project description"
+                value={projectDescription}
+                onChange={(e) => setProjectDescription(e.target.value)}
+                className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
+                rows={3}
+              />
+            </div>
+            
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button
+                variant="ghost"
+                onClick={() => setShowSaveDialog(false)}
+                className="text-gray-400 hover:text-white hover:bg-[#272725]"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={!projectName.trim()}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {currentProject ? 'Update' : 'Save'} Project
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useEditor } from '@/contexts/EditorContext';
 import { Component } from '@/contexts/EditorContext';
 import { Navigation } from '@/components/website/Navigation';
@@ -16,7 +17,41 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 }) => {
   const { selectComponent } = useEditor();
 
-  const renderComponent = () => {
+  const renderDynamicComponent = () => {
+    if (component.reactCode) {
+      try {
+        // Create a function from the React code string
+        const componentFunction = new Function('React', 'props', `
+          const { useState, useEffect } = React;
+          ${component.reactCode}
+        `);
+        
+        // Execute the function with React and props
+        const DynamicComponent = componentFunction(React, component.props);
+        
+        // If it's a functional component, render it
+        if (typeof DynamicComponent === 'function') {
+          return React.createElement(DynamicComponent, component.props);
+        }
+        
+        // If it returns JSX directly, return it
+        return DynamicComponent;
+      } catch (error) {
+        console.error('Error rendering dynamic component:', error);
+        return (
+          <div className="p-8 text-center text-red-500 bg-red-50 border border-red-200 rounded">
+            <p>Error rendering component: {component.type}</p>
+            <p className="text-sm mt-2">{error.message}</p>
+          </div>
+        );
+      }
+    }
+
+    // Fallback to static components for backwards compatibility
+    return renderStaticComponent();
+  };
+
+  const renderStaticComponent = () => {
     switch (component.type) {
       case 'nav-simple':
         return <Navigation 
@@ -62,7 +97,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         selectComponent(component.id);
       }}
     >
-      {renderComponent()}
+      {renderDynamicComponent()}
       
       {isSelected && (
         <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded text-xs">

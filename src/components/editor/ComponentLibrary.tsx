@@ -30,15 +30,15 @@ export const ComponentLibrary = () => {
     const newComponent = {
       id: `component-${Date.now()}`,
       type: component.id,
-      props: component.default_props || {},
+      props: { ...component.default_props },
       reactCode: component.react_code,
       customizableProps: component.customizable_props
     };
 
+    console.log('Adding component:', newComponent);
     addComponent(state.currentPage, newComponent);
     setSelectedCategory(null);
   };
-
 
   return (
     <div className="p-4 space-y-4">
@@ -61,7 +61,6 @@ export const ComponentLibrary = () => {
         })}
       </div>
 
-      {/* Category Components Dialog */}
       <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
         <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -70,7 +69,7 @@ export const ComponentLibrary = () => {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
               ?.components.map((component: any) => (
@@ -79,21 +78,28 @@ export const ComponentLibrary = () => {
                   className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
                   onClick={() => addComponentToPage(component)}
                 >
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-48">
                     {component.preview_image ? (
                       <img
                         src={component.preview_image}
                         alt={component.name}
-                        className="w-full h-full object-fill"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                        No preview
+                        No preview available
                       </div>
                     )}
                   </div>
                   <h4 className="text-white font-medium mb-2">{component.name}</h4>
-                  <p className="text-gray-400 text-sm">{component.description}</p>
+                  <p className="text-gray-400 text-sm mb-2">{component.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {component.tags?.map((tag: string) => (
+                      <span key={tag} className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))}
           </div>
