@@ -31,13 +31,22 @@ export const ProjectsPage = () => {
         export_count: 0,
         last_export: '',
         settings: {
-          theme: 'default',
-          responsive: true,
-          seo_enabled: true
+          favicon: '',
+          global_meta: {
+            title: newProjectName,
+            description: '',
+            keywords: []
+          },
+          theme: {
+            primary_color: '#3b82f6',
+            secondary_color: '#64748b',
+            font_family: 'Inter'
+          },
+          custom_css: ''
         },
         pages: []
       };
-      setProjects([...projects, newProject]);
+      setProjects([...projects, newProject] as any);
       setNewProjectName('');
       setShowCreateDialog(false);
     }

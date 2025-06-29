@@ -14,7 +14,7 @@ export const ComponentLibrary = () => {
     id: key,
     name: category.name,
     icon: getIconForCategory(category.name),
-    components: category.components.map(comp => ({
+    components: category.components.map((comp: any) => ({
       id: comp.id,
       name: comp.name,
       preview: comp.description
@@ -33,12 +33,12 @@ export const ComponentLibrary = () => {
   const addComponentToPage = (componentType: string) => {
     const componentData = Object.values(websiteData.component_library.categories)
       .flatMap(cat => cat.components)
-      .find(comp => comp.id === componentType);
+      .find((comp: any) => comp.id === componentType);
 
     const newComponent = {
       id: `component-${Date.now()}`,
       type: componentType,
-      props: componentData?.default_props || {},
+      props: (componentData as any)?.default_props || {},
     };
 
     addComponent(state.currentPage, newComponent);

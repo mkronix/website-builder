@@ -26,6 +26,23 @@ export const UserDashboard = () => {
     }
   };
 
+  const getActivityDescription = (activity: any) => {
+    switch (activity.action_type) {
+      case 'project_created':
+        return `Created project: ${activity.metadata.project_name}`;
+      case 'component_added':
+        return `Added ${activity.metadata.component_type} component`;
+      case 'project_exported':
+        return `Exported project as ${activity.metadata.export_format}`;
+      case 'page_created':
+        return `Created new page: ${activity.metadata.page_id}`;
+      case 'theme_updated':
+        return `Updated theme property: ${activity.metadata.theme_property}`;
+      default:
+        return activity.action_type.replace('_', ' ');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#1c1c1c] p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -49,11 +66,7 @@ export const UserDashboard = () => {
                   {getActivityIcon(activity.action_type)}
                   <div className="flex-1">
                     <p className="text-white font-medium">
-                      {activity.action_type === 'project_created' && `Created project: ${activity.metadata.project_name}`}
-                      {activity.action_type === 'component_added' && `Added ${activity.metadata.component_type} component`}
-                      {activity.action_type === 'project_exported' && `Exported project as ${activity.metadata.export_format}`}
-                      {activity.action_type === 'page_created' && `Created new page: ${activity.metadata.page_name}`}
-                      {activity.action_type === 'theme_updated' && `Updated theme property: ${activity.metadata.theme_property}`}
+                      {getActivityDescription(activity)}
                     </p>
                     <p className="text-gray-400 text-sm">{new Date(activity.created_at).toLocaleDateString()}</p>
                   </div>
