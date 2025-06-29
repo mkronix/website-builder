@@ -29,6 +29,7 @@ export interface EditorState {
   };
   previewMode: 'desktop' | 'tablet' | 'mobile';
   isDarkMode: boolean;
+  template?: string;
 }
 
 interface EditorContextType {
@@ -44,6 +45,7 @@ interface EditorContextType {
   removePage: (pageId: string) => void;
   setCurrentPage: (pageId: string) => void;
   toggleDarkMode: () => void;
+  updateProject: (updates: Partial<EditorState>) => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -86,15 +88,19 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       },
     ],
     selectedComponent: null,
-    theme: websiteData.system_settings.theme || {
+    theme: {
       primaryColor: '#3B82F6',
       secondaryColor: '#8B5CF6', 
       backgroundColor: '#FFFFFF',
       textColor: '#1F2937',
     },
     previewMode: 'desktop',
-    isDarkMode: websiteData.system_settings.dark_mode || false,
+    isDarkMode: websiteData.system_settings?.auto_save_interval ? false : false,
   });
+
+  const updateProject = (updates: Partial<EditorState>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  };
 
   const updatePage = (pageId: string, updates: Partial<Page>) => {
     setState(prev => ({
@@ -194,6 +200,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         removePage,
         setCurrentPage,
         toggleDarkMode,
+        updateProject,
       }}
     >
       {children}

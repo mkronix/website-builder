@@ -82,6 +82,18 @@ export const SettingsPage = () => {
                   <label className="text-white">Auto Save Interval</label>
                   <p className="text-gray-400">{settings.auto_save_interval} seconds</p>
                 </div>
+                <div className="space-y-2">
+                  <label className="text-white">Session Timeout</label>
+                  <p className="text-gray-400">{system_settings.session_timeout} minutes</p>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-white">Supported Frameworks</label>
+                  <div className="flex flex-wrap gap-2">
+                    {system_settings.supported_frameworks.map((framework) => (
+                      <Badge key={framework} className="bg-blue-500 text-white">{framework}</Badge>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -90,7 +102,7 @@ export const SettingsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white">Total Components</CardTitle>
+                  <CardTitle className="text-white">Components</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold text-white">{analytics.most_used_components.length}</p>
@@ -106,10 +118,10 @@ export const SettingsPage = () => {
               </Card>
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white">Session Length</CardTitle>
+                  <CardTitle className="text-white">Avg Session</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-white">{analytics.user_engagement.avg_session_length}</p>
+                  <p className="text-3xl font-bold text-white">{analytics.user_engagement.average_session_duration}</p>
                 </CardContent>
               </Card>
             </div>
@@ -118,29 +130,42 @@ export const SettingsPage = () => {
           <TabsContent value="billing" className="space-y-6">
             <Card className="bg-[#272725] border-gray-600">
               <CardHeader>
-                <CardTitle className="text-white">Billing Information</CardTitle>
+                <CardTitle className="text-white">Credit Packages</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-white">Current Plan</span>
-                  <Badge className="bg-blue-500 text-white">{billing.current_plan}</Badge>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {billing.credit_packages.map((pkg) => (
+                    <div key={pkg.id} className="p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
+                      <h3 className="text-white font-medium">{pkg.name}</h3>
+                      <p className="text-gray-400 text-sm">{pkg.description}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-white">{pkg.credits} credits</span>
+                        <span className="text-blue-400">${pkg.price}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white">Credits Remaining</span>
-                  <span className="text-white font-bold">{billing.credits_remaining}</span>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#272725] border-gray-600">
+              <CardHeader>
+                <CardTitle className="text-white">Payment History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {billing.payment_history.slice(0, 5).map((payment) => (
+                    <div key={payment.id} className="flex items-center justify-between p-3 bg-[#1c1c1c] rounded-lg">
+                      <div>
+                        <p className="text-white">${payment.amount}</p>
+                        <p className="text-gray-400 text-sm">{new Date(payment.created_at).toLocaleDateString()}</p>
+                      </div>
+                      <Badge className={payment.status === 'completed' ? 'bg-green-500' : 'bg-red-500'}>
+                        {payment.status}
+                      </Badge>
+                    </div>
+                  ))}
                 </div>
-                <div className="space-y-2">
-                  <span className="text-white">Usage This Month</span>
-                  <Progress value={(billing.usage_this_month / 100) * 100} className="bg-gray-600" />
-                  <p className="text-gray-400 text-sm">{billing.usage_this_month}% of monthly limit</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white">Next Billing Date</span>
-                  <span className="text-gray-300">{new Date(billing.next_billing_date).toLocaleDateString()}</span>
-                </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                  Upgrade Plan
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -148,15 +173,16 @@ export const SettingsPage = () => {
           <TabsContent value="notifications" className="space-y-6">
             <Card className="bg-[#272725] border-gray-600">
               <CardHeader>
-                <CardTitle className="text-white">Recent Notifications</CardTitle>
+                <CardTitle className="text-white">System Notifications</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {notifications.map((notification) => (
+                  {notifications.system_notifications.map((notification) => (
                     <div key={notification.id} className="p-3 bg-[#1c1c1c] rounded-lg">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-white font-medium">{notification.message}</p>
+                          <p className="text-white font-medium">{notification.title}</p>
+                          <p className="text-gray-300">{notification.message}</p>
                           <p className="text-gray-400 text-sm">{new Date(notification.created_at).toLocaleDateString()}</p>
                         </div>
                         <Badge className={notification.is_read ? 'bg-gray-500' : 'bg-blue-500'}>
@@ -177,17 +203,15 @@ export const SettingsPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {component_usage_stats.map((stat) => (
-                    <div key={stat.component_id} className="flex items-center justify-between p-3 bg-[#1c1c1c] rounded-lg">
-                      <span className="text-white">{stat.component_name}</span>
-                      <div className="flex items-center space-x-4">
-                        <span className="text-gray-300">{stat.usage_count} uses</span>
-                        <div className="w-20 bg-gray-600 rounded-full h-2">
-                          <div 
-                            className="bg-blue-500 h-2 rounded-full" 
-                            style={{ width: `${(stat.usage_count / Math.max(...component_usage_stats.map(s => s.usage_count))) * 100}%` }}
-                          />
-                        </div>
+                  {component_usage_stats.daily_usage.map((stat, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-[#1c1c1c] rounded-lg">
+                      <div>
+                        <span className="text-white">{stat.date}</span>
+                        <p className="text-gray-400 text-sm">Most used: {stat.most_used_component}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-blue-400">{stat.component_additions} additions</span>
+                        <p className="text-gray-400 text-sm">{stat.active_users} users</p>
                       </div>
                     </div>
                   ))}

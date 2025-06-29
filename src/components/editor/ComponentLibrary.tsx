@@ -31,14 +31,19 @@ export const ComponentLibrary = () => {
   }
 
   const addComponentToPage = (componentType: string) => {
-    const componentData = Object.values(websiteData.component_library.categories)
-      .flatMap(cat => cat.components)
-      .find((comp: any) => comp.id === componentType);
+    // Find component data from any category
+    let componentData: any = null;
+    Object.values(websiteData.component_library.categories).forEach(category => {
+      const found = category.components.find((comp: any) => comp.id === componentType);
+      if (found) {
+        componentData = found;
+      }
+    });
 
     const newComponent = {
       id: `component-${Date.now()}`,
       type: componentType,
-      props: (componentData as any)?.default_props || {},
+      props: componentData?.default_props || {},
     };
 
     addComponent(state.currentPage, newComponent);
