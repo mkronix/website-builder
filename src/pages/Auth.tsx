@@ -18,7 +18,7 @@ const Auth = () => {
   };
 
   const handleLoginSuccess = () => {
-    navigate('/editor');
+    navigate('/dashboard');
   };
 
   const handleBackToLanding = () => {

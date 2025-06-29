@@ -9,16 +9,13 @@ import websiteData from '@/data/data.json';
 export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<any>(null);
 
   const componentCategories = Object.entries(websiteData.component_library.categories).map(([key, category]) => ({
     id: key,
     name: category.name,
     icon: getIconForCategory(category.name),
-    components: category.components.map((comp: any) => ({
-      id: comp.id,
-      name: comp.name,
-      preview: comp.description
-    }))
+    components: category.components
   }));
 
   function getIconForCategory(categoryName: string) {
@@ -30,24 +27,69 @@ export const ComponentLibrary = () => {
     }
   }
 
-  const addComponentToPage = (componentType: string) => {
-    // Find component data from any category
-    let componentData: any = null;
-    Object.values(websiteData.component_library.categories).forEach(category => {
-      const found = category.components.find((comp: any) => comp.id === componentType);
-      if (found) {
-        componentData = found;
-      }
-    });
-
+  const addComponentToPage = (component: any) => {
     const newComponent = {
       id: `component-${Date.now()}`,
-      type: componentType,
-      props: componentData?.default_props || {},
+      type: component.id,
+      props: component.default_props || {},
+      reactCode: component.react_code,
+      customizableProps: component.customizable_props
     };
 
     addComponent(state.currentPage, newComponent);
+    setSelectedComponent(null);
     setSelectedCategory(null);
+  };
+
+  const renderComponentPreview = (component: any) => {
+    return (
+      <div className="space-y-4">
+        <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+          {component.preview_image ? (
+            <img 
+              src={component.preview_image} 
+              alt={component.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-500">
+              Preview not available
+            </div>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="text-white font-medium">{component.name}</h3>
+          <p className="text-gray-400 text-sm">{component.description}</p>
+          
+          <div className="flex flex-wrap gap-1">
+            {component.tags?.map((tag: string) => (
+              <span key={tag} className="px-2 py-1 bg-gray-600 text-gray-200 text-xs rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="text-white text-sm font-medium">Customizable Properties:</h4>
+          <div className="text-gray-400 text-xs space-y-1">
+            {component.customizable_props?.map((prop: any) => (
+              <div key={prop.name}>
+                <span className="font-medium">{prop.name}</span>: {prop.type}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Button 
+          onClick={() => addComponentToPage(component)}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          Add Component
+        </Button>
+      </div>
+    );
   };
 
   return (
@@ -71,27 +113,54 @@ export const ComponentLibrary = () => {
         })}
       </div>
 
+      {/* Category Components Dialog */}
       <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
-        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-2xl">
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white">
               {componentCategories.find(c => c.id === selectedCategory)?.name} Components
             </DialogTitle>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
-              ?.components.map((component) => (
+              ?.components.map((component: any) => (
                 <div
                   key={component.id}
                   className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-                  onClick={() => addComponentToPage(component.id)}
+                  onClick={() => setSelectedComponent(component)}
                 >
+                  <div className="aspect-video bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                    {component.preview_image ? (
+                      <img 
+                        src={component.preview_image} 
+                        alt={component.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                        No preview
+                      </div>
+                    )}
+                  </div>
                   <h4 className="text-white font-medium mb-2">{component.name}</h4>
-                  <p className="text-gray-400 text-sm">{component.preview}</p>
+                  <p className="text-gray-400 text-sm">{component.description}</p>
                 </div>
               ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Component Detail Dialog */}
+      <Dialog open={!!selectedComponent} onOpenChange={() => setSelectedComponent(null)}>
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">Component Details</DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-4">
+            {selectedComponent && renderComponentPreview(selectedComponent)}
           </div>
         </DialogContent>
       </Dialog>
