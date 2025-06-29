@@ -867,7 +867,7 @@
             "name": "Modern Transparent",
             "variant": "modern-transparent",
             "category": "navbar",
-            "preview_image": "/previews/navbar-modern-transparent.jpg",
+            "preview_image": "/previews/nav1.png",
             "description": "Clean, modern navigation with transparent background and backdrop blur",
             "tags": [
               "modern",
@@ -1059,7 +1059,7 @@
             "name": "Split with Image",
             "variant": "split-with-image",
             "category": "hero",
-            "preview_image": "/previews/hero-split-image.jpg",
+            "preview_image": "/previews/hero1.png",
             "description": "Hero section with text on one side and image on the other",
             "tags": [
               "split",
