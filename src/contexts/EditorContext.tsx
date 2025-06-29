@@ -1,5 +1,5 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import websiteData from '@/data/data.json';
 
 export interface Component {
   id: string;
@@ -59,7 +59,7 @@ export const useEditor = () => {
 export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<EditorState>({
     currentPage: 'home',
-    pages: [
+    pages: websiteData.projects[0]?.pages || [
       {
         id: 'home',
         name: 'Home',
@@ -68,14 +68,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       },
       {
         id: 'about',
-        name: 'About',
+        name: 'About', 
         slug: '/about',
         components: [],
       },
       {
         id: 'services',
         name: 'Services',
-        slug: '/services',
+        slug: '/services', 
         components: [],
       },
       {
@@ -86,14 +86,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       },
     ],
     selectedComponent: null,
-    theme: {
+    theme: websiteData.system_settings.theme || {
       primaryColor: '#3B82F6',
-      secondaryColor: '#8B5CF6',
+      secondaryColor: '#8B5CF6', 
       backgroundColor: '#FFFFFF',
       textColor: '#1F2937',
     },
     previewMode: 'desktop',
-    isDarkMode: false,
+    isDarkMode: websiteData.system_settings.dark_mode || false,
   });
 
   const updatePage = (pageId: string, updates: Partial<Page>) => {

@@ -4,94 +4,45 @@ import { useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Navigation, Layout, FileText, Type } from 'lucide-react';
+import websiteData from '@/data/data.json';
 
 export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = [
-    {
-      id: 'navigation',
-      name: 'Navigation',
-      icon: Navigation,
-      components: [
-        { id: 'nav-simple', name: 'Simple Navigation', preview: 'Simple header with logo and links' },
-        { id: 'nav-dropdown', name: 'Dropdown Navigation', preview: 'Navigation with dropdown menus' },
-        { id: 'nav-sidebar', name: 'Sidebar Navigation', preview: 'Mobile-friendly sidebar nav' },
-      ]
-    },
-    {
-      id: 'hero',
-      name: 'Hero Sections',
-      icon: Type,
-      components: [
-        { id: 'hero-simple', name: 'Simple Hero', preview: 'Clean hero with text and CTA' },
-        { id: 'hero-image', name: 'Hero with Image', preview: 'Hero section with background image' },
-        { id: 'hero-video', name: 'Video Hero', preview: 'Hero with video background' },
-      ]
-    },
-    {
-      id: 'layout',
-      name: 'Layout',
-      icon: Layout,
-      components: [
-        { id: 'section-2col', name: '2 Column Section', preview: 'Two column layout' },
-        { id: 'section-3col', name: '3 Column Section', preview: 'Three column layout' },
-        { id: 'section-grid', name: 'Grid Section', preview: 'Flexible grid layout' },
-      ]
-    },
-    {
-      id: 'content',
-      name: 'Content',
-      icon: FileText,
-      components: [
-        { id: 'text-block', name: 'Text Block', preview: 'Rich text content block' },
-        { id: 'feature-list', name: 'Feature List', preview: 'List of features with icons' },
-        { id: 'testimonial', name: 'Testimonial', preview: 'Customer testimonial card' },
-      ]
+  const componentCategories = websiteData.component_library.map(category => ({
+    id: category.category_id,
+    name: category.category_name,
+    icon: getIconForCategory(category.category_name),
+    components: category.components.map(comp => ({
+      id: comp.component_id,
+      name: comp.component_name,
+      preview: comp.description
+    }))
+  }));
+
+  function getIconForCategory(categoryName: string) {
+    switch (categoryName.toLowerCase()) {
+      case 'navigation': return Navigation;
+      case 'hero sections': return Type;
+      case 'layout': return Layout;
+      default: return FileText;
     }
-  ];
+  }
 
   const addComponentToPage = (componentType: string) => {
+    const componentData = websiteData.component_library
+      .flatMap(cat => cat.components)
+      .find(comp => comp.component_id === componentType);
+
     const newComponent = {
       id: `component-${Date.now()}`,
       type: componentType,
-      props: getDefaultProps(componentType),
+      props: componentData?.default_props || {},
     };
 
     addComponent(state.currentPage, newComponent);
     setSelectedCategory(null);
-  };
-
-  const getDefaultProps = (type: string) => {
-    const defaults: Record<string, any> = {
-      'nav-simple': { 
-        logo: 'Your Logo', 
-        links: [
-          { text: 'Home', href: '/' }, 
-          { text: 'About', href: '/about' },
-          { text: 'Services', href: '/services' },
-          { text: 'Contact', href: '/contact' }
-        ] 
-      },
-      'hero-simple': { 
-        title: 'Welcome to Your Website', 
-        subtitle: 'Build something amazing with our website builder', 
-        buttonText: 'Get Started' 
-      },
-      'footer': { 
-        companyName: 'Your Company', 
-        links: [
-          { text: 'Privacy', href: '/privacy' }, 
-          { text: 'Terms', href: '/terms' },
-          { text: 'Support', href: '/support' }
-        ] 
-      },
-      'text-block': { 
-        content: '<h2>Your Content Title</h2><p>Your content goes here. You can edit this text to add your own content.</p>' 
-      },
-    };
-    return defaults[type] || {};
   };
 
   return (
