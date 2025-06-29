@@ -11,7 +11,12 @@ import websiteData from '@/data/data.json';
 
 export const SettingsPage = () => {
   const { system_settings, analytics, component_usage_stats, billing, notifications } = websiteData;
-  const [settings, setSettings] = useState(system_settings);
+  const [settings, setSettings] = useState({
+    auto_save_enabled: true,
+    dark_mode: true,
+    responsive_preview: true,
+    auto_save_interval: system_settings.auto_save_interval
+  });
 
   const updateSetting = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -85,26 +90,26 @@ export const SettingsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white">Total Projects</CardTitle>
+                  <CardTitle className="text-white">Total Components</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-white">{analytics.total_projects}</p>
+                  <p className="text-3xl font-bold text-white">{analytics.most_used_components.length}</p>
                 </CardContent>
               </Card>
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white">Total Exports</CardTitle>
+                  <CardTitle className="text-white">Templates</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-white">{analytics.total_exports}</p>
+                  <p className="text-3xl font-bold text-white">{analytics.popular_templates.length}</p>
                 </CardContent>
               </Card>
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white">Active Users</CardTitle>
+                  <CardTitle className="text-white">Session Length</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-white">{analytics.active_users}</p>
+                  <p className="text-3xl font-bold text-white">{analytics.user_engagement.avg_session_length}</p>
                 </CardContent>
               </Card>
             </div>
@@ -148,14 +153,14 @@ export const SettingsPage = () => {
               <CardContent>
                 <div className="space-y-4">
                   {notifications.map((notification) => (
-                    <div key={notification.notification_id} className="p-3 bg-[#1c1c1c] rounded-lg">
+                    <div key={notification.id} className="p-3 bg-[#1c1c1c] rounded-lg">
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-white font-medium">{notification.message}</p>
                           <p className="text-gray-400 text-sm">{new Date(notification.created_at).toLocaleDateString()}</p>
                         </div>
-                        <Badge className={notification.read ? 'bg-gray-500' : 'bg-blue-500'}>
-                          {notification.read ? 'Read' : 'Unread'}
+                        <Badge className={notification.is_read ? 'bg-gray-500' : 'bg-blue-500'}>
+                          {notification.is_read ? 'Read' : 'Unread'}
                         </Badge>
                       </div>
                     </div>

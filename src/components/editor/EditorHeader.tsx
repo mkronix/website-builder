@@ -1,7 +1,5 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Monitor, Tablet, Smartphone, Settings, User, FolderOpen, Layout } from 'lucide-react';
 import { UserDashboard } from '@/components/dashboard/UserDashboard';
 import { SettingsPage } from '@/components/settings/SettingsPage';

@@ -45,14 +45,20 @@ export const UserDashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {user_activities.map((activity) => (
-                <div key={activity.activity_id} className="flex items-center space-x-4 p-3 bg-[#1c1c1c] rounded-lg">
-                  {getActivityIcon(activity.activity_type)}
+                <div key={activity.id} className="flex items-center space-x-4 p-3 bg-[#1c1c1c] rounded-lg">
+                  {getActivityIcon(activity.action_type)}
                   <div className="flex-1">
-                    <p className="text-white font-medium">{activity.description}</p>
-                    <p className="text-gray-400 text-sm">{new Date(activity.timestamp).toLocaleDateString()}</p>
+                    <p className="text-white font-medium">
+                      {activity.action_type === 'project_created' && `Created project: ${activity.metadata.project_name}`}
+                      {activity.action_type === 'component_added' && `Added ${activity.metadata.component_type} component`}
+                      {activity.action_type === 'project_exported' && `Exported project as ${activity.metadata.export_format}`}
+                      {activity.action_type === 'page_created' && `Created new page: ${activity.metadata.page_name}`}
+                      {activity.action_type === 'theme_updated' && `Updated theme property: ${activity.metadata.theme_property}`}
+                    </p>
+                    <p className="text-gray-400 text-sm">{new Date(activity.created_at).toLocaleDateString()}</p>
                   </div>
                   <Badge variant="secondary" className="bg-[#272725] text-white">
-                    {activity.activity_type.replace('_', ' ')}
+                    {activity.action_type.replace('_', ' ')}
                   </Badge>
                 </div>
               ))}
@@ -77,11 +83,11 @@ export const UserDashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {export_history.map((export_item) => (
-                  <TableRow key={export_item.export_id} className="border-gray-600">
-                    <TableCell className="text-white">{export_item.project_name}</TableCell>
-                    <TableCell className="text-gray-300">{new Date(export_item.export_date).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-gray-300">{export_item.export_format}</TableCell>
+                {export_history.exports.map((export_item) => (
+                  <TableRow key={export_item.id} className="border-gray-600">
+                    <TableCell className="text-white">{export_item.project_id}</TableCell>
+                    <TableCell className="text-gray-300">{new Date(export_item.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-gray-300">{export_item.export_type}</TableCell>
                     <TableCell>
                       <Badge className={`${getStatusColor(export_item.status)} text-white`}>
                         {export_item.status}

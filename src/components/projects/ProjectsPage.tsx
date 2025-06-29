@@ -9,30 +9,33 @@ import { Plus, Eye, Edit, Trash2, Download, Calendar } from 'lucide-react';
 import websiteData from '@/data/data.json';
 
 export const ProjectsPage = () => {
-  const [projects, setProjects] = useState(websiteData.projects);
+  const projectsArray = Object.values(websiteData.projects);
+  const [projects, setProjects] = useState(projectsArray);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'draft': return 'bg-yellow-500';
-      case 'archived': return 'bg-gray-500';
-      default: return 'bg-blue-500';
-    }
+  const getStatusColor = (isExported: boolean) => {
+    return isExported ? 'bg-green-500' : 'bg-gray-500';
   };
 
   const handleCreateProject = () => {
     if (newProjectName.trim()) {
       const newProject = {
-        project_id: `project-${Date.now()}`,
-        project_name: newProjectName,
+        id: `project-${Date.now()}`,
+        user_id: 'user_001',
+        name: newProjectName,
+        template_used: 'blank',
         created_at: new Date().toISOString(),
         last_modified: new Date().toISOString(),
-        status: 'draft',
-        template_used: 'blank',
-        page_count: 1,
-        component_count: 0
+        is_exported: false,
+        export_count: 0,
+        last_export: '',
+        settings: {
+          theme: 'default',
+          responsive: true,
+          seo_enabled: true
+        },
+        pages: []
       };
       setProjects([...projects, newProject]);
       setNewProjectName('');
@@ -41,7 +44,7 @@ export const ProjectsPage = () => {
   };
 
   const deleteProject = (projectId: string) => {
-    setProjects(projects.filter(p => p.project_id !== projectId));
+    setProjects(projects.filter(p => p.id !== projectId));
   };
 
   return (
@@ -60,12 +63,12 @@ export const ProjectsPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
-            <Card key={project.project_id} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
+            <Card key={project.id} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-white">{project.project_name}</CardTitle>
-                  <Badge className={`${getStatusColor(project.status)} text-white`}>
-                    {project.status}
+                  <CardTitle className="text-white">{project.name}</CardTitle>
+                  <Badge className={`${getStatusColor(project.is_exported)} text-white`}>
+                    {project.is_exported ? 'exported' : 'draft'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -81,12 +84,12 @@ export const ProjectsPage = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-4 pt-2">
                     <div className="text-center">
-                      <p className="text-white font-bold">{project.page_count}</p>
+                      <p className="text-white font-bold">{project.pages.length}</p>
                       <p className="text-gray-400 text-xs">Pages</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-white font-bold">{project.component_count}</p>
-                      <p className="text-gray-400 text-xs">Components</p>
+                      <p className="text-white font-bold">{project.export_count}</p>
+                      <p className="text-gray-400 text-xs">Exports</p>
                     </div>
                   </div>
                 </div>
@@ -103,7 +106,7 @@ export const ProjectsPage = () => {
                     size="sm" 
                     variant="ghost" 
                     className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                    onClick={() => deleteProject(project.project_id)}
+                    onClick={() => deleteProject(project.id)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

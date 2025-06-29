@@ -10,13 +10,13 @@ export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = websiteData.component_library.map(category => ({
-    id: category.category_id,
-    name: category.category_name,
-    icon: getIconForCategory(category.category_name),
+  const componentCategories = Object.entries(websiteData.component_library.categories).map(([key, category]) => ({
+    id: key,
+    name: category.name,
+    icon: getIconForCategory(category.name),
     components: category.components.map(comp => ({
-      id: comp.component_id,
-      name: comp.component_name,
+      id: comp.id,
+      name: comp.name,
       preview: comp.description
     }))
   }));
@@ -31,9 +31,9 @@ export const ComponentLibrary = () => {
   }
 
   const addComponentToPage = (componentType: string) => {
-    const componentData = websiteData.component_library
+    const componentData = Object.values(websiteData.component_library.categories)
       .flatMap(cat => cat.components)
-      .find(comp => comp.component_id === componentType);
+      .find(comp => comp.id === componentType);
 
     const newComponent = {
       id: `component-${Date.now()}`,
