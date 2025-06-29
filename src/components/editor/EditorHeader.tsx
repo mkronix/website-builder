@@ -1,20 +1,19 @@
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Save, 
-  Eye, 
-  Monitor, 
-  Tablet, 
-  Smartphone, 
+import { useEditor } from '@/contexts/EditorContext';
+import {
   ArrowLeft,
-  FolderOpen
+  FolderOpen,
+  Monitor,
+  Save,
+  Smartphone,
+  Tablet
 } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const EditorHeader = () => {
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ export const EditorHeader = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
           </Button>
-          
+
           <div className="flex items-center gap-2">
             <FolderOpen className="w-4 h-4 text-gray-400" />
             <span className="text-white font-medium">
@@ -67,11 +66,10 @@ export const EditorHeader = () => {
                 variant={state.previewMode === mode ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setPreviewMode(mode)}
-                className={`px-3 py-1 ${
-                  state.previewMode === mode 
-                    ? 'bg-blue-600 text-white' 
+                className={`px-3 py-1 ${state.previewMode === mode
+                    ? 'bg-blue-600 text-white'
                     : 'text-gray-400 hover:text-white'
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4" />
               </Button>
@@ -96,7 +94,7 @@ export const EditorHeader = () => {
               {currentProject ? 'Update Project' : 'Save Project'}
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -109,7 +107,7 @@ export const EditorHeader = () => {
                 className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Description (Optional)
@@ -122,7 +120,7 @@ export const EditorHeader = () => {
                 rows={3}
               />
             </div>
-            
+
             <div className="flex justify-end space-x-2 pt-4">
               <Button
                 variant="ghost"

@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import websiteData from '@/data/data.json';
-import { ProjectService, Project } from '@/services/projectService';
+import { Project, ProjectService } from '@/services/projectService';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 export interface Component {
+  variant: string;
   id: string;
-  type: string;
-  props: Record<string, any>;
+  category: string;
+  default_props: Record<string, any>;
   content?: string;
-  reactCode?: string;
+  react_code?: string;
   customizableProps?: Record<string, any>;
 }
 
@@ -80,7 +80,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     selectedComponent: null,
     theme: {
       primaryColor: '#3B82F6',
-      secondaryColor: '#8B5CF6', 
+      secondaryColor: '#8B5CF6',
       backgroundColor: '#FFFFFF',
       textColor: '#1F2937',
     },
@@ -121,14 +121,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, [state.pages, state.theme]);
 
-  const createNewProject = (name: string, description?: string) => {
+  const createNewProject = useCallback((name: string, description?: string) => {
     const newProject = ProjectService.createProjectFromState(state, name, description);
     ProjectService.saveProject(newProject);
     ProjectService.setCurrentProject(newProject.id);
     setCurrentProject(newProject);
-  };
+  }, [state]);
 
-  const saveProject = (name?: string, description?: string) => {
+  const saveProject = useCallback((name?: string, description?: string) => {
     if (currentProject) {
       const updatedProject = {
         ...currentProject,
@@ -143,9 +143,9 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     } else if (name) {
       createNewProject(name, description);
     }
-  };
+  }, [currentProject, state.pages, state.theme, createNewProject]);
 
-  const loadProject = (projectId: string) => {
+  const loadProject = useCallback((projectId: string) => {
     const project = ProjectService.getProject(projectId);
     if (project) {
       setCurrentProject(project);
@@ -159,14 +159,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         template: project.template_id
       }));
     }
-  };
+  }, []);
 
-  const loadTemplate = (template: any) => {
+  const loadTemplate = useCallback((template: any) => {
     const templateProject = ProjectService.createProjectFromTemplate(template, `${template.name} Project`);
     ProjectService.saveProject(templateProject);
     ProjectService.setCurrentProject(templateProject.id);
     setCurrentProject(templateProject);
-    
+
     setState(prev => ({
       ...prev,
       pages: templateProject.pages,
@@ -175,22 +175,22 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       selectedComponent: null,
       template: template.id
     }));
-  };
+  }, []);
 
-  const updateProject = (updates: Partial<EditorState>) => {
+  const updateProject = useCallback((updates: Partial<EditorState>) => {
     setState(prev => ({ ...prev, ...updates }));
-  };
+  }, []);
 
-  const updatePage = (pageId: string, updates: Partial<Page>) => {
+  const updatePage = useCallback((pageId: string, updates: Partial<Page>) => {
     setState(prev => ({
       ...prev,
-      pages: prev.pages.map(page => 
+      pages: prev.pages.map(page =>
         page.id === pageId ? { ...page, ...updates } : page
       ),
     }));
-  };
+  }, []);
 
-  const addComponent = (pageId: string, component: Component) => {
+  const addComponent = useCallback((pageId: string, component: Component) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -199,25 +199,25 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           : page
       ),
     }));
-  };
+  }, []);
 
-  const updateComponent = (pageId: string, componentId: string, updates: Partial<Component>) => {
+  const updateComponent = useCallback((pageId: string, componentId: string, updates: Partial<Component>) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
         page.id === pageId
           ? {
-              ...page,
-              components: page.components.map(comp =>
-                comp.id === componentId ? { ...comp, ...updates } : comp
-              ),
-            }
+            ...page,
+            components: page.components.map(comp =>
+              comp.id === componentId ? { ...comp, ...updates } : comp
+            ),
+          }
           : page
       ),
     }));
-  };
+  }, []);
 
-  const removeComponent = (pageId: string, componentId: string) => {
+  const removeComponent = useCallback((pageId: string, componentId: string) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -227,66 +227,85 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       ),
       selectedComponent: prev.selectedComponent === componentId ? null : prev.selectedComponent,
     }));
-  };
+  }, []);
 
-  const selectComponent = (componentId: string | null) => {
+  const selectComponent = useCallback((componentId: string | null) => {
     setState(prev => ({ ...prev, selectedComponent: componentId }));
-  };
+  }, []);
 
-  const updateTheme = (theme: Partial<EditorState['theme']>) => {
+  const updateTheme = useCallback((theme: Partial<EditorState['theme']>) => {
     setState(prev => ({
       ...prev,
       theme: { ...prev.theme, ...theme },
     }));
-  };
+  }, []);
 
-  const setPreviewMode = (mode: EditorState['previewMode']) => {
+  const setPreviewMode = useCallback((mode: EditorState['previewMode']) => {
     setState(prev => ({ ...prev, previewMode: mode }));
-  };
+  }, []);
 
-  const addPage = (page: Page) => {
+  const addPage = useCallback((page: Page) => {
     setState(prev => ({ ...prev, pages: [...prev.pages, page] }));
-  };
+  }, []);
 
-  const removePage = (pageId: string) => {
+  const removePage = useCallback((pageId: string) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.filter(page => page.id !== pageId),
       currentPage: prev.currentPage === pageId ? prev.pages[0]?.id || 'home' : prev.currentPage,
     }));
-  };
+  }, []);
 
-  const setCurrentPage = (pageId: string) => {
+  const setCurrentPage = useCallback((pageId: string) => {
     setState(prev => ({ ...prev, currentPage: pageId }));
-  };
+  }, []);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     setState(prev => ({ ...prev, isDarkMode: !prev.isDarkMode }));
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    state,
+    currentProject,
+    updatePage,
+    addComponent,
+    updateComponent,
+    removeComponent,
+    selectComponent,
+    updateTheme,
+    setPreviewMode,
+    addPage,
+    removePage,
+    setCurrentPage,
+    toggleDarkMode,
+    updateProject,
+    saveProject,
+    loadProject,
+    loadTemplate,
+    createNewProject,
+  }), [
+    state,
+    currentProject,
+    updatePage,
+    addComponent,
+    updateComponent,
+    removeComponent,
+    selectComponent,
+    updateTheme,
+    setPreviewMode,
+    addPage,
+    removePage,
+    setCurrentPage,
+    toggleDarkMode,
+    updateProject,
+    saveProject,
+    loadProject,
+    loadTemplate,
+    createNewProject
+  ]);
 
   return (
-    <EditorContext.Provider
-      value={{
-        state,
-        currentProject,
-        updatePage,
-        addComponent,
-        updateComponent,
-        removeComponent,
-        selectComponent,
-        updateTheme,
-        setPreviewMode,
-        addPage,
-        removePage,
-        setCurrentPage,
-        toggleDarkMode,
-        updateProject,
-        saveProject,
-        loadProject,
-        loadTemplate,
-        createNewProject,
-      }}
-    >
+    <EditorContext.Provider value={contextValue}>
       {children}
     </EditorContext.Provider>
   );

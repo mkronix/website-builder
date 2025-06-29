@@ -29,13 +29,13 @@ export const ComponentLibrary = () => {
   const addComponentToPage = (component: any) => {
     const newComponent = {
       id: `component-${Date.now()}`,
-      type: component.id,
-      props: { ...component.default_props },
-      reactCode: component.react_code,
-      customizableProps: component.customizable_props
+      category: component.id,
+      default_props: { ...component.default_props },
+      react_code: component.react_code,
+      customizableProps: component.customizable_props,
+      variant: component.variant || 'default'
     };
 
-    console.log('Adding component:', newComponent);
     addComponent(state.currentPage, newComponent);
     setSelectedCategory(null);
   };
@@ -69,7 +69,7 @@ export const ComponentLibrary = () => {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 gap-4 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
               ?.components.map((component: any) => (
@@ -78,12 +78,12 @@ export const ComponentLibrary = () => {
                   className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
                   onClick={() => addComponentToPage(component)}
                 >
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-48">
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden">
                     {component.preview_image ? (
                       <img
                         src={component.preview_image}
                         alt={component.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-fill"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
