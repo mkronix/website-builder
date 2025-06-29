@@ -19,11 +19,21 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   const renderComponent = () => {
     switch (component.type) {
       case 'nav-simple':
-        return <Navigation {...component.props} />;
+        return <Navigation 
+          logo={component.props.logo || 'Your Logo'} 
+          links={component.props.links || [{ text: 'Home', href: '/' }]} 
+        />;
       case 'hero-simple':
-        return <HeroSection {...component.props} />;
+        return <HeroSection 
+          title={component.props.title || 'Welcome'} 
+          subtitle={component.props.subtitle || 'Build something amazing'} 
+          buttonText={component.props.buttonText || 'Get Started'} 
+        />;
       case 'footer':
-        return <Footer {...component.props} />;
+        return <Footer 
+          companyName={component.props.companyName || 'Your Company'} 
+          links={component.props.links || [{ text: 'Privacy', href: '/privacy' }]} 
+        />;
       case 'text-block':
         return (
           <div className="p-8">
