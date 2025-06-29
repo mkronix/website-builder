@@ -9,7 +9,7 @@ export const EditorCanvas = () => {
   const currentPage = state.pages.find(page => page.id === state.currentPage);
   
   const canvasClasses = cn(
-    "flex-1 bg-gray-100 p-6 overflow-auto transition-all duration-300",
+    "flex-1 bg-[#1c1c1c] p-6 overflow-auto transition-all duration-300",
     {
       'max-w-[375px] mx-auto': state.previewMode === 'mobile',
       'max-w-[768px] mx-auto': state.previewMode === 'tablet',
@@ -19,7 +19,7 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
-      <div className="bg-white min-h-full rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden">
         {currentPage?.components.length === 0 ? (
           <div className="flex items-center justify-center h-96 text-gray-500">
             <div className="text-center">

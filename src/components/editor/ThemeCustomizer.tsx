@@ -15,22 +15,24 @@ export const ThemeCustomizer = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 space-y-6">
+      <h3 className="text-white font-semibold mb-4">Theme Settings</h3>
+      
       <div>
-        <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+        <Label className="text-sm font-semibold text-white mb-3 block">
           Color Presets
         </Label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2">
           {colorPresets.map((preset) => (
             <Button
               key={preset.name}
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => updateTheme({
                 primaryColor: preset.primary,
                 secondaryColor: preset.secondary,
               })}
-              className="justify-start"
+              className="justify-start text-gray-300 hover:text-white hover:bg-[#272725]"
             >
               <div
                 className="w-4 h-4 rounded-full mr-2"
@@ -43,43 +45,43 @@ export const ThemeCustomizer = () => {
       </div>
 
       <div>
-        <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+        <Label className="text-sm font-semibold text-white mb-3 block">
           Custom Colors
         </Label>
         <div className="space-y-4">
           <div>
-            <Label className="text-xs text-gray-600 mb-2 block">Primary Color</Label>
+            <Label className="text-xs text-gray-400 mb-2 block">Primary Color</Label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
                 value={state.theme.primaryColor}
                 onChange={(e) => updateTheme({ primaryColor: e.target.value })}
-                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                className="w-8 h-8 border border-gray-600 rounded cursor-pointer"
               />
-              <span className="text-sm text-gray-600">{state.theme.primaryColor}</span>
+              <span className="text-sm text-gray-400">{state.theme.primaryColor}</span>
             </div>
           </div>
           
           <div>
-            <Label className="text-xs text-gray-600 mb-2 block">Secondary Color</Label>
+            <Label className="text-xs text-gray-400 mb-2 block">Secondary Color</Label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
                 value={state.theme.secondaryColor}
                 onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
-                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                className="w-8 h-8 border border-gray-600 rounded cursor-pointer"
               />
-              <span className="text-sm text-gray-600">{state.theme.secondaryColor}</span>
+              <span className="text-sm text-gray-400">{state.theme.secondaryColor}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div>
-        <Label className="text-sm font-semibold text-gray-900 mb-3 block">
+        <Label className="text-sm font-semibold text-white mb-3 block">
           Typography
         </Label>
-        <div className="space-y-2 text-sm text-gray-600">
+        <div className="space-y-2 text-sm text-gray-400">
           <p>Font customization coming soon...</p>
         </div>
       </div>

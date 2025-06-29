@@ -1,34 +1,42 @@
 
-import { useEditor, Component } from '@/contexts/EditorContext';
-import { HeroSection } from '@/components/website/HeroSection';
+import { useEditor } from '@/contexts/EditorContext';
+import { Component } from '@/contexts/EditorContext';
 import { Navigation } from '@/components/website/Navigation';
+import { HeroSection } from '@/components/website/HeroSection';
 import { Footer } from '@/components/website/Footer';
-import { cn } from '@/lib/utils';
 
 interface ComponentRendererProps {
   component: Component;
   isSelected: boolean;
 }
 
-export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
-  component,
-  isSelected,
+export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ 
+  component, 
+  isSelected 
 }) => {
   const { selectComponent } = useEditor();
 
   const renderComponent = () => {
     switch (component.type) {
-      case 'hero-1':
-      case 'hero-2':
-        return <HeroSection {...component.props} variant={component.type} />;
-      case 'navbar-1':
+      case 'nav-simple':
         return <Navigation {...component.props} />;
-      case 'footer-1':
+      case 'hero-simple':
+        return <HeroSection {...component.props} />;
+      case 'footer':
         return <Footer {...component.props} />;
+      case 'text-block':
+        return (
+          <div className="p-8">
+            <div 
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: component.props.content || 'Your content goes here...' }}
+            />
+          </div>
+        );
       default:
         return (
-          <div className="p-8 bg-gray-50 text-center">
-            <p className="text-gray-600">Unknown component: {component.type}</p>
+          <div className="p-8 text-center text-gray-500">
+            <p>Component type "{component.type}" not implemented yet</p>
           </div>
         );
     }
@@ -36,21 +44,21 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
 
   return (
     <div
-      className={cn(
-        "relative group cursor-pointer transition-all duration-200",
-        isSelected && "ring-2 ring-blue-500 ring-offset-2"
-      )}
-      onClick={() => selectComponent(component.id)}
+      className={`relative ${
+        isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
+      } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+      onClick={(e) => {
+        e.stopPropagation();
+        selectComponent(component.id);
+      }}
     >
+      {renderComponent()}
+      
       {isSelected && (
-        <div className="absolute -top-6 left-0 bg-blue-500 text-white text-xs px-2 py-1 rounded z-10">
-          Selected Component
+        <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded text-xs">
+          Selected
         </div>
       )}
-      
-      <div className="group-hover:ring-1 group-hover:ring-gray-300 transition-all duration-200">
-        {renderComponent()}
-      </div>
     </div>
   );
 };

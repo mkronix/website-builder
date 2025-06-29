@@ -1,144 +1,122 @@
 
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import { useEditor } from '@/contexts/EditorContext';
-import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Navigation, HeroBanner, Layout, FileText, Mail, Image, Type } from 'lucide-react';
 
-interface ComponentTemplate {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  preview: string;
-  defaultProps: Record<string, any>;
-}
-
-const componentTemplates: ComponentTemplate[] = [
-  {
-    id: 'hero-1',
-    name: 'Hero Section - Centered',
-    category: 'Hero',
-    description: 'Clean centered hero with title, subtitle, and CTA',
-    preview: '/placeholder.svg',
-    defaultProps: {
-      title: 'Welcome to Our Website',
-      subtitle: 'Build amazing experiences with our tools',
-      buttonText: 'Get Started',
-      backgroundColor: 'bg-gradient-to-r from-blue-600 to-purple-600',
-    },
-  },
-  {
-    id: 'hero-2',
-    name: 'Hero Section - Split',
-    category: 'Hero',
-    description: 'Split layout hero with image and content',
-    preview: '/placeholder.svg',
-    defaultProps: {
-      title: 'Transform Your Business',
-      subtitle: 'Professional solutions for modern companies',
-      buttonText: 'Learn More',
-      image: '/placeholder.svg',
-      imageAlt: 'Hero image',
-    },
-  },
-  {
-    id: 'navbar-1',
-    name: 'Navigation - Modern',
-    category: 'Navigation',
-    description: 'Clean modern navigation bar',
-    preview: '/placeholder.svg',
-    defaultProps: {
-      logo: 'Brand',
-      links: [
-        { text: 'Home', href: '/' },
-        { text: 'About', href: '/about' },
-        { text: 'Services', href: '/services' },
-        { text: 'Contact', href: '/contact' },
-      ],
-    },
-  },
-  {
-    id: 'footer-1',
-    name: 'Footer - Simple',
-    category: 'Footer',
-    description: 'Simple footer with links and copyright',
-    preview: '/placeholder.svg',
-    defaultProps: {
-      companyName: 'Your Company',
-      links: [
-        { text: 'Privacy Policy', href: '/privacy' },
-        { text: 'Terms of Service', href: '/terms' },
-        { text: 'Contact', href: '/contact' },
-      ],
-    },
-  },
-];
-
-interface ComponentLibraryProps {
-  searchTerm: string;
-}
-
-export const ComponentLibrary: React.FC<ComponentLibraryProps> = ({ searchTerm }) => {
+export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const filteredComponents = componentTemplates.filter(
-    (component) =>
-      component.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      component.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const componentCategories = [
+    {
+      id: 'navigation',
+      name: 'Navigation',
+      icon: Navigation,
+      components: [
+        { id: 'nav-simple', name: 'Simple Navigation', preview: 'Simple header with logo and links' },
+        { id: 'nav-dropdown', name: 'Dropdown Navigation', preview: 'Navigation with dropdown menus' },
+        { id: 'nav-sidebar', name: 'Sidebar Navigation', preview: 'Mobile-friendly sidebar nav' },
+      ]
+    },
+    {
+      id: 'hero',
+      name: 'Hero Sections',
+      icon: HeroBanner,
+      components: [
+        { id: 'hero-simple', name: 'Simple Hero', preview: 'Clean hero with text and CTA' },
+        { id: 'hero-image', name: 'Hero with Image', preview: 'Hero section with background image' },
+        { id: 'hero-video', name: 'Video Hero', preview: 'Hero with video background' },
+      ]
+    },
+    {
+      id: 'layout',
+      name: 'Layout',
+      icon: Layout,
+      components: [
+        { id: 'section-2col', name: '2 Column Section', preview: 'Two column layout' },
+        { id: 'section-3col', name: '3 Column Section', preview: 'Three column layout' },
+        { id: 'section-grid', name: 'Grid Section', preview: 'Flexible grid layout' },
+      ]
+    },
+    {
+      id: 'content',
+      name: 'Content',
+      icon: FileText,
+      components: [
+        { id: 'text-block', name: 'Text Block', preview: 'Rich text content block' },
+        { id: 'feature-list', name: 'Feature List', preview: 'List of features with icons' },
+        { id: 'testimonial', name: 'Testimonial', preview: 'Customer testimonial card' },
+      ]
+    }
+  ];
 
-  const categories = [...new Set(filteredComponents.map((c) => c.category))];
-
-  const handleAddComponent = (template: ComponentTemplate) => {
+  const addComponentToPage = (componentType: string) => {
     const newComponent = {
-      id: `${template.id}-${Date.now()}`,
-      type: template.id,
-      props: template.defaultProps,
+      id: `component-${Date.now()}`,
+      type: componentType,
+      props: getDefaultProps(componentType),
     };
 
     addComponent(state.currentPage, newComponent);
+    setSelectedCategory(null);
+  };
+
+  const getDefaultProps = (type: string) => {
+    const defaults: Record<string, any> = {
+      'nav-simple': { logo: 'Your Logo', links: [{ text: 'Home', href: '/' }, { text: 'About', href: '/about' }] },
+      'hero-simple': { title: 'Welcome to Your Website', subtitle: 'Build something amazing', buttonText: 'Get Started' },
+      'text-block': { content: 'Your content goes here...' },
+    };
+    return defaults[type] || {};
   };
 
   return (
-    <div className="space-y-6">
-      {categories.map((category) => (
-        <div key={category}>
-          <h3 className="font-semibold text-gray-900 mb-3">{category}</h3>
-          <div className="space-y-3">
-            {filteredComponents
-              .filter((component) => component.category === category)
-              .map((component) => (
+    <div className="p-4 space-y-4">
+      <h3 className="text-white font-semibold mb-4">Add Components</h3>
+      
+      <div className="space-y-2">
+        {componentCategories.map((category) => {
+          const Icon = category.icon;
+          return (
+            <Button
+              key={category.id}
+              variant="ghost"
+              className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#272725]"
+              onClick={() => setSelectedCategory(category.id)}
+            >
+              <Icon className="w-4 h-4 mr-3" />
+              {category.name}
+            </Button>
+          );
+        })}
+      </div>
+
+      <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {componentCategories.find(c => c.id === selectedCategory)?.name} Components
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {componentCategories
+              .find(c => c.id === selectedCategory)
+              ?.components.map((component) => (
                 <div
                   key={component.id}
-                  className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors"
+                  className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
+                  onClick={() => addComponentToPage(component.id)}
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-sm text-gray-900 mb-1">
-                        {component.name}
-                      </h4>
-                      <p className="text-xs text-gray-600 mb-3">
-                        {component.description}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 rounded h-20 mb-3 flex items-center justify-center">
-                    <span className="text-xs text-gray-500">Preview</span>
-                  </div>
-                  
-                  <Button
-                    size="sm"
-                    onClick={() => handleAddComponent(component)}
-                    className="w-full"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Component
-                  </Button>
+                  <h4 className="text-white font-medium mb-2">{component.name}</h4>
+                  <p className="text-gray-400 text-sm">{component.preview}</p>
                 </div>
               ))}
           </div>
-        </div>
-      ))}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
