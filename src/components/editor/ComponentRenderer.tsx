@@ -1,19 +1,23 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import * as Babel from '@babel/standalone';
 import { Component, useEditor } from '@/contexts/EditorContext';
-import { renderStaticComponent } from '@/utils/compoenentRenderer';
+import { Button } from '@/components/ui/button';
+import { Trash2, GripVertical } from 'lucide-react';
 
 interface ComponentRendererProps {
   component: Component;
   isSelected: boolean;
+  index: number;
 }
 
 export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   component,
-  isSelected
+  isSelected,
+  index
 }) => {
-  const { selectComponent } = useEditor();
+  const { selectComponent, removeComponent, state, moveComponent } = useEditor();
+  const [isDragging, setIsDragging] = useState(false);
 
   const DynamicComponent = useMemo(() => {
     if (!component.react_code) return null;
@@ -36,16 +40,16 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       const functionName = match[1];
 
       const wrappedCode = `
-      const { useState, useEffect, useMemo, useCallback } = React;
-      ${transpiledCode}
-      ComponentFunc = ${functionName};
-    `;
+        const { useState, useEffect, useMemo, useCallback } = React;
+        ${transpiledCode}
+        ComponentFunc = ${functionName};
+      `;
 
       const componentFunction = new Function('React', 'props', `
-      let ComponentFunc;
-      ${wrappedCode}
-      return ComponentFunc(props);
-    `);
+        let ComponentFunc;
+        ${wrappedCode}
+        return ComponentFunc(props);
+      `);
 
       return componentFunction;
     } catch (error) {
@@ -54,14 +58,46 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     }
   }, [component.react_code]);
 
+  const handleDragStart = (e: React.DragEvent) => {
+    setIsDragging(true);
+    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+    const toIndex = index;
+    
+    if (fromIndex !== toIndex) {
+      moveComponent(state.currentPage, fromIndex, toIndex);
+    }
+    setIsDragging(false);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   const renderComponent = () => {
     if (DynamicComponent) {
       try {
-        // Merge default props with any customizations
+        // Merge default props with custom styling
+        const customClasses = component.customTailwindClass || '';
+        const baseClasses = component.default_props?.className || '';
+        const combinedClasses = `${baseClasses} ${customClasses}`.trim();
+
         const mergedProps = {
           ...component.default_props,
-          // Apply any custom className if present
-          className: `${component.default_props?.className || ''} ${isSelected ? 'selected-component' : ''}`.trim()
+          className: combinedClasses,
+          style: component.customStyleCss ? 
+            { ...component.default_props?.style, ...(component.customStyleCss || {}) } : 
+            component.default_props?.style
         };
 
         const result = DynamicComponent(React, mergedProps);
@@ -74,12 +110,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
           <div className="p-4 text-red-500 bg-red-50 border border-red-200 rounded-lg">
             <div className="font-semibold">Component Execution Error</div>
             <div className="text-sm mt-1">{error.message}</div>
-            <details className="mt-2">
-              <summary className="cursor-pointer text-xs">Show component code</summary>
-              <pre className="mt-2 p-2 bg-gray-100 rounded text-black text-xs overflow-auto max-h-32">
-                {component.react_code}
-              </pre>
-            </details>
           </div>
         );
       }
@@ -88,35 +118,53 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     return (
       <div className="p-4 text-red-500 bg-red-50 border border-red-200 rounded-lg">
         <div className="font-semibold">Component Execution Error</div>
-        <div className="text-sm mt-1">
-          Unable to render component: {component.id}
-        </div>
-        <details className="mt-2">
-          <summary className="cursor-pointer text-xs">Show component code</summary>
-          <pre className="mt-2 p-2 bg-gray-100 rounded text-black text-xs overflow-auto max-h-32">
-            {component.react_code}
-          </pre>
-        </details>
+        <div className="text-sm mt-1">Unable to render component: {component.id}</div>
       </div>
     );
   };
 
   return (
     <div
-      className={`relative ${isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
-        } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+      className={`relative group ${isDragging ? 'opacity-50' : ''} ${
+        isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
+      } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all`}
+      draggable
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      onDragEnd={handleDragEnd}
       onClick={(e) => {
         e.stopPropagation();
         selectComponent(component.id);
       }}
     >
-      {renderComponent()}
-
+      {/* Component Controls */}
       {isSelected && (
-        <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-10">
-          Selected: {component.category}
+        <div className="absolute top-2 right-2 flex gap-2 z-20 bg-black/80 rounded p-1">
+          <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs">
+            {component.category}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              removeComponent(state.currentPage, component.id);
+            }}
+            className="h-6 w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/20"
+          >
+            <Trash2 className="w-3 h-3" />
+          </Button>
+          <div className="cursor-move text-gray-400 hover:text-white p-1">
+            <GripVertical className="w-3 h-3" />
+          </div>
         </div>
       )}
+
+      {/* Render Component */}
+      <div className="relative">
+        {renderComponent()}
+      </div>
     </div>
   );
 };

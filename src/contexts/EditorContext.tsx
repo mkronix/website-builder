@@ -9,6 +9,8 @@ export interface Component {
   content?: string;
   react_code?: string;
   customizableProps?: Record<string, any>;
+  customTailwindClass?: string;
+  customStyleCss?: string;
 }
 
 export interface Page {
@@ -54,6 +56,7 @@ interface EditorContextType {
   loadProject: (projectId: string) => void;
   loadTemplate: (template: any) => void;
   createNewProject: (name: string, description?: string) => void;
+  moveComponent: (pageId: string, fromIndex: number, toIndex: number) => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -215,7 +218,12 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
                 // Ensure default_props are properly merged
                 default_props: updates.default_props ? 
                   { ...comp.default_props, ...updates.default_props } : 
-                  comp.default_props
+                  comp.default_props,
+                // Handle custom styling
+                customTailwindClass: updates.customTailwindClass !== undefined ? 
+                  updates.customTailwindClass : comp.customTailwindClass,
+                customStyleCss: updates.customStyleCss !== undefined ? 
+                  updates.customStyleCss : comp.customStyleCss
               } : comp
             ),
           }
@@ -271,6 +279,25 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     setState(prev => ({ ...prev, isDarkMode: !prev.isDarkMode }));
   }, []);
 
+  const moveComponent = useCallback((pageId: string, fromIndex: number, toIndex: number) => {
+    setState(prev => ({
+      ...prev,
+      pages: prev.pages.map(page =>
+        page.id === pageId
+          ? {
+            ...page,
+            components: (() => {
+              const newComponents = [...page.components];
+              const [movedComponent] = newComponents.splice(fromIndex, 1);
+              newComponents.splice(toIndex, 0, movedComponent);
+              return newComponents;
+            })()
+          }
+          : page
+      ),
+    }));
+  }, []);
+
   const contextValue = useMemo(() => ({
     state,
     currentProject,
@@ -290,6 +317,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     loadProject,
     loadTemplate,
     createNewProject,
+    moveComponent,
   }), [
     state,
     currentProject,
@@ -308,7 +336,8 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     saveProject,
     loadProject,
     loadTemplate,
-    createNewProject
+    createNewProject,
+    moveComponent
   ]);
 
   return (

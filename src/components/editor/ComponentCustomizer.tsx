@@ -1,18 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { useEditor } from '@/contexts/EditorContext';
-import { PropertyEditor } from './PropertyEditor';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Settings, Save, RotateCcw, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Save, RotateCcw, X, Palette, Code } from 'lucide-react';
 
 export const ComponentCustomizer: React.FC = () => {
   const { state, updateComponent, selectComponent } = useEditor();
   const [localProps, setLocalProps] = useState<Record<string, any>>({});
-  const [customClasses, setCustomClasses] = useState<Record<string, string>>({});
+  const [customTailwind, setCustomTailwind] = useState('');
+  const [customCss, setCustomCss] = useState('');
 
   const selectedComponent = state.pages
     .find(page => page.id === state.currentPage)
@@ -21,143 +23,253 @@ export const ComponentCustomizer: React.FC = () => {
   useEffect(() => {
     if (selectedComponent) {
       setLocalProps({ ...selectedComponent.default_props });
-      setCustomClasses({});
+      setCustomTailwind(selectedComponent.customTailwindClass || '');
+      setCustomCss(selectedComponent.customStyleCss || '');
     }
   }, [selectedComponent]);
 
   if (!selectedComponent) {
     return (
-      <div className="p-6 text-center text-gray-400">
-        <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <h3 className="text-lg font-medium mb-2">No Component Selected</h3>
-        <p className="text-sm">Select a component from the canvas to customize its properties</p>
+      <div className="w-80 bg-[#1c1c1c] border-l border-gray-700 flex items-center justify-center">
+        <div className="text-center text-gray-400">
+          <Palette className="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-medium mb-2">No Component Selected</h3>
+          <p className="text-sm">Select a component to customize</p>
+        </div>
       </div>
     );
   }
 
-  const getPropertyDefinitions = () => {
-    const props = selectedComponent.customizableProps || {};
-    const definitions = [];
+  const extractEditableProps = () => {
+    const props = selectedComponent.default_props || {};
+    const editableProps: Array<{key: string, value: any, type: string}> = [];
 
-    for (const [key, config] of Object.entries(props)) {
-      if (typeof config === 'object' && config !== null) {
-        definitions.push({
-          key,
-          type: config.type || 'text',
-          label: config.label || key,
-          value: localProps[key],
-          options: config.options,
-          placeholder: config.placeholder,
-          description: config.description
-        });
-      }
-    }
+    const traverseProps = (obj: any, prefix = '') => {
+      Object.entries(obj).forEach(([key, value]) => {
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+        
+        if (typeof value === 'string') {
+          editableProps.push({ key: fullKey, value, type: 'text' });
+        } else if (typeof value === 'number') {
+          editableProps.push({ key: fullKey, value, type: 'number' });
+        } else if (typeof value === 'boolean') {
+          editableProps.push({ key: fullKey, value, type: 'boolean' });
+        } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+          // Handle nested objects like {src: "", alt: ""}
+          if (value.src !== undefined || value.href !== undefined || value.text !== undefined) {
+            editableProps.push({ key: fullKey, value, type: 'object' });
+          } else {
+            traverseProps(value, fullKey);
+          }
+        } else if (Array.isArray(value)) {
+          editableProps.push({ key: fullKey, value, type: 'array' });
+        }
+      });
+    };
 
-    // Add common properties for all components
-    const commonProps = [
-      {
-        key: 'className',
-        type: 'text' as const,
-        label: 'CSS Classes',
-        value: localProps.className || '',
-        placeholder: 'Enter custom CSS classes',
-        description: 'Additional CSS classes for styling'
-      }
-    ];
-
-    return [...definitions, ...commonProps];
+    traverseProps(props);
+    return editableProps;
   };
 
-  const handlePropertyChange = (key: string, value: any) => {
-    const newProps = { ...localProps, [key]: value };
-    setLocalProps(newProps);
-  };
-
-  const handleTailwindChange = (key: string, classes: string) => {
-    setCustomClasses(prev => ({ ...prev, [key]: classes }));
+  const handlePropChange = (key: string, value: any) => {
+    const keys = key.split('.');
+    const newProps = { ...localProps };
     
-    // Apply classes immediately to the component
-    const currentClasses = localProps.className || '';
-    const newClasses = `${currentClasses} ${classes}`.trim();
-    handlePropertyChange('className', newClasses);
+    let current = newProps;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!current[keys[i]]) current[keys[i]] = {};
+      current = current[keys[i]];
+    }
+    current[keys[keys.length - 1]] = value;
+    
+    setLocalProps(newProps);
   };
 
   const saveChanges = () => {
     updateComponent(state.currentPage, selectedComponent.id, {
-      default_props: localProps
+      default_props: localProps,
+      customTailwindClass: customTailwind,
+      customStyleCss: customCss
     });
   };
 
   const resetChanges = () => {
     setLocalProps({ ...selectedComponent.default_props });
-    setCustomClasses({});
+    setCustomTailwind(selectedComponent.customTailwindClass || '');
+    setCustomCss(selectedComponent.customStyleCss || '');
   };
 
-  const closeCustomizer = () => {
-    selectComponent(null);
+  const renderPropEditor = (prop: {key: string, value: any, type: string}) => {
+    switch (prop.type) {
+      case 'text':
+        return (
+          <Input
+            value={prop.value || ''}
+            onChange={(e) => handlePropChange(prop.key, e.target.value)}
+            className="bg-[#272725] border-gray-600 text-white"
+            placeholder="Enter text..."
+          />
+        );
+
+      case 'number':
+        return (
+          <Input
+            type="number"
+            value={prop.value || 0}
+            onChange={(e) => handlePropChange(prop.key, parseInt(e.target.value))}
+            className="bg-[#272725] border-gray-600 text-white"
+          />
+        );
+
+      case 'boolean':
+        return (
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={prop.value || false}
+              onChange={(e) => handlePropChange(prop.key, e.target.checked)}
+              className="rounded border-gray-600 bg-[#272725]"
+            />
+            <span className="text-white text-sm">
+              {prop.value ? 'Enabled' : 'Disabled'}
+            </span>
+          </div>
+        );
+
+      case 'object':
+        return (
+          <div className="space-y-2">
+            {Object.entries(prop.value || {}).map(([subKey, subValue]) => (
+              <div key={subKey}>
+                <Label className="text-white text-xs capitalize">{subKey}</Label>
+                <Input
+                  value={subValue as string || ''}
+                  onChange={(e) => handlePropChange(prop.key, {
+                    ...prop.value,
+                    [subKey]: e.target.value
+                  })}
+                  className="bg-[#272725] border-gray-600 text-white"
+                  placeholder={`Enter ${subKey}...`}
+                />
+              </div>
+            ))}
+          </div>
+        );
+
+      case 'array':
+        return (
+          <Textarea
+            value={JSON.stringify(prop.value, null, 2)}
+            onChange={(e) => {
+              try {
+                const parsed = JSON.parse(e.target.value);
+                handlePropChange(prop.key, parsed);
+              } catch (error) {
+                // Invalid JSON, ignore
+              }
+            }}
+            rows={4}
+            className="bg-[#272725] border-gray-600 text-white font-mono text-xs"
+            placeholder="JSON array..."
+          />
+        );
+
+      default:
+        return (
+          <Input
+            value={String(prop.value || '')}
+            onChange={(e) => handlePropChange(prop.key, e.target.value)}
+            className="bg-[#272725] border-gray-600 text-white"
+          />
+        );
+    }
   };
 
-  const propertyDefinitions = getPropertyDefinitions();
+  const editableProps = extractEditableProps();
 
   return (
     <div className="w-80 bg-[#1c1c1c] border-l border-gray-700 flex flex-col h-full">
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-white font-semibold text-lg">Customize Component</h2>
+          <h2 className="text-white font-semibold text-lg">Customize</h2>
           <Button
             variant="ghost"
             size="sm"
-            onClick={closeCustomizer}
+            onClick={() => selectComponent(null)}
             className="text-gray-400 hover:text-white hover:bg-[#272725]"
           >
             <X className="w-4 h-4" />
           </Button>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-blue-500/20 text-blue-300">
-            {selectedComponent.category}
-          </Badge>
-          <span className="text-gray-400 text-sm">ID: {selectedComponent.id}</span>
-        </div>
+        <div className="text-blue-300 text-sm">{selectedComponent.category}</div>
       </div>
 
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
-          {propertyDefinitions.length > 0 ? (
-            propertyDefinitions.map((property) => (
-              <PropertyEditor
-                key={property.key}
-                property={property}
-                onChange={handlePropertyChange}
-                onTailwindChange={handleTailwindChange}
-              />
-            ))
-          ) : (
-            <Card className="bg-[#272725] border-gray-600">
-              <CardContent className="p-6 text-center">
-                <p className="text-gray-400">No customizable properties available for this component.</p>
-              </CardContent>
-            </Card>
-          )}
+      <ScrollArea className="flex-1">
+        <div className="p-4">
+          <Tabs defaultValue="content" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-[#272725]">
+              <TabsTrigger value="content" className="data-[state=active]:bg-[#1c1c1c] data-[state=active]:text-white text-gray-400">
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="style" className="data-[state=active]:bg-[#1c1c1c] data-[state=active]:text-white text-gray-400">
+                <Code className="w-3 h-3 mr-1" />
+                Style
+              </TabsTrigger>
+            </TabsList>
 
-          {Object.keys(customClasses).length > 0 && (
-            <>
-              <Separator className="bg-gray-600" />
+            <TabsContent value="content" className="space-y-4 mt-4">
+              {editableProps.length > 0 ? (
+                editableProps.map((prop) => (
+                  <Card key={prop.key} className="bg-[#272725] border-gray-600">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-white text-sm capitalize">
+                        {prop.key.replace(/[._]/g, ' ')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {renderPropEditor(prop)}
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-gray-400 text-center py-8">
+                  No editable content found
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="style" className="space-y-4 mt-4">
               <Card className="bg-[#272725] border-gray-600">
                 <CardHeader>
-                  <CardTitle className="text-white text-sm">Applied Custom Classes</CardTitle>
+                  <CardTitle className="text-white text-sm">Tailwind Classes</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  {Object.entries(customClasses).map(([key, classes]) => (
-                    <div key={key} className="p-2 bg-[#1c1c1c] rounded text-xs">
-                      <span className="text-blue-300">{key}:</span>
-                      <span className="text-white font-mono ml-2">{classes}</span>
-                    </div>
-                  ))}
+                <CardContent>
+                  <Textarea
+                    value={customTailwind}
+                    onChange={(e) => setCustomTailwind(e.target.value)}
+                    placeholder="Enter Tailwind CSS classes..."
+                    rows={3}
+                    className="bg-[#1c1c1c] border-gray-600 text-white font-mono text-xs"
+                  />
                 </CardContent>
               </Card>
-            </>
-          )}
+
+              <Card className="bg-[#272725] border-gray-600">
+                <CardHeader>
+                  <CardTitle className="text-white text-sm">Custom CSS</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    value={customCss}
+                    onChange={(e) => setCustomCss(e.target.value)}
+                    placeholder="Enter custom CSS..."
+                    rows={4}
+                    className="bg-[#1c1c1c] border-gray-600 text-white font-mono text-xs"
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </ScrollArea>
 
@@ -175,7 +287,7 @@ export const ComponentCustomizer: React.FC = () => {
           className="w-full border-gray-600 text-gray-300 hover:bg-[#272725] hover:text-white"
         >
           <RotateCcw className="w-4 h-4 mr-2" />
-          Reset to Default
+          Reset
         </Button>
       </div>
     </div>
