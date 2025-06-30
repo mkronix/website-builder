@@ -27,9 +27,6 @@ export const ThemeCustomizer = () => {
     });
   };
 
-  const currentPage = state.pages.find(page => page.id === state.currentPage);
-
-  // Apply theme to the canvas
   const themeStyle = {
     '--theme-primary': state.theme.primaryColor,
     '--theme-secondary': state.theme.secondaryColor,
@@ -38,7 +35,7 @@ export const ThemeCustomizer = () => {
   } as React.CSSProperties;
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-10">
       <div className="flex items-center gap-2 mb-4">
         <Palette className="w-5 h-5 text-blue-500" />
         <h3 className="text-white font-semibold">Theme Customizer</h3>

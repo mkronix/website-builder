@@ -50,7 +50,7 @@ export const EditorCanvas = () => {
   };
 
   const canvasClasses = cn(
-    "flex-1 bg-[#1c1c1c] p-6 overflow-auto transition-all duration-300",
+    "ml-[17rem] flex-1 bg-[#1c1c1c] p-6 overflow-auto transition-all duration-300",
     {
       'max-w-[375px] mx-auto': state.previewMode === 'mobile',
       'max-w-[768px] mx-auto': state.previewMode === 'tablet',
