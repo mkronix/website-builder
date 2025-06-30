@@ -30,7 +30,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="p-6">
           <h1 className="text-2xl font-bold text-white">DevBuilder</h1>
         </div>
-        
+
         <nav className="flex-1 px-4 space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
@@ -39,11 +39,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Button
                 key={item.id}
                 variant={isActive ? 'default' : 'ghost'}
-                className={`w-full justify-start ${
-                  isActive 
-                    ? 'bg-blue-600 text-white' 
-                    : 'text-gray-300 hover:text-white hover:bg-[#1c1c1c]'
-                }`}
+                className={`w-full justify-start ${isActive
+                    ? 'bg-blue-600 text-white'
+                    : 'hover:bg-[#1c1c1c]'
+                  }`}
                 onClick={() => navigate(item.path)}
               >
                 <Icon className="w-4 h-4 mr-3" />

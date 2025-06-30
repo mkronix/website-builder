@@ -953,7 +953,9 @@
             "default_props": {
               "logo": {
                 "type": "text",
-                "value": "Brand"
+                "value": "Brand",
+                "customTaiwindClass": "text-white",
+                "customStyleCss": ""
               },
               "navigation_items": [
                 {
