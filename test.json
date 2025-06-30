@@ -1,0 +1,505 @@
+{
+    "project": null,
+    "state": {
+        "currentPage": "home",
+        "pages": [
+            {
+                "id": "home",
+                "name": "Home",
+                "slug": "/",
+                "components": [
+                    {
+                        "id": "component-1751261330677",
+                        "category": "navbar_002",
+                        "default_props": {
+                            "logo": {
+                                "type": "text",
+                                "value": "Brand",
+                                "customTaiwindClass": "text-white",
+                                "customStyleCss": ""
+                            },
+                            "navigation_items": [
+                                {
+                                    "label": "Home",
+                                    "href": "/"
+                                },
+                                {
+                                    "label": "About",
+                                    "href": "/about"
+                                },
+                                {
+                                    "label": "Services",
+                                    "href": "/services"
+                                },
+                                {
+                                    "label": "Contact",
+                                    "href": "/contact"
+                                }
+                            ],
+                            "cta_button": {
+                                "text": "Get Started",
+                                "href": "/contact",
+                                "style": "primary"
+                            }
+                        },
+                        "react_code": "function ModernSolidNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  return (\n    <nav className={`bg-white shadow-lg ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center py-4\">\n          <div className=\"flex-shrink-0\">\n            <span className=\"text-xl font-bold text-gray-800\">{logo.value}</span>\n          </div>\n          \n          <div className=\"hidden md:flex items-center space-x-8\">\n            {navigation_items.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className={`text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors ${\n                  item.active ? 'text-blue-600 border-b-2 border-blue-600' : ''\n                }`}\n              >\n                {item.label}\n              </a>\n            ))}\n            \n            {cta_button && (\n              <a\n                href={cta_button.href}\n                className=\"bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors\"\n              >\n                {cta_button.text}\n              </a>\n            )}\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
+                        "customizableProps": [
+                            {
+                                "key": "logo.value",
+                                "type": "text",
+                                "label": "Logo Text"
+                            },
+                            {
+                                "key": "navigation_items",
+                                "type": "array",
+                                "label": "Navigation Items"
+                            },
+                            {
+                                "key": "background",
+                                "type": "color",
+                                "label": "Background Color"
+                            },
+                            {
+                                "key": "shadow",
+                                "type": "select",
+                                "label": "Shadow Size",
+                                "options": [
+                                    "none",
+                                    "sm",
+                                    "md",
+                                    "lg",
+                                    "xl"
+                                ]
+                            }
+                        ],
+                        "variant": "modern-solid"
+                    },
+                    {
+                        "id": "component-1751261335134",
+                        "category": "hero_002",
+                        "default_props": {
+                            "headline": "Creative Designer",
+                            "subheadline": "Crafting beautiful experiences through design and strategy",
+                            "hero_image": {
+                                "src": "/assets/creative-hero.jpg",
+                                "alt": "Creative workspace"
+                            },
+                            "scroll_indicator": true
+                        },
+                        "react_code": "function CreativeMinimalHero({ headline, subheadline, hero_image, scroll_indicator, ...customProps }) {\n  return (\n    <section className={`min-h-screen flex flex-col justify-center relative ${customProps.className || ''}`}>\n      <div className=\"max-w-4xl mx-auto px-4 text-center\">\n        <div className=\"space-y-6\">\n          <h1 className=\"text-5xl md:text-7xl font-serif font-light text-gray-900\">\n            {headline}\n          </h1>\n          <p className=\"text-xl text-gray-600 max-w-2xl mx-auto\">\n            {subheadline}\n          </p>\n        </div>\n        \n        {hero_image && (\n          <div className=\"mt-16 relative\">\n            <img\n              src={hero_image.src}\n              alt={hero_image.alt}\n              className=\"mx-auto rounded-lg shadow-lg max-w-md\"\n            />\n          </div>\n        )}\n      </div>\n      \n      {scroll_indicator && (\n        <div className=\"absolute bottom-8 left-1/2 transform -translate-x-1/2\">\n          <div className=\"animate-bounce\">\n            <svg className=\"w-6 h-6 text-gray-400\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n              <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M19 14l-7 7m0 0l-7-7m7 7V3\" />\n            </svg>\n          </div>\n        </div>\n      )}\n    </section>\n  );\n}",
+                        "variant": "creative-minimal"
+                    },
+                    {
+                        "id": "component-1751261339502",
+                        "category": "services_001",
+                        "default_props": {
+                            "section_title": "Our Services",
+                            "section_subtitle": "Comprehensive solutions tailored to your business needs",
+                            "services": [
+                                {
+                                    "title": "Web Development",
+                                    "description": "Custom websites and web applications built with modern frameworks.",
+                                    "features": [
+                                        "React/Next.js",
+                                        "Node.js Backend",
+                                        "Database Design",
+                                        "SEO Optimization"
+                                    ],
+                                    "icon": "code",
+                                    "pricing": "Starting at $5,000"
+                                },
+                                {
+                                    "title": "Mobile Applications",
+                                    "description": "Native and cross-platform mobile apps for iOS and Android.",
+                                    "features": [
+                                        "React Native",
+                                        "Flutter",
+                                        "Native iOS/Android",
+                                        "App Store Deployment"
+                                    ],
+                                    "icon": "mobile",
+                                    "pricing": "Starting at $8,000"
+                                }
+                            ]
+                        },
+                        "react_code": "function DetailedCardsServices({ section_title, section_subtitle, services, ...customProps }) {\n  return (\n    <section className={`py-16 ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {section_title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {section_subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">\n          {services.map((service, index) => (\n            <div key={index} className=\"bg-white rounded-xl shadow-lg p-8 border border-gray-100\">\n              <div className=\"text-center mb-6\">\n                <div className=\"w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4\">\n                  <svg className=\"w-8 h-8 text-blue-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                    <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4\" />\n                  </svg>\n                </div>\n                <h3 className=\"text-2xl font-bold text-gray-900 mb-2\">{service.title}</h3>\n                <p className=\"text-gray-600 mb-4\">{service.description}</p>\n              </div>\n              \n              <div className=\"mb-6\">\n                <h4 className=\"font-semibold text-gray-900 mb-3\">Features:</h4>\n                <ul className=\"space-y-2\">\n                  {service.features.map((feature, featureIndex) => (\n                    <li key={featureIndex} className=\"flex items-center text-gray-600\">\n                      <svg className=\"w-4 h-4 text-green-500 mr-3\" fill=\"currentColor\" viewBox=\"0 0 20 20\">\n                        <path fillRule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clipRule=\"evenodd\" />\n                      </svg>\n                      {feature}\n                    </li>\n                  ))}\n                </ul>\n              </div>\n              \n              <div className=\"border-t pt-6\">\n                <div className=\"text-center\">\n                  <p className=\"text-2xl font-bold text-blue-600 mb-4\">{service.pricing}</p>\n                  <button className=\"w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors\">\n                    Get Started\n                  </button>\n                </div>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
+                        "variant": "detailed-cards"
+                    },
+                    {
+                        "id": "component-1751261359853",
+                        "category": "about_001",
+                        "default_props": {
+                            "headline": "Our Story",
+                            "story_content": "Founded with a vision to transform businesses through technology, we've grown from a small team to a trusted partner for companies worldwide.",
+                            "mission_statement": "To democratize advanced technology and make it accessible to businesses of all sizes.",
+                            "values": [
+                                {
+                                    "title": "Innovation First",
+                                    "description": "We stay ahead of technological trends to deliver tomorrow's solutions today."
+                                },
+                                {
+                                    "title": "Customer Success",
+                                    "description": "Your success is our success. We measure our impact by your growth."
+                                }
+                            ],
+                            "stats": [
+                                {
+                                    "number": "500+",
+                                    "label": "Projects Completed"
+                                },
+                                {
+                                    "number": "50+",
+                                    "label": "Happy Clients"
+                                },
+                                {
+                                    "number": "99.9%",
+                                    "label": "Uptime Guarantee"
+                                }
+                            ]
+                        },
+                        "react_code": "function StoryFocusedAbout({ headline, story_content, mission_statement, values, stats, ...customProps }) {\n  return (\n    <section className={`py-20 ${customProps.className || ''}`}>\n      <div className=\"max-w-6xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16\">\n          <h2 className=\"text-4xl md:text-5xl font-bold text-gray-900 mb-8\">\n            {headline}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed\">\n            {story_content}\n          </p>\n        </div>\n        \n        <div className=\"bg-blue-50 rounded-2xl p-8 mb-16\">\n          <h3 className=\"text-2xl font-bold text-gray-900 mb-4 text-center\">Our Mission</h3>\n          <p className=\"text-lg text-gray-700 text-center max-w-3xl mx-auto\">\n            {mission_statement}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 gap-12 mb-16\">\n          <div>\n            <h3 className=\"text-3xl font-bold text-gray-900 mb-8\">Our Values</h3>\n            <div className=\"space-y-6\">\n              {values.map((value, index) => (\n                <div key={index}>\n                  <h4 className=\"text-xl font-semibold text-gray-900 mb-2\">{value.title}</h4>\n                  <p className=\"text-gray-600\">{value.description}</p>\n                </div>\n              ))}\n            </div>\n          </div>\n          \n          <div>\n            <h3 className=\"text-3xl font-bold text-gray-900 mb-8\">By the Numbers</h3>\n            <div className=\"grid grid-cols-1 gap-6\">\n              {stats.map((stat, index) => (\n                <div key={index} className=\"bg-white rounded-lg p-6 shadow-md border\">\n                  <div className=\"text-3xl font-bold text-blue-600 mb-2\">{stat.number}</div>\n                  <div className=\"text-gray-600\">{stat.label}</div>\n                </div>\n              ))}\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
+                        "variant": "story-focused"
+                    },
+                    {
+                        "id": "component-1751261367791",
+                        "category": "contact_002",
+                        "default_props": {
+                            "headline": "Let's Create Something Amazing",
+                            "description": "Turn your ideas into reality. We're here to bring your vision to life with cutting-edge design and development.",
+                            "contact_methods": [
+                                {
+                                    "icon": "💬",
+                                    "title": "Live Chat",
+                                    "description": "Get instant answers to your questions",
+                                    "action_text": "Start Chat",
+                                    "link": "#chat"
+                                },
+                                {
+                                    "icon": "📞",
+                                    "title": "Schedule Call",
+                                    "description": "Book a free 30-minute consultation",
+                                    "action_text": "Book Now",
+                                    "link": "tel:+1-555-987-6543"
+                                },
+                                {
+                                    "icon": "✉️",
+                                    "title": "Send Email",
+                                    "description": "Detailed project discussions",
+                                    "action_text": "Email Us",
+                                    "link": "mailto:projects@creativestudio.com"
+                                }
+                            ],
+                            "quick_form": {
+                                "fields": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "placeholder": "Your Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "email",
+                                        "type": "email",
+                                        "placeholder": "Email Address",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "project_type",
+                                        "type": "text",
+                                        "placeholder": "Project Type (Web, Mobile, Branding)",
+                                        "required": false
+                                    },
+                                    {
+                                        "name": "message",
+                                        "type": "textarea",
+                                        "placeholder": "Tell us about your project...",
+                                        "required": true
+                                    }
+                                ],
+                                "submit_button": "Start Your Project"
+                            }
+                        },
+                        "react_code": "function ContactCards({ headline, description, contact_methods, quick_form, ...customProps }) {\n  const [formData, setFormData] = useState({});\n  const [isSubmitted, setIsSubmitted] = useState(false);\n  \n  const handleSubmit = (e) => {\n    e.preventDefault();\n    console.log('Quick form submitted:', formData);\n    setIsSubmitted(true);\n    setTimeout(() => setIsSubmitted(false), 3000);\n  };\n  \n  const handleChange = (e) => {\n    setFormData({ ...formData, [e.target.name]: e.target.value });\n  };\n  \n  return (\n    <section className={`py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 ${customProps.className || ''}`}>\n      <div className=\"max-w-6xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16 sm:mb-20\">\n          <h2 className=\"text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6\">\n            {headline}\n          </h2>\n          <p className=\"text-xl sm:text-2xl text-gray-300 max-w-3xl mx-auto\">\n            {description}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16\">\n          {contact_methods.map((method, index) => (\n            <div key={index} className=\"group\">\n              <div className=\"bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 sm:p-8 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl\">\n                <div className=\"w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300\">\n                  <div className=\"text-white text-2xl sm:text-3xl\">\n                    {method.icon}\n                  </div>\n                </div>\n                <h3 className=\"text-xl sm:text-2xl font-bold text-white mb-4 text-center\">{method.title}</h3>\n                <p className=\"text-gray-300 text-center mb-6\">{method.description}</p>\n                <div className=\"text-center\">\n                  <a \n                    href={method.link}\n                    className=\"inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105\"\n                  >\n                    {method.action_text}\n                    <svg className=\"w-4 h-4 ml-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                      <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M9 5l7 7-7 7\" />\n                    </svg>\n                  </a>\n                </div>\n              </div>\n            </div>\n          ))}\n        </div>\n        \n        <div className=\"max-w-2xl mx-auto\">\n          <div className=\"bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 sm:p-8\">\n            <h3 className=\"text-2xl sm:text-3xl font-bold text-white mb-6 text-center\">Quick Contact</h3>\n            <form onSubmit={handleSubmit} className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-6\">\n                {quick_form.fields.slice(0, 2).map((field, index) => (\n                  <div key={index}>\n                    <input\n                      type={field.type}\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm\"\n                    />\n                  </div>\n                ))}\n              </div>\n              \n              {quick_form.fields.slice(2).map((field, index) => (\n                <div key={index + 2}>\n                  {field.type === 'textarea' ? (\n                    <textarea\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      rows={4}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm resize-none\"\n                    />\n                  ) : (\n                    <input\n                      type={field.type}\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm\"\n                    />\n                  )}\n                </div>\n              ))}\n              \n              <button\n                type=\"submit\"\n                disabled={isSubmitted}\n                className=\"w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none\"\n              >\n                {isSubmitted ? 'Message Sent!' : quick_form.submit_button}\n              </button>\n            </form>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
+                        "variant": "creative-cards"
+                    }
+                ]
+            },
+            {
+                "id": "about",
+                "name": "About",
+                "slug": "/about",
+                "components": []
+            },
+            {
+                "id": "services",
+                "name": "Services",
+                "slug": "/services",
+                "components": []
+            },
+            {
+                "id": "contact",
+                "name": "Contact",
+                "slug": "/contact",
+                "components": []
+            }
+        ],
+        "selectedComponent": null,
+        "theme": {
+            "primaryColor": "#3B82F6",
+            "secondaryColor": "#8B5CF6",
+            "backgroundColor": "#FFFFFF",
+            "textColor": "#1F2937"
+        },
+        "previewMode": "desktop",
+        "isDarkMode": false
+    },
+    "theme": {
+        "primaryColor": "#3B82F6",
+        "secondaryColor": "#8B5CF6",
+        "backgroundColor": "#FFFFFF",
+        "textColor": "#1F2937"
+    },
+    "pages": [
+        {
+            "id": "home",
+            "name": "Home",
+            "slug": "/",
+            "components": [
+                {
+                    "id": "component-1751261330677",
+                    "category": "navbar_002",
+                    "default_props": {
+                        "logo": {
+                            "type": "text",
+                            "value": "Brand",
+                            "customTaiwindClass": "text-white",
+                            "customStyleCss": ""
+                        },
+                        "navigation_items": [
+                            {
+                                "label": "Home",
+                                "href": "/"
+                            },
+                            {
+                                "label": "About",
+                                "href": "/about"
+                            },
+                            {
+                                "label": "Services",
+                                "href": "/services"
+                            },
+                            {
+                                "label": "Contact",
+                                "href": "/contact"
+                            }
+                        ],
+                        "cta_button": {
+                            "text": "Get Started",
+                            "href": "/contact",
+                            "style": "primary"
+                        }
+                    },
+                    "react_code": "function ModernSolidNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  return (\n    <nav className={`bg-white shadow-lg ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center py-4\">\n          <div className=\"flex-shrink-0\">\n            <span className=\"text-xl font-bold text-gray-800\">{logo.value}</span>\n          </div>\n          \n          <div className=\"hidden md:flex items-center space-x-8\">\n            {navigation_items.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className={`text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors ${\n                  item.active ? 'text-blue-600 border-b-2 border-blue-600' : ''\n                }`}\n              >\n                {item.label}\n              </a>\n            ))}\n            \n            {cta_button && (\n              <a\n                href={cta_button.href}\n                className=\"bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors\"\n              >\n                {cta_button.text}\n              </a>\n            )}\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
+                    "customizableProps": [
+                        {
+                            "key": "logo.value",
+                            "type": "text",
+                            "label": "Logo Text"
+                        },
+                        {
+                            "key": "navigation_items",
+                            "type": "array",
+                            "label": "Navigation Items"
+                        },
+                        {
+                            "key": "background",
+                            "type": "color",
+                            "label": "Background Color"
+                        },
+                        {
+                            "key": "shadow",
+                            "type": "select",
+                            "label": "Shadow Size",
+                            "options": [
+                                "none",
+                                "sm",
+                                "md",
+                                "lg",
+                                "xl"
+                            ]
+                        }
+                    ],
+                    "variant": "modern-solid"
+                },
+                {
+                    "id": "component-1751261335134",
+                    "category": "hero_002",
+                    "default_props": {
+                        "headline": "Creative Designer",
+                        "subheadline": "Crafting beautiful experiences through design and strategy",
+                        "hero_image": {
+                            "src": "/assets/creative-hero.jpg",
+                            "alt": "Creative workspace"
+                        },
+                        "scroll_indicator": true
+                    },
+                    "react_code": "function CreativeMinimalHero({ headline, subheadline, hero_image, scroll_indicator, ...customProps }) {\n  return (\n    <section className={`min-h-screen flex flex-col justify-center relative ${customProps.className || ''}`}>\n      <div className=\"max-w-4xl mx-auto px-4 text-center\">\n        <div className=\"space-y-6\">\n          <h1 className=\"text-5xl md:text-7xl font-serif font-light text-gray-900\">\n            {headline}\n          </h1>\n          <p className=\"text-xl text-gray-600 max-w-2xl mx-auto\">\n            {subheadline}\n          </p>\n        </div>\n        \n        {hero_image && (\n          <div className=\"mt-16 relative\">\n            <img\n              src={hero_image.src}\n              alt={hero_image.alt}\n              className=\"mx-auto rounded-lg shadow-lg max-w-md\"\n            />\n          </div>\n        )}\n      </div>\n      \n      {scroll_indicator && (\n        <div className=\"absolute bottom-8 left-1/2 transform -translate-x-1/2\">\n          <div className=\"animate-bounce\">\n            <svg className=\"w-6 h-6 text-gray-400\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n              <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M19 14l-7 7m0 0l-7-7m7 7V3\" />\n            </svg>\n          </div>\n        </div>\n      )}\n    </section>\n  );\n}",
+                    "variant": "creative-minimal"
+                },
+                {
+                    "id": "component-1751261339502",
+                    "category": "services_001",
+                    "default_props": {
+                        "section_title": "Our Services",
+                        "section_subtitle": "Comprehensive solutions tailored to your business needs",
+                        "services": [
+                            {
+                                "title": "Web Development",
+                                "description": "Custom websites and web applications built with modern frameworks.",
+                                "features": [
+                                    "React/Next.js",
+                                    "Node.js Backend",
+                                    "Database Design",
+                                    "SEO Optimization"
+                                ],
+                                "icon": "code",
+                                "pricing": "Starting at $5,000"
+                            },
+                            {
+                                "title": "Mobile Applications",
+                                "description": "Native and cross-platform mobile apps for iOS and Android.",
+                                "features": [
+                                    "React Native",
+                                    "Flutter",
+                                    "Native iOS/Android",
+                                    "App Store Deployment"
+                                ],
+                                "icon": "mobile",
+                                "pricing": "Starting at $8,000"
+                            }
+                        ]
+                    },
+                    "react_code": "function DetailedCardsServices({ section_title, section_subtitle, services, ...customProps }) {\n  return (\n    <section className={`py-16 ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {section_title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {section_subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">\n          {services.map((service, index) => (\n            <div key={index} className=\"bg-white rounded-xl shadow-lg p-8 border border-gray-100\">\n              <div className=\"text-center mb-6\">\n                <div className=\"w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4\">\n                  <svg className=\"w-8 h-8 text-blue-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                    <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4\" />\n                  </svg>\n                </div>\n                <h3 className=\"text-2xl font-bold text-gray-900 mb-2\">{service.title}</h3>\n                <p className=\"text-gray-600 mb-4\">{service.description}</p>\n              </div>\n              \n              <div className=\"mb-6\">\n                <h4 className=\"font-semibold text-gray-900 mb-3\">Features:</h4>\n                <ul className=\"space-y-2\">\n                  {service.features.map((feature, featureIndex) => (\n                    <li key={featureIndex} className=\"flex items-center text-gray-600\">\n                      <svg className=\"w-4 h-4 text-green-500 mr-3\" fill=\"currentColor\" viewBox=\"0 0 20 20\">\n                        <path fillRule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clipRule=\"evenodd\" />\n                      </svg>\n                      {feature}\n                    </li>\n                  ))}\n                </ul>\n              </div>\n              \n              <div className=\"border-t pt-6\">\n                <div className=\"text-center\">\n                  <p className=\"text-2xl font-bold text-blue-600 mb-4\">{service.pricing}</p>\n                  <button className=\"w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors\">\n                    Get Started\n                  </button>\n                </div>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
+                    "variant": "detailed-cards"
+                },
+                {
+                    "id": "component-1751261359853",
+                    "category": "about_001",
+                    "default_props": {
+                        "headline": "Our Story",
+                        "story_content": "Founded with a vision to transform businesses through technology, we've grown from a small team to a trusted partner for companies worldwide.",
+                        "mission_statement": "To democratize advanced technology and make it accessible to businesses of all sizes.",
+                        "values": [
+                            {
+                                "title": "Innovation First",
+                                "description": "We stay ahead of technological trends to deliver tomorrow's solutions today."
+                            },
+                            {
+                                "title": "Customer Success",
+                                "description": "Your success is our success. We measure our impact by your growth."
+                            }
+                        ],
+                        "stats": [
+                            {
+                                "number": "500+",
+                                "label": "Projects Completed"
+                            },
+                            {
+                                "number": "50+",
+                                "label": "Happy Clients"
+                            },
+                            {
+                                "number": "99.9%",
+                                "label": "Uptime Guarantee"
+                            }
+                        ]
+                    },
+                    "react_code": "function StoryFocusedAbout({ headline, story_content, mission_statement, values, stats, ...customProps }) {\n  return (\n    <section className={`py-20 ${customProps.className || ''}`}>\n      <div className=\"max-w-6xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16\">\n          <h2 className=\"text-4xl md:text-5xl font-bold text-gray-900 mb-8\">\n            {headline}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed\">\n            {story_content}\n          </p>\n        </div>\n        \n        <div className=\"bg-blue-50 rounded-2xl p-8 mb-16\">\n          <h3 className=\"text-2xl font-bold text-gray-900 mb-4 text-center\">Our Mission</h3>\n          <p className=\"text-lg text-gray-700 text-center max-w-3xl mx-auto\">\n            {mission_statement}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 gap-12 mb-16\">\n          <div>\n            <h3 className=\"text-3xl font-bold text-gray-900 mb-8\">Our Values</h3>\n            <div className=\"space-y-6\">\n              {values.map((value, index) => (\n                <div key={index}>\n                  <h4 className=\"text-xl font-semibold text-gray-900 mb-2\">{value.title}</h4>\n                  <p className=\"text-gray-600\">{value.description}</p>\n                </div>\n              ))}\n            </div>\n          </div>\n          \n          <div>\n            <h3 className=\"text-3xl font-bold text-gray-900 mb-8\">By the Numbers</h3>\n            <div className=\"grid grid-cols-1 gap-6\">\n              {stats.map((stat, index) => (\n                <div key={index} className=\"bg-white rounded-lg p-6 shadow-md border\">\n                  <div className=\"text-3xl font-bold text-blue-600 mb-2\">{stat.number}</div>\n                  <div className=\"text-gray-600\">{stat.label}</div>\n                </div>\n              ))}\n            </div>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
+                    "variant": "story-focused"
+                },
+                {
+                    "id": "component-1751261367791",
+                    "category": "contact_002",
+                    "default_props": {
+                        "headline": "Let's Create Something Amazing",
+                        "description": "Turn your ideas into reality. We're here to bring your vision to life with cutting-edge design and development.",
+                        "contact_methods": [
+                            {
+                                "icon": "💬",
+                                "title": "Live Chat",
+                                "description": "Get instant answers to your questions",
+                                "action_text": "Start Chat",
+                                "link": "#chat"
+                            },
+                            {
+                                "icon": "📞",
+                                "title": "Schedule Call",
+                                "description": "Book a free 30-minute consultation",
+                                "action_text": "Book Now",
+                                "link": "tel:+1-555-987-6543"
+                            },
+                            {
+                                "icon": "✉️",
+                                "title": "Send Email",
+                                "description": "Detailed project discussions",
+                                "action_text": "Email Us",
+                                "link": "mailto:projects@creativestudio.com"
+                            }
+                        ],
+                        "quick_form": {
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "placeholder": "Your Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "email",
+                                    "type": "email",
+                                    "placeholder": "Email Address",
+                                    "required": true
+                                },
+                                {
+                                    "name": "project_type",
+                                    "type": "text",
+                                    "placeholder": "Project Type (Web, Mobile, Branding)",
+                                    "required": false
+                                },
+                                {
+                                    "name": "message",
+                                    "type": "textarea",
+                                    "placeholder": "Tell us about your project...",
+                                    "required": true
+                                }
+                            ],
+                            "submit_button": "Start Your Project"
+                        }
+                    },
+                    "react_code": "function ContactCards({ headline, description, contact_methods, quick_form, ...customProps }) {\n  const [formData, setFormData] = useState({});\n  const [isSubmitted, setIsSubmitted] = useState(false);\n  \n  const handleSubmit = (e) => {\n    e.preventDefault();\n    console.log('Quick form submitted:', formData);\n    setIsSubmitted(true);\n    setTimeout(() => setIsSubmitted(false), 3000);\n  };\n  \n  const handleChange = (e) => {\n    setFormData({ ...formData, [e.target.name]: e.target.value });\n  };\n  \n  return (\n    <section className={`py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 ${customProps.className || ''}`}>\n      <div className=\"max-w-6xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-16 sm:mb-20\">\n          <h2 className=\"text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6\">\n            {headline}\n          </h2>\n          <p className=\"text-xl sm:text-2xl text-gray-300 max-w-3xl mx-auto\">\n            {description}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16\">\n          {contact_methods.map((method, index) => (\n            <div key={index} className=\"group\">\n              <div className=\"bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 sm:p-8 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl\">\n                <div className=\"w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300\">\n                  <div className=\"text-white text-2xl sm:text-3xl\">\n                    {method.icon}\n                  </div>\n                </div>\n                <h3 className=\"text-xl sm:text-2xl font-bold text-white mb-4 text-center\">{method.title}</h3>\n                <p className=\"text-gray-300 text-center mb-6\">{method.description}</p>\n                <div className=\"text-center\">\n                  <a \n                    href={method.link}\n                    className=\"inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105\"\n                  >\n                    {method.action_text}\n                    <svg className=\"w-4 h-4 ml-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                      <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M9 5l7 7-7 7\" />\n                    </svg>\n                  </a>\n                </div>\n              </div>\n            </div>\n          ))}\n        </div>\n        \n        <div className=\"max-w-2xl mx-auto\">\n          <div className=\"bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 sm:p-8\">\n            <h3 className=\"text-2xl sm:text-3xl font-bold text-white mb-6 text-center\">Quick Contact</h3>\n            <form onSubmit={handleSubmit} className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-6\">\n                {quick_form.fields.slice(0, 2).map((field, index) => (\n                  <div key={index}>\n                    <input\n                      type={field.type}\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm\"\n                    />\n                  </div>\n                ))}\n              </div>\n              \n              {quick_form.fields.slice(2).map((field, index) => (\n                <div key={index + 2}>\n                  {field.type === 'textarea' ? (\n                    <textarea\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      rows={4}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm resize-none\"\n                    />\n                  ) : (\n                    <input\n                      type={field.type}\n                      name={field.name}\n                      required={field.required}\n                      onChange={handleChange}\n                      placeholder={field.placeholder}\n                      className=\"w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm\"\n                    />\n                  )}\n                </div>\n              ))}\n              \n              <button\n                type=\"submit\"\n                disabled={isSubmitted}\n                className=\"w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none\"\n              >\n                {isSubmitted ? 'Message Sent!' : quick_form.submit_button}\n              </button>\n            </form>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
+                    "variant": "creative-cards"
+                }
+            ]
+        },
+        {
+            "id": "about",
+            "name": "About",
+            "slug": "/about",
+            "components": []
+        },
+        {
+            "id": "services",
+            "name": "Services",
+            "slug": "/services",
+            "components": []
+        },
+        {
+            "id": "contact",
+            "name": "Contact",
+            "slug": "/contact",
+            "components": []
+        }
+    ],
+    "timestamp": "2025-06-30T05:29:54.331Z",
+    "totalComponents": 5
+}

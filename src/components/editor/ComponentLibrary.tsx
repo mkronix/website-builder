@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useEditor } from '@/contexts/EditorContext';
+import { Component, useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Navigation, Layout, FileText, Type } from 'lucide-react';
@@ -26,13 +26,13 @@ export const ComponentLibrary = () => {
     }
   }
 
-  const addComponentToPage = (component: any) => {
+  const addComponentToPage = (component: Component) => {
     const newComponent = {
-      id: `component-${Date.now()}`,
-      category: component.id,
+      id: component.id,
+      category: component.category,
       default_props: { ...component.default_props },
       react_code: component.react_code,
-      customizableProps: component.customizable_props,
+      customizableProps: component.customizableProps,
       variant: component.variant || 'default'
     };
 

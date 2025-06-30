@@ -40,8 +40,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 key={item.id}
                 variant={isActive ? 'default' : 'ghost'}
                 className={`w-full justify-start ${isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'hover:bg-[#1c1c1c]'
+                  ? 'bg-blue-600 text-white'
+                  : 'hover:bg-[#1c1c1c] text-white hover:text-white'
                   }`}
                 onClick={() => navigate(item.path)}
               >

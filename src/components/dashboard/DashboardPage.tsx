@@ -1,19 +1,20 @@
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import websiteData from '@/data/data.json';
+import templateData from '@/data/templates.json';
+import { BarChart3, CreditCard, FileText, Palette, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { BarChart3, FileText, Palette, Plus, TrendingUp, Users, Calendar, CreditCard } from 'lucide-react';
-import websiteData from '@/data/data.json';
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
-  const { analytics, billing, system_settings } = websiteData;
-  
+  const { analytics } = websiteData;
+
   // Mock user credits - in real app this would come from user context
   const [userCredits] = useState(150);
-  
+
   const handleCreateProject = () => {
     if (userCredits <= 0) {
       alert('Insufficient credits! Please purchase more credits to create a new project.');
@@ -37,7 +38,7 @@ export const DashboardPage = () => {
     },
     {
       title: 'Templates Available',
-      value: Object.keys(websiteData.templates).length,
+      value: Object.keys(templateData).length,
       icon: BarChart3,
       color: 'text-purple-500'
     },
@@ -58,7 +59,7 @@ export const DashboardPage = () => {
             <h1 className="text-3xl font-bold text-white">Dashboard</h1>
             <p className="text-gray-400 mt-1">Welcome back! Here's what's happening with your projects.</p>
           </div>
-          <Button 
+          <Button
             onClick={handleCreateProject}
             className={`${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
             disabled={userCredits <= 0}
@@ -77,7 +78,7 @@ export const DashboardPage = () => {
                 <h3 className="text-red-500 font-semibold">No Credits Remaining</h3>
                 <p className="text-gray-300 text-sm">You need credits to create new projects. Purchase more credits to continue building.</p>
               </div>
-              <Button 
+              <Button
                 onClick={() => navigate('/settings')}
                 className="bg-red-600 hover:bg-red-700 text-white ml-auto"
               >
@@ -108,7 +109,7 @@ export const DashboardPage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-                onClick={() => navigate('/projects')}>
+            onClick={() => navigate('/projects')}>
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <FileText className="w-5 h-5" />
@@ -121,7 +122,7 @@ export const DashboardPage = () => {
           </Card>
 
           <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-                onClick={() => navigate('/templates')}>
+            onClick={() => navigate('/templates')}>
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Palette className="w-5 h-5" />
@@ -134,7 +135,7 @@ export const DashboardPage = () => {
           </Card>
 
           <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-                onClick={() => navigate('/settings')}>
+            onClick={() => navigate('/settings')}>
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <BarChart3 className="w-5 h-5" />
