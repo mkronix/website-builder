@@ -861,194 +861,269 @@
       "navbar": {
         "name": "Navigation",
         "description": "Header navigation components",
-        "components": [
+       "components": [
+        {
+      "id": "navbar_001",
+      "name": "Custom Responsive",
+      "variant": "custom-responsive",
+      "category": "navbar",
+      "preview_image": "/previews/navbar-custom-responsive.jpg",
+      "description": "Clean, professional navigation with logo left, menu center, and contact button right",
+      "tags": [
+        "responsive",
+        "professional",
+        "modern",
+        "clean"
+      ],
+      "default_props": {
+        "logo": {
+          "type": "text",
+          "value": "YourLogo"
+        },
+        "navigation_items": [
           {
-            "id": "navbar_001",
-            "name": "Modern Transparent",
-            "variant": "modern-transparent",
-            "category": "navbar",
-            "preview_image": "/previews/nav1.png",
-            "description": "Clean, modern navigation with transparent background and backdrop blur",
-            "tags": [
-              "modern",
-              "transparent",
-              "blur",
-              "minimal"
-            ],
-            "default_props": {
-              "logo": {
-                "type": "text",
-                "value": "Brand"
-              },
-              "navigation_items": [
-                {
-                  "label": "Home",
-                  "href": "/"
-                },
-                {
-                  "label": "About",
-                  "href": "/about"
-                },
-                {
-                  "label": "Services",
-                  "href": "/services"
-                },
-                {
-                  "label": "Contact",
-                  "href": "/contact"
-                }
-              ],
-              "cta_button": {
-                "text": "Get Started",
-                "href": "/contact",
-                "style": "primary"
-              },
-              "mobile_menu": true
-            },
-            "customizable_props": [
-              {
-                "key": "logo.value",
-                "type": "text",
-                "label": "Logo Text"
-              },
-              {
-                "key": "navigation_items",
-                "type": "array",
-                "label": "Navigation Items"
-              },
-              {
-                "key": "cta_button.text",
-                "type": "text",
-                "label": "CTA Button Text"
-              },
-              {
-                "key": "background",
-                "type": "color",
-                "label": "Background Color"
-              },
-              {
-                "key": "text_color",
-                "type": "color",
-                "label": "Text Color"
-              }
-            ],
-            "react_code": "function ModernTransparentNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  const [isOpen, setIsOpen] = useState(false);\n\n  return (\n    <nav className={`fixed w-full z-50 backdrop-blur-sm border-b border-white/10 ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center py-4\">\n          <div className=\"flex-shrink-0\">\n            <span className=\"text-xl font-bold text-white\">{logo.value}</span>\n          </div>\n          \n          <div className=\"hidden md:block\">\n            <div className=\"ml-10 flex items-baseline space-x-8\">\n              {navigation_items.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.href}\n                  className=\"text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-colors\"\n                >\n                  {item.label}\n                </a>\n              ))}\n            </div>\n          </div>\n          \n          <div className=\"hidden md:block\">\n            <a\n              href={cta_button.href}\n              className=\"bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors\"\n            >\n              {cta_button.text}\n            </a>\n          </div>\n          \n          <div className=\"md:hidden\">\n            <button\n              onClick={() => setIsOpen(!isOpen)}\n              className=\"text-white hover:text-gray-300\"\n            >\n              <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d={isOpen ? \"M6 18L18 6M6 6l12 12\" : \"M4 6h16M4 12h16M4 18h16\"} />\n              </svg>\n            </button>\n          </div>\n        </div>\n        \n        {isOpen && (\n          <div className=\"md:hidden\">\n            <div className=\"px-2 pt-2 pb-3 space-y-1 bg-black/50 backdrop-blur-sm rounded-lg mt-2\">\n              {navigation_items.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.href}\n                  className=\"text-white hover:text-gray-300 block px-3 py-2 text-base font-medium\"\n                >\n                  {item.label}\n                </a>\n              ))}\n              <a\n                href={cta_button.href}\n                className=\"bg-blue-600 hover:bg-blue-700 text-white block px-3 py-2 rounded-md text-base font-medium mt-4\"\n              >\n                {cta_button.text}\n              </a>\n            </div>\n          </div>\n        )}\n      </div>\n    </nav>\n  );\n}",
-            "dependencies": [
-              "react"
-            ]
+            "label": "Home",
+            "href": "#home",
+            "active": false
           },
           {
-            "id": "navbar_002",
-            "name": "Modern Solid",
-            "variant": "modern-solid",
-            "category": "navbar",
-            "preview_image": "/previews/navbar-modern-solid.jpg",
-            "description": "Clean navigation with solid background and shadow",
-            "tags": [
-              "modern",
-              "solid",
-              "shadow",
-              "professional"
-            ],
-            "default_props": {
-              "logo": {
-                "type": "text",
-                "value": "Brand"
-              },
-              "navigation_items": [
-                {
-                  "label": "Home",
-                  "href": "/"
-                },
-                {
-                  "label": "About",
-                  "href": "/about"
-                },
-                {
-                  "label": "Services",
-                  "href": "/services"
-                },
-                {
-                  "label": "Contact",
-                  "href": "/contact"
-                }
-              ],
-              "cta_button": {
-                "text": "Get Started",
-                "href": "/contact",
-                "style": "primary"
-              }
-            },
-            "customizable_props": [
-              {
-                "key": "logo.value",
-                "type": "text",
-                "label": "Logo Text"
-              },
-              {
-                "key": "navigation_items",
-                "type": "array",
-                "label": "Navigation Items"
-              },
-              {
-                "key": "background",
-                "type": "color",
-                "label": "Background Color"
-              },
-              {
-                "key": "shadow",
-                "type": "select",
-                "label": "Shadow Size",
-                "options": [
-                  "none",
-                  "sm",
-                  "md",
-                  "lg",
-                  "xl"
-                ]
-              }
-            ],
-            "react_code": "function ModernSolidNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  return (\n    <nav className={`bg-white shadow-lg ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center py-4\">\n          <div className=\"flex-shrink-0\">\n            <span className=\"text-xl font-bold text-gray-800\">{logo.value}</span>\n          </div>\n          \n          <div className=\"hidden md:flex items-center space-x-8\">\n            {navigation_items.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className={`text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors ${\n                  item.active ? 'text-blue-600 border-b-2 border-blue-600' : ''\n                }`}\n              >\n                {item.label}\n              </a>\n            ))}\n            \n            {cta_button && (\n              <a\n                href={cta_button.href}\n                className=\"bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors\"\n              >\n                {cta_button.text}\n              </a>\n            )}\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
-            "dependencies": [
-              "react"
-            ]
+            "label": "About",
+            "href": "#about",
+            "active": false
           },
           {
-            "id": "navbar_003",
-            "name": "Minimal Centered",
-            "variant": "minimal-centered",
-            "category": "navbar",
-            "preview_image": "/previews/navbar-minimal-centered.jpg",
-            "description": "Minimal navigation with centered layout",
-            "tags": [
-              "minimal",
-              "centered",
-              "clean",
-              "simple"
-            ],
-            "default_props": {
-              "logo": {
-                "type": "text",
-                "value": "Brand"
-              },
-              "navigation_items": [
-                {
-                  "label": "Work",
-                  "href": "#work"
-                },
-                {
-                  "label": "About",
-                  "href": "#about"
-                },
-                {
-                  "label": "Contact",
-                  "href": "#contact"
-                }
-              ]
-            },
-            "react_code": "function MinimalCenteredNavbar({ logo, navigation_items, ...customProps }) {\n  return (\n    <nav className={`bg-white ${customProps.className || ''}`}>\n      <div className=\"max-w-4xl mx-auto px-4 py-6\">\n        <div className=\"flex flex-col items-center space-y-4\">\n          <div className=\"text-2xl font-bold text-gray-800\">{logo.value}</div>\n          <div className=\"flex items-center space-x-8\">\n            {navigation_items.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className=\"text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors\"\n              >\n                {item.label}\n              </a>\n            ))}\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}"
+            "label": "Services",
+            "href": "#services",
+            "active": false
+          },
+          {
+            "label": "Portfolio",
+            "href": "#portfolio",
+            "active": false
+          },
+          {
+            "label": "Blog",
+            "href": "#blog",
+            "active": false
           }
-        ]
+        ],
+        "contact_button": {
+          "text": "Contact Us",
+          "href": "#contact",
+          "style": "primary"
+        },
+        "mobile_menu": true
+      },
+      "customizable_props": [
+        {
+          "key": "logo.value",
+          "type": "text",
+          "label": "Logo Text"
+        },
+        {
+          "key": "navigation_items",
+          "type": "array",
+          "label": "Navigation Items"
+        },
+        {
+          "key": "contact_button.text",
+          "type": "text",
+          "label": "Contact Button Text"
+        },
+        {
+          "key": "background_color",
+          "type": "color",
+          "label": "Background Color",
+          "default": "#ffffff"
+        },
+        {
+          "key": "text_color",
+          "type": "color",
+          "label": "Text Color",
+          "default": "#374151"
+        },
+        {
+          "key": "accent_color",
+          "type": "color",
+          "label": "Accent Color",
+          "default": "#2563eb"
+        }
+      ],
+      "react_code": "import { useState } from 'react';\n\nfunction CustomResponsiveNavbar({ logo, navigation_items, contact_button, ...customProps }) {\n  const [isMenuOpen, setIsMenuOpen] = useState(false);\n\n  return (\n    <nav className=\"bg-white shadow-md sticky top-0 z-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center h-16\">\n          \n          {/* Logo - Left Side */}\n          <div className=\"flex-shrink-0\">\n            <div className=\"flex items-center\">\n              <span className=\"text-2xl font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer\">\n                {logo.value}\n              </span>\n            </div>\n          </div>\n\n          {/* Desktop Menu - Center */}\n          <div className=\"hidden md:block\">\n            <div className=\"flex items-center space-x-8\">\n              {navigation_items.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.href}\n                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group ${\n                    item.active ? 'text-blue-600' : ''\n                  }`}\n                >\n                  {item.label}\n                  <span className={`absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full ${\n                    item.active ? 'w-full' : 'w-0'\n                  }`}></span>\n                </a>\n              ))}\n            </div>\n          </div>\n\n          {/* Contact Button - Right Side (Desktop) */}\n          <div className=\"hidden md:block\">\n            <a\n              href={contact_button.href}\n              className=\"bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg\"\n            >\n              {contact_button.text}\n            </a>\n          </div>\n\n          {/* Mobile Menu Button */}\n          <div className=\"md:hidden\">\n            <button\n              onClick={() => setIsMenuOpen(!isMenuOpen)}\n              className=\"text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors\"\n              aria-label=\"Toggle menu\"\n            >\n              <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                <path\n                  strokeLinecap=\"round\"\n                  strokeLinejoin=\"round\"\n                  strokeWidth={2}\n                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}\n                />\n              </svg>\n            </button>\n          </div>\n        </div>\n\n        {/* Mobile Menu */}\n        <div className={`md:hidden transition-all duration-300 ease-in-out ${\n          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'\n        }`}>\n          <div className=\"px-2 pt-2 pb-3 space-y-1 border-t border-gray-200\">\n            {navigation_items.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className={`block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium transition-colors ${\n                  item.active ? 'text-blue-600 bg-blue-50' : ''\n                }`}\n                onClick={() => setIsMenuOpen(false)}\n              >\n                {item.label}\n              </a>\n            ))}\n            <a\n              href={contact_button.href}\n              className=\"block bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-semibold transition-colors mt-4 text-center\"\n              onClick={() => setIsMenuOpen(false)}\n            >\n              {contact_button.text}\n            </a>\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
+      "dependencies": [
+        "react"
+      ]
+    },
+    {
+      "id": "navbar_002",
+      "name": "Modern Solid",
+      "variant": "modern-solid",
+      "category": "navbar",
+      "preview_image": "/previews/navbar-modern-solid.jpg",
+      "description": "Clean navigation with solid background and subtle shadow",
+      "tags": [
+        "modern",
+        "solid",
+        "shadow",
+        "professional"
+      ],
+      "default_props": {
+        "logo": {
+          "type": "text",
+          "value": "Brand"
+        },
+        "navigation_items": [
+          {
+            "label": "Home",
+            "href": "/",
+            "active": false
+          },
+          {
+            "label": "About",
+            "href": "/about",
+            "active": false
+          },
+          {
+            "label": "Services",
+            "href": "/services",
+            "active": false
+          },
+          {
+            "label": "Contact",
+            "href": "/contact",
+            "active": false
+          }
+        ],
+        "cta_button": {
+          "text": "Get Started",
+          "href": "/contact",
+          "style": "primary"
+        },
+        "mobile_menu": true
+      },
+      "customizable_props": [
+        {
+          "key": "logo.value",
+          "type": "text",
+          "label": "Logo Text"
+        },
+        {
+          "key": "navigation_items",
+          "type": "array",
+          "label": "Navigation Items"
+        },
+        {
+          "key": "background_color",
+          "type": "color",
+          "label": "Background Color",
+          "default": "#ffffff"
+        },
+        {
+          "key": "shadow_size",
+          "type": "select",
+          "label": "Shadow Size",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "sm", "label": "Small" },
+            { "value": "md", "label": "Medium" },
+            { "value": "lg", "label": "Large" },
+            { "value": "xl", "label": "Extra Large" }
+          ],
+          "default": "lg"
+        }
+      ],
+      "react_code": "import { useState } from 'react';\n\nfunction ModernSolidNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  const [isOpen, setIsOpen] = useState(false);\n\n  return (\n    <>\n      <nav className=\"sticky top-0 z-50 bg-white shadow-lg border-b border-gray-100\">\n        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n          <div className=\"flex justify-between items-center h-16\">\n            {/* Logo */}\n            <div className=\"flex-shrink-0\">\n              <span className=\"text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer\">\n                {logo.value}\n              </span>\n            </div>\n            \n            {/* Desktop Navigation */}\n            <div className=\"hidden md:flex items-center space-x-1\">\n              {navigation_items.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.href}\n                  className={`text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative ${\n                    item.active ? 'text-blue-600 bg-blue-50 after:absolute after:bottom-0 after:left-1/2 after:transform after:-translate-x-1/2 after:w-1 after:h-1 after:bg-blue-600 after:rounded-full' : ''\n                  }`}\n                >\n                  {item.label}\n                </a>\n              ))}\n            </div>\n            \n            {/* Desktop CTA Button */}\n            <div className=\"hidden md:block\">\n              {cta_button && (\n                <a\n                  href={cta_button.href}\n                  className=\"bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg\"\n                >\n                  {cta_button.text}\n                </a>\n              )}\n            </div>\n            \n            {/* Mobile menu button */}\n            <div className=\"md:hidden\">\n              <button\n                onClick={() => setIsOpen(!isOpen)}\n                className=\"text-gray-700 hover:text-blue-600 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200\"\n                aria-label=\"Toggle menu\"\n              >\n                <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                  <path \n                    strokeLinecap=\"round\" \n                    strokeLinejoin=\"round\" \n                    strokeWidth={2} \n                    d={isOpen ? \"M6 18L18 6M6 6l12 12\" : \"M4 6h16M4 12h16M4 18h16\"} \n                  />\n                </svg>\n              </button>\n            </div>\n          </div>\n        </div>\n        \n        {/* Mobile Navigation Menu */}\n        <div className={`md:hidden transition-all duration-300 ease-in-out ${\n          isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'\n        }`}>\n          <div className=\"bg-white border-t border-gray-200\">\n            <div className=\"px-4 py-6 space-y-2\">\n              {navigation_items.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.href}\n                  className={`block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${\n                    item.active ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600' : ''\n                  }`}\n                  onClick={() => setIsOpen(false)}\n                >\n                  {item.label}\n                </a>\n              ))}\n              {cta_button && (\n                <a\n                  href={cta_button.href}\n                  className=\"block bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-base font-semibold transition-all duration-200 text-center mt-4\"\n                  onClick={() => setIsOpen(false)}\n                >\n                  {cta_button.text}\n                </a>\n              )}\n            </div>\n          </div>\n        </div>\n      </nav>\n    </>\n  );\n}",
+      "dependencies": [
+        "react"
+      ]
+    },
+  {
+  "id": "navbar_003",
+  "name": "Glassmorphism Pro",
+  "variant": "glassmorphism-pro",
+  "category": "navbar",
+  "preview_image": "/previews/navbar-glassmorphism-pro.jpg",
+  "description": "Modern glassmorphism navbar with floating design and animated elements",
+  "tags": [
+    "glassmorphism",
+    "floating",
+    "modern",
+    "animated",
+    "premium"
+  ],
+  "default_props": {
+    "logo": {
+      "type": "text",
+      "value": "NEXUS"
+    },
+    "navigation_items": [
+      {
+        "label": "Home",
+        "href": "#home",
+        "active": true
+      },
+      {
+        "label": "Products",
+        "href": "#products",
+        "active": false
+      },
+      {
+        "label": "Solutions",
+        "href": "#solutions",
+        "active": false
+      },
+      {
+        "label": "About",
+        "href": "#about",
+        "active": false
+      }
+    ],
+    "cta_button": {
+      "text": "Get Demo",
+      "href": "#demo",
+      "style": "gradient"
+    },
+    "mobile_menu": true
+  },
+  "customizable_props": [
+    {
+      "key": "logo.value",
+      "type": "text",
+      "label": "Logo Text"
+    },
+    {
+      "key": "navigation_items",
+      "type": "array",
+      "label": "Navigation Items"
+    },
+    {
+      "key": "cta_button.text",
+      "type": "text",
+      "label": "CTA Button Text"
+    },
+    {
+      "key": "blur_intensity",
+      "type": "range",
+      "label": "Blur Intensity",
+      "min": 5,
+      "max": 20,
+      "default": 12
+    },
+    {
+      "key": "background_opacity",
+      "type": "range",
+      "label": "Background Opacity",
+      "min": 10,
+      "max": 30,
+      "default": 15
+    }
+  ],
+  "react_code": "import { useState, useEffect } from 'react';\n\nfunction GlassmorphismProNavbar({ logo, navigation_items, cta_button, ...customProps }) {\n  const [isMenuOpen, setIsMenuOpen] = useState(false);\n  const [scrolled, setScrolled] = useState(false);\n\n  useEffect(() => {\n    const handleScroll = () => {\n      setScrolled(window.scrollY > 20);\n    };\n    window.addEventListener('scroll', handleScroll);\n    return () => window.removeEventListener('scroll', handleScroll);\n  }, []);\n\n  return (\n    <>\n      <nav className=\"sticky top-0 z-50\">\n        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n          <div className={`bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl transition-all duration-500 mt-2 mb-2 ${\n            scrolled ? 'shadow-xl' : 'shadow-2xl'\n          }`}>\n            <div className=\"px-6 lg:px-8\">\n              <div className=\"flex justify-between items-center h-16\">\n                \n                {/* Logo - Left Side */}\n                <div className=\"flex-shrink-0\">\n                  <div className=\"flex items-center\">\n                    <div className=\"w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg mr-3 flex items-center justify-center\">\n                      <span className=\"text-white font-bold text-sm\">N</span>\n                    </div>\n                    <span className=\"text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer\">\n                      {logo.value}\n                    </span>\n                  </div>\n                </div>\n\n                {/* Desktop Menu - Center */}\n                <div className=\"hidden md:block\">\n                  <div className=\"flex items-center space-x-1\">\n                    {navigation_items.map((item, index) => (\n                      <a\n                        key={index}\n                        href={item.href}\n                        className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group ${\n                          item.active \n                            ? 'text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg' \n                            : 'text-gray-700 hover:text-purple-600 hover:bg-white/30'\n                        }`}\n                      >\n                        {item.label}\n                        {!item.active && (\n                          <span className=\"absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300\"></span>\n                        )}\n                      </a>\n                    ))}\n                  </div>\n                </div>\n\n                {/* CTA Button - Right Side (Desktop) */}\n                <div className=\"hidden md:block\">\n                  <a\n                    href={cta_button.href}\n                    className=\"relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl group\"\n                  >\n                    <span className=\"relative z-10\">{cta_button.text}</span>\n                    <div className=\"absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300\"></div>\n                  </a>\n                </div>\n\n                {/* Mobile Menu Button */}\n                <div className=\"md:hidden\">\n                  <button\n                    onClick={() => setIsMenuOpen(!isMenuOpen)}\n                    className=\"text-gray-700 hover:text-purple-600 p-2 rounded-xl hover:bg-white/30 transition-all duration-300\"\n                    aria-label=\"Toggle menu\"\n                  >\n                    <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                      <path\n                        strokeLinecap=\"round\"\n                        strokeLinejoin=\"round\"\n                        strokeWidth={2}\n                        d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}\n                      />\n                    </svg>\n                  </button>\n                </div>\n              </div>\n            </div>\n\n            {/* Mobile Menu */}\n            <div className={`md:hidden transition-all duration-300 ease-in-out ${\n              isMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'\n            }`}>\n              <div className=\"px-6 py-4 border-t border-white/20\">\n                <div className=\"space-y-2\">\n                  {navigation_items.map((item, index) => (\n                    <a\n                      key={index}\n                      href={item.href}\n                      className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${\n                        item.active \n                          ? 'text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg' \n                          : 'text-gray-700 hover:text-purple-600 hover:bg-white/30'\n                      }`}\n                      onClick={() => setIsMenuOpen(false)}\n                    >\n                      {item.label}\n                    </a>\n                  ))}\n                  <a\n                    href={cta_button.href}\n                    className=\"block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-xl text-base font-semibold transition-all duration-300 text-center mt-4 shadow-lg\"\n                    onClick={() => setIsMenuOpen(false)}\n                  >\n                    {cta_button.text}\n                  </a>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </nav>\n    </>\n  );\n}",
+  "dependencies": [
+    "react"
+  ]
+}
+      ]
       },
       "hero": {
         "name": "Hero Sections",
