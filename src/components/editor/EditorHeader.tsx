@@ -37,13 +37,13 @@ export const EditorHeader = () => {
 
   return (
     <>
-      <header className="bg-[#1c1c1c] border-b border-gray-700 px-6 py-3 flex items-center justify-between">
+      <header className="bg-[#1c1c1c] border-b border-gray-700 px-1 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-300 hover:text-white px-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
@@ -67,8 +67,8 @@ export const EditorHeader = () => {
                 size="sm"
                 onClick={() => setPreviewMode(mode)}
                 className={`px-3 py-1 ${state.previewMode === mode
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
                   }`}
               >
                 <Icon className="w-4 h-4" />

@@ -43,7 +43,7 @@ export const ThemeCustomizer = () => {
         <Palette className="w-5 h-5 text-blue-500" />
         <h3 className="text-white font-semibold">Theme Customizer</h3>
       </div>
-      
+
       {/* Color Presets */}
       <div>
         <Label className="text-sm font-semibold text-white mb-3 block">
@@ -101,7 +101,7 @@ export const ThemeCustomizer = () => {
               />
             </div>
           </div>
-          
+
           <div>
             <Label className="text-xs text-gray-400 mb-2 block">Secondary Color</Label>
             <div className="flex items-center space-x-2">
@@ -160,12 +160,11 @@ export const ThemeCustomizer = () => {
 
       <Separator className="bg-gray-600" />
 
-      {/* Theme Preview */}
       <div>
         <Label className="text-sm font-semibold text-white mb-3 block">
           Theme Preview
         </Label>
-        <div 
+        <div
           className="p-4 rounded-lg border border-gray-600"
           style={{
             backgroundColor: state.theme.backgroundColor,
@@ -178,18 +177,20 @@ export const ThemeCustomizer = () => {
           <p className="text-sm mb-2">
             This is how your text will look with the current theme settings.
           </p>
-          <button 
-            className="px-4 py-2 rounded text-white text-sm font-medium"
-            style={{ backgroundColor: state.theme.primaryColor }}
-          >
-            Primary Button
-          </button>
-          <button 
-            className="ml-2 px-4 py-2 rounded text-white text-sm font-medium"
-            style={{ backgroundColor: state.theme.secondaryColor }}
-          >
-            Secondary Button
-          </button>
+          <div className='flex flex-col gap-2'>
+            <button
+              className="px-4 py-2 rounded text-white text-sm font-medium"
+              style={{ backgroundColor: state.theme.primaryColor }}
+            >
+              Primary Button
+            </button>
+            <button
+              className="px-4 py-2 rounded text-white text-sm font-medium"
+              style={{ backgroundColor: state.theme.secondaryColor }}
+            >
+              Secondary Button
+            </button>
+          </div>
         </div>
       </div>
 

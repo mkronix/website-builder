@@ -67,7 +67,8 @@
           "slug": "/",
           "components": [
             "navbar_003",
-            "hero_002"
+            "hero_002",
+            "footer_002"
           ]
         }
       ],
@@ -80,6 +81,82 @@
         "background": "#FFFFFF",
         "font_family": "Inter, sans-serif",
         "font_headings": "Playfair Display, serif"
+      }
+    },
+    "tech-startup": {
+      "id": "tech-startup",
+      "name": "Tech Startup",
+      "description": "Modern tech startup template with creative contact and advanced features",
+      "category": "startup",
+      "preview_image": "/templates/tech-startup.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_001",
+            "hero_001",
+            "features_001",
+            "contact_002",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Contact",
+          "slug": "/contact",
+          "components": [
+            "navbar_001",
+            "contact_004",
+            "footer_001"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#667eea",
+        "secondary_color": "#764ba2",
+        "accent_color": "#f093fb",
+        "text_primary": "#1a202c",
+        "text_secondary": "#718096",
+        "background": "#ffffff",
+        "font_family": "Inter, sans-serif"
+      }
+    },
+    "professional-services": {
+      "id": "professional-services",
+      "name": "Professional Services",
+      "description": "Comprehensive template for professional service companies",
+      "category": "services",
+      "preview_image": "/templates/professional-services.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_002",
+            "hero_001",
+            "services_001",
+            "about_001",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Contact",
+          "slug": "/contact",
+          "components": [
+            "navbar_002",
+            "contact_003",
+            "footer_001"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#2563eb",
+        "secondary_color": "#1d4ed8",
+        "accent_color": "#3b82f6",
+        "text_primary": "#111827",
+        "text_secondary": "#6b7280",
+        "background": "#ffffff",
+        "font_family": "Inter, sans-serif"
       }
     }
   }

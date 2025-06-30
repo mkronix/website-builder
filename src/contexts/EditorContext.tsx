@@ -75,7 +75,25 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         name: 'Home',
         slug: '/',
         components: [],
-      }
+      },
+      {
+        id: 'about',
+        name: 'About',
+        slug: '/about',
+        components: [],
+      },
+      {
+        id: 'services',
+        name: 'Services',
+        slug: '/services',
+        components: [],
+      },
+      {
+        id: 'contact',
+        name: 'Contact',
+        slug: '/contact',
+        components: [],
+      },
     ],
     selectedComponent: null,
     theme: {
