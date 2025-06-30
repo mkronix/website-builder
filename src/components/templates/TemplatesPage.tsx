@@ -1,28 +1,27 @@
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search, Eye, Download, CreditCard } from 'lucide-react';
 import { useEditor } from '@/contexts/EditorContext';
 import websiteData from '@/data/data.json';
+import { CreditCard, Eye, Search } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const TemplatesPage = () => {
   const navigate = useNavigate();
   const { updateProject } = useEditor();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  
-  // Mock user credits - in real app this would come from user context
-  const [userCredits] = useState(150);
-  
+
+  const [userCredits] = useState(1);
+
   const templatesArray = Object.values(websiteData.templates);
-  
+
   const filteredTemplates = templatesArray.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         template.description.toLowerCase().includes(searchTerm.toLowerCase());
+      template.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -99,7 +98,7 @@ export const TemplatesPage = () => {
               <h3 className="text-red-500 font-semibold">No Credits Remaining</h3>
               <p className="text-gray-300 text-sm">You need credits to use templates. Purchase more credits to continue.</p>
             </div>
-            <Button 
+            <Button
               onClick={() => navigate('/settings')}
               className="bg-red-600 hover:bg-red-700 text-white ml-auto"
             >
@@ -120,7 +119,7 @@ export const TemplatesPage = () => {
             className="pl-10 bg-[#272725] border-gray-600 text-white"
           />
         </div>
-        
+
         <div className="flex gap-2">
           {categories.map((category) => (
             <Button
@@ -128,8 +127,8 @@ export const TemplatesPage = () => {
               variant={selectedCategory === category ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category 
-                ? 'bg-blue-600 text-white' 
+              className={selectedCategory === category
+                ? 'bg-blue-600 text-white'
                 : 'text-gray-300 hover:text-white hover:bg-[#272725]'
               }
             >
@@ -156,8 +155,8 @@ export const TemplatesPage = () => {
             <CardContent className="space-y-4">
               <div className="aspect-video bg-[#1c1c1c] rounded-lg flex items-center justify-center">
                 {template.preview_image ? (
-                  <img 
-                    src={template.preview_image} 
+                  <img
+                    src={template.preview_image}
                     alt={template.name}
                     className="w-full h-full object-cover rounded-lg"
                   />
@@ -165,9 +164,9 @@ export const TemplatesPage = () => {
                   <span className="text-gray-400">Preview Image</span>
                 )}
               </div>
-              
+
               <p className="text-gray-300 text-sm">{template.description}</p>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Pages:</span>
@@ -176,7 +175,7 @@ export const TemplatesPage = () => {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Primary Color:</span>
                   <div className="flex items-center gap-2">
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full"
                       style={{ backgroundColor: template.theme.primary_color }}
                     />
@@ -186,17 +185,17 @@ export const TemplatesPage = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
+                <Button
+                  size="sm"
+                  variant="ghost"
                   className="flex-1 text-blue-400 hover:text-blue-300"
                   onClick={() => window.open('#', '_blank')}
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview
                 </Button>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className={`flex-1 ${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
                   onClick={() => handleUseTemplate(template)}
                   disabled={userCredits <= 0}
