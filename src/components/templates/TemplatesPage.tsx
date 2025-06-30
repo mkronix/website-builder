@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useEditor } from '@/contexts/EditorContext';
-import websiteData from '@/data/data.json';
+import templatesData from '@/data/templates.json';
+import componentsData from '@/data/components.json';
 import { CreditCard, Eye, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +18,7 @@ export const TemplatesPage = () => {
 
   const [userCredits] = useState(1);
 
-  const templatesArray = Object.values(websiteData.templates);
+  const templatesArray = Object.values(templatesData.templates);
 
   const filteredTemplates = templatesArray.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -42,7 +43,7 @@ export const TemplatesPage = () => {
       components: page.components.map((componentId: string) => {
         // Find component data from component library
         let componentData: any = null;
-        Object.values(websiteData.component_library.categories).forEach(category => {
+        Object.values(componentsData.component_library.categories).forEach(category => {
           const found = category.components.find((comp: any) => comp.id === componentId);
           if (found) {
             componentData = found;
@@ -51,10 +52,11 @@ export const TemplatesPage = () => {
 
         return {
           id: `component-${Date.now()}-${Math.random()}`,
-          type: componentId,
-          props: componentData?.default_props || {},
-          reactCode: componentData?.react_code || '',
-          customizableProps: componentData?.customizable_props || []
+          category: componentId,
+          default_props: componentData?.default_props || {},
+          react_code: componentData?.react_code || '',
+          customizableProps: componentData?.customizable_props || {},
+          variant: componentData?.variant || 'default'
         };
       })
     }));

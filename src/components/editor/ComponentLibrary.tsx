@@ -4,13 +4,13 @@ import { useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Navigation, Layout, FileText, Type } from 'lucide-react';
-import websiteData from '@/data/data.json';
+import componentsData from '@/data/components.json';
 
 export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = Object.entries(websiteData.component_library.categories).map(([key, category]) => ({
+  const componentCategories = Object.entries(componentsData.component_library.categories).map(([key, category]) => ({
     id: key,
     name: category.name,
     icon: getIconForCategory(category.name),
@@ -21,7 +21,7 @@ export const ComponentLibrary = () => {
     switch (categoryName.toLowerCase()) {
       case 'navigation': return Navigation;
       case 'hero sections': return Type;
-      case 'layout': return Layout;
+      case 'footers': return Layout;
       default: return FileText;
     }
   }
@@ -78,12 +78,12 @@ export const ComponentLibrary = () => {
                   className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
                   onClick={() => addComponentToPage(component)}
                 >
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-32">
                     {component.preview_image ? (
                       <img
                         src={component.preview_image}
                         alt={component.name}
-                        className="w-full h-full object-fill"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">

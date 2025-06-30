@@ -3,7 +3,6 @@ import { EditorSidebar } from '@/components/editor/EditorSidebar';
 import { EditorCanvas } from '@/components/editor/EditorCanvas';
 import { EditorHeader } from '@/components/editor/EditorHeader';
 import { EditorProvider } from '@/contexts/EditorContext';
-import '@/components/editor/EditorStyles.css';
 
 const Edtior = () => {
   return (
