@@ -1,0 +1,86 @@
+
+{
+  "component_library": {
+    "categories": {
+      "navigation": {
+        "name": "Navigation",
+        "components": [
+          {
+            "id": "navbar_1",
+            "name": "Modern Navbar",
+            "description": "Clean navigation bar with logo and menu items",
+            "category": "navigation",
+            "variant": "modern",
+            "tags": ["responsive", "clean", "modern"],
+            "preview_image": "/previews/nav1.png",
+            "react_code": "function ModernNavbar() {\n  return (\n    <nav className=\"bg-white shadow-lg border-b border-gray-200\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between h-16\">\n          <div className=\"flex items-center\">\n            <div className=\"flex-shrink-0\">\n              <h1 className=\"text-xl font-bold text-gray-900\">Brand</h1>\n            </div>\n          </div>\n          <div className=\"hidden md:block\">\n            <div className=\"ml-10 flex items-baseline space-x-4\">\n              <a href=\"#\" className=\"text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium\">Home</a>\n              <a href=\"#\" className=\"text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium\">About</a>\n              <a href=\"#\" className=\"text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium\">Services</a>\n              <a href=\"#\" className=\"text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium\">Contact</a>\n            </div>\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
+            "default_props": {
+              "brand": "Brand",
+              "links": [
+                { "name": "Home", "href": "#" },
+                { "name": "About", "href": "#" },
+                { "name": "Services", "href": "#" },
+                { "name": "Contact", "href": "#" }
+              ]
+            },
+            "customizable_props": {
+              "brand": { "type": "text", "label": "Brand Name" },
+              "backgroundColor": { "type": "color", "label": "Background Color" },
+              "textColor": { "type": "color", "label": "Text Color" }
+            }
+          }
+        ]
+      },
+      "hero_sections": {
+        "name": "Hero Sections",
+        "components": [
+          {
+            "id": "hero_1",
+            "name": "Modern Hero",
+            "description": "Clean hero section with call-to-action",
+            "category": "hero_sections",
+            "variant": "modern",
+            "tags": ["hero", "cta", "modern"],
+            "preview_image": "/previews/hero1.png",
+            "react_code": "function ModernHero() {\n  return (\n    <div className=\"bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center\">\n        <h1 className=\"text-4xl md:text-6xl font-bold mb-6\">Welcome to Our Platform</h1>\n        <p className=\"text-xl md:text-2xl mb-8 max-w-3xl mx-auto\">Create amazing websites with our powerful drag-and-drop editor</p>\n        <div className=\"space-x-4\">\n          <button className=\"bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors\">Get Started</button>\n          <button className=\"border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors\">Learn More</button>\n        </div>\n      </div>\n    </div>\n  );\n}",
+            "default_props": {
+              "title": "Welcome to Our Platform",
+              "subtitle": "Create amazing websites with our powerful drag-and-drop editor",
+              "primaryButton": "Get Started",
+              "secondaryButton": "Learn More"
+            },
+            "customizable_props": {
+              "title": { "type": "text", "label": "Main Title" },
+              "subtitle": { "type": "text", "label": "Subtitle" },
+              "primaryButton": { "type": "text", "label": "Primary Button Text" },
+              "secondaryButton": { "type": "text", "label": "Secondary Button Text" }
+            }
+          }
+        ]
+      },
+      "footers": {
+        "name": "Footers",
+        "components": [
+          {
+            "id": "footer_1",
+            "name": "Simple Footer",
+            "description": "Clean footer with links and copyright",
+            "category": "footers",
+            "variant": "simple",
+            "tags": ["footer", "links", "simple"],
+            "preview_image": "/previews/footer/footer1.png",
+            "react_code": "function SimpleFooter() {\n  return (\n    <footer className=\"bg-gray-800 text-white py-12\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"grid grid-cols-1 md:grid-cols-4 gap-8\">\n          <div>\n            <h3 className=\"text-lg font-semibold mb-4\">Company</h3>\n            <ul className=\"space-y-2\">\n              <li><a href=\"#\" className=\"hover:text-gray-300\">About Us</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Careers</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Contact</a></li>\n            </ul>\n          </div>\n          <div>\n            <h3 className=\"text-lg font-semibold mb-4\">Services</h3>\n            <ul className=\"space-y-2\">\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Web Design</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Development</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">SEO</a></li>\n            </ul>\n          </div>\n          <div>\n            <h3 className=\"text-lg font-semibold mb-4\">Support</h3>\n            <ul className=\"space-y-2\">\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Help Center</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Privacy Policy</a></li>\n              <li><a href=\"#\" className=\"hover:text-gray-300\">Terms of Service</a></li>\n            </ul>\n          </div>\n          <div>\n            <h3 className=\"text-lg font-semibold mb-4\">Follow Us</h3>\n            <div className=\"flex space-x-4\">\n              <a href=\"#\" className=\"hover:text-gray-300\">Facebook</a>\n              <a href=\"#\" className=\"hover:text-gray-300\">Twitter</a>\n              <a href=\"#\" className=\"hover:text-gray-300\">LinkedIn</a>\n            </div>\n          </div>\n        </div>\n        <div className=\"border-t border-gray-700 mt-8 pt-8 text-center\">\n          <p>&copy; 2024 Your Company. All rights reserved.</p>\n        </div>\n      </div>\n    </footer>\n  );\n}",
+            "default_props": {
+              "companyName": "Your Company",
+              "year": "2024"
+            },
+            "customizable_props": {
+              "companyName": { "type": "text", "label": "Company Name" },
+              "year": { "type": "text", "label": "Copyright Year" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

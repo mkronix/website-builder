@@ -1,0 +1,50 @@
+
+{
+  "templates": {
+    "business_landing": {
+      "id": "business_landing",
+      "name": "Business Landing Page",
+      "description": "Professional landing page for businesses",
+      "category": "business",
+      "preview_image": "/previews/templates/business-landing.png",
+      "theme": {
+        "primary_color": "#3B82F6",
+        "secondary_color": "#8B5CF6",
+        "background_color": "#FFFFFF",
+        "text_color": "#1F2937"
+      },
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": ["navbar_1", "hero_1", "footer_1"]
+        }
+      ]
+    },
+    "portfolio": {
+      "id": "portfolio",
+      "name": "Portfolio Template",
+      "description": "Showcase your work with this clean portfolio template",
+      "category": "portfolio",
+      "preview_image": "/previews/templates/portfolio.png",
+      "theme": {
+        "primary_color": "#10B981",
+        "secondary_color": "#059669",
+        "background_color": "#FFFFFF",
+        "text_color": "#1F2937"
+      },
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": ["navbar_1", "hero_1"]
+        },
+        {
+          "name": "About",
+          "slug": "/about",
+          "components": ["navbar_1", "footer_1"]
+        }
+      ]
+    }
+  }
+}
