@@ -2,6 +2,7 @@
 import { useEditor } from '@/contexts/EditorContext';
 import { DraggableComponent } from './DraggableComponent';
 import { cn } from '@/lib/utils';
+import { generateThemeCSS } from '@/utils/themeUtils';
 import {
   DndContext,
   closestCenter,
@@ -59,9 +60,10 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
-      <div className="bg-white min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden">
+      <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
+      <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
         {currentPage?.components.length === 0 ? (
-          <div className="flex items-center justify-center h-96 text-gray-500">
+          <div className="flex items-center justify-center h-96 text-muted-foreground">
             <div className="text-center">
               <h3 className="text-lg font-medium mb-2">Start Building</h3>
               <p className="text-sm">Add components from the sidebar to get started</p>

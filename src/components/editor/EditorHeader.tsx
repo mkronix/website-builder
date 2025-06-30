@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEditor } from '@/contexts/EditorContext';
 import {
   ArrowLeft,
+  Download,
   FolderOpen,
   Monitor,
   Save,
@@ -27,6 +28,21 @@ export const EditorHeader = () => {
       saveProject(projectName, projectDescription);
       setShowSaveDialog(false);
     }
+  };
+
+  const handleExport = () => {
+    const exportData = {
+      project: currentProject,
+      state: state,
+      theme: state.theme,
+      pages: state.pages,
+      timestamp: new Date().toISOString(),
+      totalComponents: state.pages.reduce((total, page) => total + page.components.length, 0)
+    };
+    
+    console.log('=== PROJECT EXPORT DATA ===');
+    console.log(JSON.stringify(exportData, null, 2));
+    console.log('=== END EXPORT DATA ===');
   };
 
   const previewModes = [
@@ -75,6 +91,15 @@ export const EditorHeader = () => {
               </Button>
             ))}
           </div>
+
+          <Button
+            onClick={handleExport}
+            className="bg-green-600 hover:bg-green-700 text-white"
+            size="sm"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
 
           <Button
             onClick={() => setShowSaveDialog(true)}

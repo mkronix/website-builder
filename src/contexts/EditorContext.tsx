@@ -185,10 +185,16 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     ProjectService.setCurrentProject(templateProject.id);
     setCurrentProject(templateProject);
 
+    // Apply template theme immediately
     setState(prev => ({
       ...prev,
       pages: templateProject.pages,
-      theme: templateProject.theme,
+      theme: {
+        primaryColor: template.theme?.primary_color || '#3B82F6',
+        secondaryColor: template.theme?.secondary_color || '#8B5CF6',
+        backgroundColor: template.theme?.background || '#FFFFFF',
+        textColor: template.theme?.text_primary || '#1F2937',
+      },
       currentPage: templateProject.pages[0]?.id || 'home',
       selectedComponent: null,
       template: template.id
