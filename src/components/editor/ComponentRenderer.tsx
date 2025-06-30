@@ -34,7 +34,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
       }).code;
 
       // Extract the component function name using regex
-      const match = transpiledCode.match(/function\s+([A-Za-z0-9_]+)/);
+      const match = transpiledCode?.match(/function\s+([A-Za-z0-9_]+)/);
       if (!match || !match[1]) throw new Error('Unable to find component function name');
 
       const functionName = match[1];
@@ -93,10 +93,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         const combinedClasses = `${baseClasses} ${customClasses}`.trim();
 
         const mergedProps = {
-          ...component.default_props,
+          ...(component.default_props || {}),
           className: combinedClasses,
           style: component.customStyleCss ? 
-            { ...component.default_props?.style, ...(component.customStyleCss || {}) } : 
+            { ...(component.default_props?.style || {}), ...(component.customStyleCss || {}) } : 
             component.default_props?.style
         };
 

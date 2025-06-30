@@ -25,7 +25,9 @@ export const ComponentLibrary: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const components = data.ui_components.filter(comp => 
+  // Type assertion to access ui_components safely
+  const uiData = data as any;
+  const components = (uiData.ui_components || []).filter((comp: any) => 
     (selectedCategory === 'All' || comp.category === selectedCategory) &&
     (searchQuery === '' || 
      comp.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -42,8 +44,8 @@ export const ComponentLibrary: React.FC = () => {
       content: component.content || '',
       react_code: component.react_code || '',
       customizableProps: component.customizableProps || {},
-      customTailwindClass: '',
-      customStyleCss: ''
+      customTailwindClass: component.customTaiwindClass || '',
+      customStyleCss: component.customStyleCss || ''
     };
 
     addComponent(state.currentPage, newComponent);
@@ -86,7 +88,7 @@ export const ComponentLibrary: React.FC = () => {
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-3">
           {components.length > 0 ? (
-            components.map((component, index) => (
+            components.map((component: any, index: number) => (
               <Card key={index} className="bg-[#272725] border-gray-600 hover:bg-[#2a2a28] transition-colors">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">

@@ -8,10 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, RotateCcw, X, Palette, Code } from 'lucide-react';
+import { Save, RotateCcw, X, Palette, Code, Trash2 } from 'lucide-react';
 
 export const ComponentCustomizer: React.FC = () => {
-  const { state, updateComponent, selectComponent } = useEditor();
+  const { state, updateComponent, selectComponent, removeComponent } = useEditor();
   const [localProps, setLocalProps] = useState<Record<string, any>>({});
   const [customTailwind, setCustomTailwind] = useState('');
   const [customCss, setCustomCss] = useState('');
@@ -56,10 +56,11 @@ export const ComponentCustomizer: React.FC = () => {
           editableProps.push({ key: fullKey, value, type: 'boolean' });
         } else if (value && typeof value === 'object' && !Array.isArray(value)) {
           // Handle nested objects like {src: "", alt: ""}
-          if (value.src !== undefined || value.href !== undefined || value.text !== undefined) {
-            editableProps.push({ key: fullKey, value, type: 'object' });
+          const objValue = value as Record<string, any>;
+          if (objValue.src !== undefined || objValue.href !== undefined || objValue.text !== undefined) {
+            editableProps.push({ key: fullKey, value: objValue, type: 'object' });
           } else {
-            traverseProps(value, fullKey);
+            traverseProps(objValue, fullKey);
           }
         } else if (Array.isArray(value)) {
           editableProps.push({ key: fullKey, value, type: 'array' });
@@ -97,6 +98,11 @@ export const ComponentCustomizer: React.FC = () => {
     setLocalProps({ ...selectedComponent.default_props });
     setCustomTailwind(selectedComponent.customTailwindClass || '');
     setCustomCss(selectedComponent.customStyleCss || '');
+  };
+
+  const handleDeleteComponent = () => {
+    removeComponent(state.currentPage, selectedComponent.id);
+    selectComponent(null);
   };
 
   const renderPropEditor = (prop: {key: string, value: any, type: string}) => {
@@ -137,15 +143,16 @@ export const ComponentCustomizer: React.FC = () => {
         );
 
       case 'object':
+        const objValue = prop.value as Record<string, any>;
         return (
           <div className="space-y-2">
-            {Object.entries(prop.value || {}).map(([subKey, subValue]) => (
+            {Object.entries(objValue).map(([subKey, subValue]) => (
               <div key={subKey}>
                 <Label className="text-white text-xs capitalize">{subKey}</Label>
                 <Input
                   value={subValue as string || ''}
                   onChange={(e) => handlePropChange(prop.key, {
-                    ...prop.value,
+                    ...objValue,
                     [subKey]: e.target.value
                   })}
                   className="bg-[#272725] border-gray-600 text-white"
@@ -192,14 +199,24 @@ export const ComponentCustomizer: React.FC = () => {
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-white font-semibold text-lg">Customize</h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => selectComponent(null)}
-            className="text-gray-400 hover:text-white hover:bg-[#272725]"
-          >
-            <X className="w-4 h-4" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDeleteComponent}
+              className="text-red-400 hover:text-red-300 hover:bg-red-500/20"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => selectComponent(null)}
+              className="text-gray-400 hover:text-white hover:bg-[#272725]"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
         <div className="text-blue-300 text-sm">{selectedComponent.category}</div>
       </div>
