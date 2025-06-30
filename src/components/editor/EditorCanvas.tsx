@@ -1,6 +1,7 @@
 
 import { useEditor } from '@/contexts/EditorContext';
 import { ComponentRenderer } from './ComponentRenderer';
+import { ComponentCustomizer } from './ComponentCustomizer';
 import { cn } from '@/lib/utils';
 
 export const EditorCanvas = () => {
@@ -18,27 +19,31 @@ export const EditorCanvas = () => {
   );
 
   return (
-    <div className={canvasClasses}>
-      <div className="bg-white min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden">
-        {currentPage?.components.length === 0 ? (
-          <div className="flex items-center justify-center h-96 text-gray-500">
-            <div className="text-center">
-              <h3 className="text-lg font-medium mb-2">Start Building</h3>
-              <p className="text-sm">Add components from the sidebar to get started</p>
+    <div className="flex flex-1 overflow-hidden">
+      <div className={canvasClasses}>
+        <div className="bg-white min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden">
+          {currentPage?.components.length === 0 ? (
+            <div className="flex items-center justify-center h-96 text-gray-500">
+              <div className="text-center">
+                <h3 className="text-lg font-medium mb-2">Start Building</h3>
+                <p className="text-sm">Add components from the sidebar to get started</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-0">
-            {currentPage?.components.map((component) => (
-              <ComponentRenderer
-                key={component.id}
-                component={component}
-                isSelected={state.selectedComponent === component.id}
-              />
-            ))}
-          </div>
-        )}
+          ) : (
+            <div className="space-y-0">
+              {currentPage?.components.map((component) => (
+                <ComponentRenderer
+                  key={component.id}
+                  component={component}
+                  isSelected={state.selectedComponent === component.id}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+      
+      {state.selectedComponent && <ComponentCustomizer />}
     </div>
   );
 };

@@ -209,7 +209,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           ? {
             ...page,
             components: page.components.map(comp =>
-              comp.id === componentId ? { ...comp, ...updates } : comp
+              comp.id === componentId ? { 
+                ...comp, 
+                ...updates,
+                // Ensure default_props are properly merged
+                default_props: updates.default_props ? 
+                  { ...comp.default_props, ...updates.default_props } : 
+                  comp.default_props
+              } : comp
             ),
           }
           : page

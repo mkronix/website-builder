@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import * as Babel from '@babel/standalone';
 import { Component, useEditor } from '@/contexts/EditorContext';
@@ -53,11 +54,17 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     }
   }, [component.react_code]);
 
-
   const renderComponent = () => {
     if (DynamicComponent) {
       try {
-        const result = DynamicComponent(React, component.default_props || {});
+        // Merge default props with any customizations
+        const mergedProps = {
+          ...component.default_props,
+          // Apply any custom className if present
+          className: `${component.default_props?.className || ''} ${isSelected ? 'selected-component' : ''}`.trim()
+        };
+
+        const result = DynamicComponent(React, mergedProps);
         if (React.isValidElement(result)) {
           return result;
         }
@@ -91,8 +98,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
           </pre>
         </details>
       </div>
-    )
-    return renderStaticComponent(component);
+    );
   };
 
   return (
