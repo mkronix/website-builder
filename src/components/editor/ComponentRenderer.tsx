@@ -92,12 +92,19 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         const baseClasses = component.default_props?.className || '';
         const combinedClasses = `${baseClasses} ${customClasses}`.trim();
 
+        // Handle custom CSS styles properly
+        const baseStyle = component.default_props?.style || {};
+        const customStyle = component.customStyleCss || {};
+        
+        // Ensure customStyleCss is an object before spreading
+        const combinedStyle = typeof customStyle === 'object' && customStyle !== null 
+          ? { ...baseStyle, ...customStyle }
+          : baseStyle;
+
         const mergedProps = {
           ...(component.default_props || {}),
           className: combinedClasses,
-          style: component.customStyleCss ? 
-            { ...(component.default_props?.style || {}), ...(component.customStyleCss || {}) } : 
-            component.default_props?.style
+          style: combinedStyle
         };
 
         const result = DynamicComponent(React, mergedProps);
