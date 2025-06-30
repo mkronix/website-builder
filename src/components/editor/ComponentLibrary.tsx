@@ -44,16 +44,16 @@ export const ComponentLibrary: React.FC = () => {
       content: component.content || '',
       react_code: component.react_code || '',
       customizableProps: component.customizableProps || {},
-      customTailwindClass: component.customTaiwindClass || '',
-      customStyleCss: component.customStyleCss || ''
+      customTailwindClass: component.customTailwindClass || '',
+      customStyleCss: component.customStyleCss || {}
     };
 
     addComponent(state.currentPage, newComponent);
   };
 
   return (
-    <div className="w-80 bg-[#1c1c1c] border-r border-gray-700 flex flex-col h-full">
-      <div className="p-4 border-b border-gray-700">
+    <div className="w-80 bg-[#1c1c1c] border-r border-gray-700 flex flex-col h-full overflow-hidden">
+      <div className="p-4 border-b border-gray-700 flex-shrink-0">
         <h2 className="text-white font-semibold text-lg mb-4">Components</h2>
         
         <div className="relative mb-4">
@@ -66,7 +66,7 @@ export const ComponentLibrary: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 overflow-x-auto">
           {CATEGORIES.map((category) => (
             <Button
               key={category}
@@ -75,8 +75,8 @@ export const ComponentLibrary: React.FC = () => {
               onClick={() => setSelectedCategory(category)}
               className={
                 selectedCategory === category
-                  ? "bg-blue-600 hover:bg-blue-700 text-white text-xs"
-                  : "border-gray-600 text-gray-300 hover:bg-[#272725] hover:text-white text-xs"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white text-xs whitespace-nowrap"
+                  : "border-gray-600 text-gray-300 hover:bg-[#272725] hover:text-white text-xs whitespace-nowrap"
               }
             >
               {category}
@@ -85,7 +85,7 @@ export const ComponentLibrary: React.FC = () => {
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-3">
           {components.length > 0 ? (
             components.map((component: any, index: number) => (
