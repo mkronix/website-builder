@@ -10,8 +10,8 @@ export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = Object.entries(componentsData.component_library.categories).map(([key, category]) => ({
-    id: key,
+  const componentCategories = componentsData.categories.map((category) => ({
+    id: category.name.toLowerCase().replace(/\s+/g, '-'),
     name: category.name,
     icon: getIconForCategory(category.name),
     components: category.components
@@ -20,16 +20,16 @@ export const ComponentLibrary = () => {
   function getIconForCategory(categoryName: string) {
     switch (categoryName.toLowerCase()) {
       case 'navigation': return Navigation;
-      case 'hero sections': return Type;
-      case 'footers': return Layout;
+      case 'hero': return Type;
+      case 'footer': return Layout;
       default: return FileText;
     }
   }
 
   const addComponentToPage = (component: Component) => {
     const newComponent = {
-      id: component.id,
-      category: component.category,
+      id: `${component.id}-${Date.now()}`,
+      category: component.id,
       default_props: { ...component.default_props },
       react_code: component.react_code,
       customizableProps: component.customizableProps,
@@ -79,27 +79,12 @@ export const ComponentLibrary = () => {
                   onClick={() => addComponentToPage(component)}
                 >
                   <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-32">
-                    {component.preview_image ? (
-                      <img
-                        src={component.preview_image}
-                        alt={component.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                        No preview available
-                      </div>
-                    )}
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                      Component Preview
+                    </div>
                   </div>
-                  <h4 className="text-white font-medium mb-2">{component.name}</h4>
-                  <p className="text-gray-400 text-sm mb-2">{component.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {component.tags?.map((tag: string) => (
-                      <span key={tag} className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  <h4 className="text-white font-medium mb-2">{component.variant}</h4>
+                  <p className="text-gray-400 text-sm mb-2">Click to add this component</p>
                 </div>
               ))}
           </div>

@@ -43,7 +43,7 @@ export const TemplatesPage = () => {
       components: page.components.map((componentId: string) => {
         // Find component data from component library
         let componentData: any = null;
-        Object.values(componentsData.component_library.categories).forEach(category => {
+        componentsData.categories.forEach(category => {
           const found = category.components.find((comp: any) => comp.id === componentId);
           if (found) {
             componentData = found;
@@ -55,7 +55,7 @@ export const TemplatesPage = () => {
           category: componentId,
           default_props: componentData?.default_props || {},
           react_code: componentData?.react_code || '',
-          customizableProps: componentData?.customizable_props || {},
+          customizableProps: componentData?.customizableProps || {},
           variant: componentData?.variant || 'default'
         };
       })
