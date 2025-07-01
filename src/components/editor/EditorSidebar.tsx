@@ -1,17 +1,15 @@
-import { useEditor } from '@/contexts/EditorContext';
-import { ComponentLibrary } from './ComponentLibrary';
-import { PageManager } from './PageManager';
-import { ThemeCustomizer } from './ThemeCustomizer';
-import { Layers, FileText, Palette, Settings } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FileText, Layers, Palette, Settings } from 'lucide-react';
+import { ComponentLibrary } from './ComponentLibrary';
+import { PageManager } from './PageManager';
+import { ThemeCustomizer } from './ThemeCustomizer';
 
 export const EditorSidebar = () => {
-  const { state } = useEditor();
 
   const accordionItems = [
     {

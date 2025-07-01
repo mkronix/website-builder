@@ -54,13 +54,13 @@ export const ComponentLibrary = () => {
             <Button
               key={category.id}
               variant="ghost"
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#272725]"
+              className="w-full justify-start px-1 text-white hover:text-white hover:bg-[#272725]"
               onClick={() => setSelectedCategory(category.id)}
             >
-              <Icon className="w-4 h-4 mr-3" />
+              <Icon className="w-4 h-4 mr-2" />
               <div className="text-left">
                 <div>{category.name}</div>
-                <div className="text-xs text-gray-400">{category.description}</div>
+                <div className="text-xs text-white/70 truncate text-ellipsis">{category.description.length > 34 ? category.description.slice(0, 34) + '...' : category.description}</div>
               </div>
             </Button>
           );
@@ -75,7 +75,7 @@ export const ComponentLibrary = () => {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div className="grid grid-cols-1 gap-6 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
               ?.components.map((component: any) => (
@@ -90,7 +90,7 @@ export const ComponentLibrary = () => {
                       <img
                         src={component.preview_image}
                         alt={component.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-fill"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';

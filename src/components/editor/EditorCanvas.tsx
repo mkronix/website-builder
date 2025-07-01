@@ -65,8 +65,8 @@ export const EditorCanvas = () => {
         {currentPage?.components.length === 0 ? (
           <div className="flex items-center justify-center h-96 text-muted-foreground">
             <div className="text-center">
-              <h3 className="text-lg font-medium mb-2">Start Building</h3>
-              <p className="text-sm">Add components from the sidebar to get started</p>
+              <h3 className="text-lg text-white font-medium mb-2">Start Building</h3>
+              <p className="text-sm text-white">Add components from the sidebar to get started</p>
             </div>
           </div>
         ) : (

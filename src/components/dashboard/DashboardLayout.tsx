@@ -26,7 +26,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-[#1c1c1c] flex">
       {/* Sidebar */}
-      <div className="w-64 bg-[#272725] border-r border-gray-700 flex flex-col">
+      <div className="w-60 h-full fixed bg-[#272725] border-r border-gray-700 flex flex-col">
         <div className="p-6">
           <h1 className="text-2xl font-bold text-white">QuickBuilder</h1>
         </div>
@@ -39,13 +39,13 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Button
                 key={item.id}
                 variant={isActive ? 'default' : 'ghost'}
-                className={`w-full justify-start ${isActive
+                className={`w-full justify-start text-lg ${isActive
                   ? 'bg-black text-white'
                   : 'hover:bg-[#1c1c1c] text-white hover:text-white'
                   }`}
                 onClick={() => navigate(item.path)}
               >
-                <Icon className="w-4 h-4 mr-3" />
+                <Icon className="mr-1" />
                 {item.label}
               </Button>
             );
@@ -55,17 +55,17 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="p-4 border-t border-gray-700">
           <Button
             variant="ghost"
-            className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
+            className="w-full text-lg justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
             onClick={handleLogout}
           >
-            <LogOut className="w-4 h-4 mr-3" />
+            <LogOut className="mr-1" />
             Logout
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 ml-60">
         {children}
       </div>
     </div>

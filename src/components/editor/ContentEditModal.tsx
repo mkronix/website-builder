@@ -89,7 +89,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                   <img
                     src={value}
                     alt="Preview"
-                    className="max-w-full h-32 object-cover"
+                    className="max-w-full h-32 object-fill"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
