@@ -2,8 +2,7 @@ import React, { useMemo, useState, useRef, useEffect } from 'react';
 import * as Babel from '@babel/standalone';
 import { Component, useEditor } from '@/contexts/EditorContext';
 import { applyThemeToCode, generateThemeCSS } from '@/utils/themeUtils';
-import { ContentEditModal } from './ContentEditModal';
-import { StyleEditModal } from './StyleEditModal';
+import { ElementEditModal } from './ElementEditModal';
 
 interface EditableComponentRendererProps {
   component: Component;
@@ -17,8 +16,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const { selectComponent, updateComponent, state } = useEditor();
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
-  const [contentModalOpen, setContentModalOpen] = useState(false);
-  const [styleModalOpen, setStyleModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [contentType, setContentType] = useState<'text' | 'url' | 'image' | 'video' | null>(null);
   const [currentContent, setCurrentContent] = useState('');
   const [currentStyles, setCurrentStyles] = useState<Record<string, string>>({});
@@ -31,16 +29,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
-      // Apply content customizations with support for nested props
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
           if (key.endsWith('_content') && typeof value === 'string') {
-            // Handle nested prop paths (e.g., "logo.value")
             const propPath = key.replace('_content', '');
             const propParts = propPath.split('.');
 
             if (propParts.length === 1) {
-              // Simple prop replacement
               const elementType = propParts[0];
               if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'].includes(elementType)) {
                 themedCode = themedCode.replace(
@@ -53,11 +48,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
                 themedCode = themedCode.replace(/href="[^"]*"/g, `href="${value}"`);
               }
             } else {
-              // Handle nested props like logo.value
               const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
               themedCode = themedCode.replace(regex, `"${value}"`);
-
-              // Also handle optional chaining patterns
               const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
               themedCode = themedCode.replace(optionalRegex, `"${value}"`);
             }
@@ -150,6 +142,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         setContentType(type);
         setCurrentContent(getElementContent(target));
         setCurrentStyles(getElementStyles(target));
+        setEditModalOpen(true);
       }
     }
   };
@@ -166,7 +159,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const handleContentSave = (newContent: string) => {
     if (!selectedElement || !elementSelector) return;
 
-    // Handle different content types and create appropriate keys
     let contentKey = '';
     const tagName = selectedElement.tagName.toLowerCase();
 
@@ -175,10 +167,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     } else if (tagName === 'a') {
       contentKey = 'a_content';
     } else if (selectedElement.textContent) {
-      // For text elements, try to identify nested props
       const textContent = selectedElement.textContent.trim();
 
-      // Check if this might be a nested prop like logo.value
       if (component.default_props) {
         const findNestedProp = (obj: any, path: string[] = []): string | null => {
           for (const [key, value] of Object.entries(obj)) {
@@ -212,8 +202,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
-
-    setContentModalOpen(false);
   };
 
   const handleStyleSave = (newStyles: Record<string, string>) => {
@@ -228,8 +216,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
-
-    setStyleModalOpen(false);
   };
 
   const generateCustomStyles = (): string => {
@@ -314,16 +300,14 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           handleElementClick(e);
         }}
         onMouseOver={handleElementHover}
-        style={{
-          position: 'relative'
-        }}
+        style={{ position: 'relative' }}
       >
         {renderComponent()}
 
         {/* Hover overlay */}
         {isSelected && hoveredElement && (
           <div
-            className="absolute pointer-events-none border-2 border-dashed border-black bg-black/30 bg-opacity-10"
+            className="absolute pointer-events-none border-2 border-dashed border-black bg-black/10"
             style={{
               top: hoveredElement.offsetTop,
               left: hoveredElement.offsetLeft,
@@ -333,53 +317,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
             }}
           />
         )}
-
-        {/* Selected element overlay with edit buttons */}
-        {isSelected && selectedElement && (
-          <div
-            className="absolute flex gap-1 z-20"
-            style={{
-              top: selectedElement.offsetTop - 32,
-              left: selectedElement.offsetLeft,
-            }}
-          >
-            {contentType && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setContentModalOpen(true);
-                }}
-                className="px-2 py-1 bg-black text-white text-xs rounded hover:bg-black/30"
-              >
-                Edit Content
-              </button>
-            )}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setStyleModalOpen(true);
-              }}
-              className="px-2 py-1 bg-white text-black text-xs rounded hover:bg-white/30"
-            >
-              Edit Style
-            </button>
-          </div>
-        )}
       </div>
 
-      <ContentEditModal
-        isOpen={contentModalOpen}
-        onClose={() => setContentModalOpen(false)}
+      <ElementEditModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
         contentType={contentType}
-        currentValue={currentContent}
-        onSave={handleContentSave}
-      />
-
-      <StyleEditModal
-        isOpen={styleModalOpen}
-        onClose={() => setStyleModalOpen(false)}
+        currentContent={currentContent}
         currentStyles={currentStyles}
-        onSave={handleStyleSave}
+        onContentSave={handleContentSave}
+        onStyleSave={handleStyleSave}
       />
     </>
   );

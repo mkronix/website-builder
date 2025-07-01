@@ -1,48 +1,29 @@
-import React from 'react';
-import { InlineContentEditor } from './InlineContentEditor';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { useState, useEffect } from 'react';
 
-interface ContentEditModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface InlineContentEditorProps {
   contentType: 'text' | 'url' | 'image' | 'video' | null;
   currentValue: string;
   onSave: (newValue: string) => void;
 }
 
-export const ContentEditModal: React.FC<ContentEditModalProps> = ({
-  isOpen,
-  onClose,
+export const InlineContentEditor: React.FC<InlineContentEditorProps> = ({
   contentType,
   currentValue,
   onSave
 }) => {
-  // When used inline (isOpen is true but we don't want the dialog wrapper)
-  if (isOpen && onClose === (() => { })) {
-    return (
-      <InlineContentEditor
-        contentType={contentType}
-        currentValue={currentValue}
-        onSave={onSave}
-      />
-    );
-  }
-
-  // Original modal behavior is preserved for backward compatibility
   const [value, setValue] = useState(currentValue);
 
   useEffect(() => {
     setValue(currentValue);
-  }, [currentValue, isOpen]);
+  }, [currentValue]);
 
   const handleSave = () => {
     onSave(value);
-    onClose();
   };
 
   const renderContentEditor = () => {
@@ -102,7 +83,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                   <img
                     src={value}
                     alt="Preview"
-                    className="max-w-full h-32 object-fill"
+                    className="max-w-full h-32 object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
@@ -141,35 +122,18 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#1c1c1c] border-gray-600 text-white max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-white">
-            Edit {contentType ? contentType.charAt(0).toUpperCase() + contentType.slice(1) : 'Content'}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          {renderContentEditor()}
-
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="border-gray-600 text-white hover:bg-[#272725]"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              className="bg-black hover:bg-black/30 text-white"
-              disabled={!value.trim()}
-            >
-              Save Changes
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div className="space-y-4">
+      {renderContentEditor()}
+      
+      <div className="flex justify-end pt-4">
+        <Button
+          onClick={handleSave}
+          className="bg-black hover:bg-black/80 text-white"
+          disabled={!value.trim()}
+        >
+          Save Changes
+        </Button>
+      </div>
+    </div>
   );
 };
