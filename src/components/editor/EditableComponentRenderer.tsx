@@ -1,8 +1,16 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
-import * as Babel from '@babel/standalone';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Component, useEditor } from '@/contexts/EditorContext';
 import { applyThemeToCode, generateThemeCSS } from '@/utils/themeUtils';
-import { ElementEditModal } from './ElementEditModal';
+import * as Babel from '@babel/standalone';
+import React, { useMemo, useRef, useState } from 'react';
+import StyleEditor from './StyleEditor';
+import ContentEditor from './ContentEditor';
 
 interface EditableComponentRendererProps {
   component: Component;
@@ -14,13 +22,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   isSelected
 }) => {
   const { selectComponent, updateComponent, state } = useEditor();
-  const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [contentType, setContentType] = useState<'text' | 'url' | 'image' | 'video' | null>(null);
   const [currentContent, setCurrentContent] = useState('');
   const [currentStyles, setCurrentStyles] = useState<Record<string, string>>({});
   const [elementSelector, setElementSelector] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'content' | 'style'>('content');
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
@@ -29,13 +37,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
+      // Apply content customizations with support for nested props
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
           if (key.endsWith('_content') && typeof value === 'string') {
+            // Handle nested prop paths (e.g., "logo.value")
             const propPath = key.replace('_content', '');
             const propParts = propPath.split('.');
 
             if (propParts.length === 1) {
+              // Simple prop replacement
               const elementType = propParts[0];
               if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'].includes(elementType)) {
                 themedCode = themedCode.replace(
@@ -48,8 +59,11 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
                 themedCode = themedCode.replace(/href="[^"]*"/g, `href="${value}"`);
               }
             } else {
+              // Handle nested props like logo.value
               const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
               themedCode = themedCode.replace(regex, `"${value}"`);
+
+              // Also handle optional chaining patterns
               const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
               themedCode = themedCode.replace(optionalRegex, `"${value}"`);
             }
@@ -138,27 +152,26 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const selector = getElementSelector(target);
       setElementSelector(selector);
       const type = detectContentType(target);
+
       if (type) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
         setCurrentStyles(getElementStyles(target));
+        setActiveTab('content'); // Default to content tab
+        setEditModalOpen(true);
+      } else {
+        // If no content type detected, default to style tab
+        setCurrentStyles(getElementStyles(target));
+        setActiveTab('style');
         setEditModalOpen(true);
       }
-    }
-  };
-
-  const handleElementHover = (event: React.MouseEvent) => {
-    if (!isSelected) return;
-
-    const target = event.target as HTMLElement;
-    if (target !== componentRef.current && target !== hoveredElement) {
-      setHoveredElement(target);
     }
   };
 
   const handleContentSave = (newContent: string) => {
     if (!selectedElement || !elementSelector) return;
 
+    // Handle different content types and create appropriate keys
     let contentKey = '';
     const tagName = selectedElement.tagName.toLowerCase();
 
@@ -167,8 +180,10 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     } else if (tagName === 'a') {
       contentKey = 'a_content';
     } else if (selectedElement.textContent) {
+      // For text elements, try to identify nested props
       const textContent = selectedElement.textContent.trim();
 
+      // Check if this might be a nested prop like logo.value
       if (component.default_props) {
         const findNestedProp = (obj: any, path: string[] = []): string | null => {
           for (const [key, value] of Object.entries(obj)) {
@@ -202,6 +217,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
+
+    setEditModalOpen(false);
   };
 
   const handleStyleSave = (newStyles: Record<string, string>) => {
@@ -216,6 +233,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
+
+    setEditModalOpen(false);
   };
 
   const generateCustomStyles = (): string => {
@@ -270,21 +289,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     );
   };
 
-  useEffect(() => {
-    if (!isSelected || !componentRef.current) return;
-
-    const handleMouseLeave = () => {
-      setHoveredElement(null);
-    };
-
-    const componentElement = componentRef.current;
-    componentElement.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      componentElement.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [isSelected]);
-
   return (
     <>
       <style dangerouslySetInnerHTML={{
@@ -299,35 +303,53 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           selectComponent(component.id);
           handleElementClick(e);
         }}
-        onMouseOver={handleElementHover}
-        style={{ position: 'relative' }}
+        style={{
+          position: 'relative'
+        }}
       >
         {renderComponent()}
-
-        {/* Hover overlay */}
-        {isSelected && hoveredElement && (
-          <div
-            className="absolute pointer-events-none border-2 border-dashed border-black bg-black/10"
-            style={{
-              top: hoveredElement.offsetTop,
-              left: hoveredElement.offsetLeft,
-              width: hoveredElement.offsetWidth,
-              height: hoveredElement.offsetHeight,
-              zIndex: 10
-            }}
-          />
-        )}
       </div>
 
-      <ElementEditModal
-        isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        contentType={contentType}
-        currentContent={currentContent}
-        currentStyles={currentStyles}
-        onContentSave={handleContentSave}
-        onStyleSave={handleStyleSave}
-      />
+      {/* Edit Modal with Tabs */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}
+
+      >
+        <DialogContent className="max-w-2xl bg-[#1c1c1c] border-none">
+          <DialogHeader>
+            <DialogTitle className='text-white'>
+              Edit {selectedElement?.tagName.toLowerCase()} Element
+            </DialogTitle>
+          </DialogHeader>
+
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'content' | 'style')}>
+            <TabsList className="grid w-full grid-cols-2 bg-[#272725] text-white">
+              {contentType && (
+                <TabsTrigger value="content">Content</TabsTrigger>
+              )}
+              <TabsTrigger value="style">Style</TabsTrigger>
+            </TabsList>
+
+            {contentType && (
+              <TabsContent value="content" className="mt-4">
+                <ContentEditor
+                  onClose={() => setEditModalOpen(false)}
+                  contentType={contentType}
+                  currentValue={currentContent}
+                  onSave={handleContentSave}
+                />
+              </TabsContent>
+            )}
+
+            <TabsContent value="style" className="mt-4">
+              <StyleEditor
+                onClose={() => setEditModalOpen(false)}
+                currentStyles={currentStyles}
+                onSave={handleStyleSave}
+              />
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -1,10 +1,10 @@
 
-import { useState } from 'react';
-import { useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, FileText, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { useEditor } from '@/contexts/EditorContext';
+import { FileText, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 export const PageManager = () => {
   const { state, addPage, removePage, setCurrentPage } = useEditor();
