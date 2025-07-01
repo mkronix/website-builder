@@ -21,7 +21,7 @@ const BrutalistTestimonials: React.FC = () => {
       name: "SARA DESTROY",
       role: "CREATIVE DIRECTOR",
       company: "REBEL AGENCY",
-      content: "DEVBUILDER BROKE ALL MY PRECONCEPTIONS. NOW I BUILD WEBSITES THAT MAKE PEOPLE STOP AND STARE.",
+      content: "QuickBuilder BROKE ALL MY PRECONCEPTIONS. NOW I BUILD WEBSITES THAT MAKE PEOPLE STOP AND STARE.",
       rating: 5,
       color: "pink-500",
       rotation: 2,

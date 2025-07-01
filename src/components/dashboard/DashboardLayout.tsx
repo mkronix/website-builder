@@ -28,7 +28,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Sidebar */}
       <div className="w-64 bg-[#272725] border-r border-gray-700 flex flex-col">
         <div className="p-6">
-          <h1 className="text-2xl font-bold text-white">DevBuilder</h1>
+          <h1 className="text-2xl font-bold text-white">QuickBuilder</h1>
         </div>
 
         <nav className="flex-1 px-4 space-y-2">
