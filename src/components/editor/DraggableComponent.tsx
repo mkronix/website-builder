@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ComponentRenderer } from './ComponentRenderer';
+import { EditableComponentRenderer } from './EditableComponentRenderer';
 import { Component } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { GripVertical, Trash2 } from 'lucide-react';
@@ -47,10 +47,13 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
         onSelect(component.id);
       }}
     >
-      <ComponentRenderer component={component} isSelected={isSelected} />
+      <EditableComponentRenderer 
+        component={component} 
+        isSelected={isSelected} 
+      />
       
       {/* Drag handle and remove button */}
-      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-30">
         <Button
           size="sm"
           variant="secondary"
@@ -74,7 +77,7 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
       </div>
 
       {isSelected && (
-        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-10">
+        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-30">
           Selected: {component.category}
         </div>
       )}
