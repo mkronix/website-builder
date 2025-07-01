@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Component, useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { Navigation, Layout, FileText, Type } from 'lucide-react';
 import componentsData from '@/data/components.json';
 
@@ -10,29 +11,31 @@ export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = componentsData.categories.map((category) => ({
-    id: category.name.toLowerCase().replace(/\s+/g, '-'),
+  // Transform the new data structure to match our needs
+  const componentCategories = Object.entries(componentsData).map(([key, category]: [string, any]) => ({
+    id: key,
     name: category.name,
-    icon: getIconForCategory(category.name),
+    description: category.description,
+    icon: getIconForCategory(key),
     components: category.components
   }));
 
-  function getIconForCategory(categoryName: string) {
-    switch (categoryName.toLowerCase()) {
-      case 'navigation': return Navigation;
+  function getIconForCategory(categoryKey: string) {
+    switch (categoryKey.toLowerCase()) {
+      case 'navbar': return Navigation;
       case 'hero': return Type;
       case 'footer': return Layout;
       default: return FileText;
     }
   }
 
-  const addComponentToPage = (component: Component) => {
-    const newComponent = {
+  const addComponentToPage = (component: any) => {
+    const newComponent: Component = {
       id: `${component.id}-${Date.now()}`,
-      category: component.id,
+      category: component.category,
       default_props: { ...component.default_props },
       react_code: component.react_code,
-      customizableProps: component.customizableProps,
+      customizableProps: {},
       variant: component.variant || 'default'
     };
 
@@ -55,21 +58,24 @@ export const ComponentLibrary = () => {
               onClick={() => setSelectedCategory(category.id)}
             >
               <Icon className="w-4 h-4 mr-3" />
-              {category.name}
+              <div className="text-left">
+                <div>{category.name}</div>
+                <div className="text-xs text-gray-400">{category.description}</div>
+              </div>
             </Button>
           );
         })}
       </div>
 
       <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
-        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-6xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white">
               {componentCategories.find(c => c.id === selectedCategory)?.name} Components
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
               ?.components.map((component: any) => (
@@ -78,13 +84,52 @@ export const ComponentLibrary = () => {
                   className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
                   onClick={() => addComponentToPage(component)}
                 >
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-32">
-                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                  {/* Preview Image */}
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-40 flex items-center justify-center">
+                    {component.preview_image ? (
+                      <img 
+                        src={component.preview_image} 
+                        alt={component.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling!.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <div className="text-gray-500 text-sm hidden">
                       Component Preview
                     </div>
                   </div>
-                  <h4 className="text-white font-medium mb-2">{component.variant}</h4>
-                  <p className="text-gray-400 text-sm mb-2">Click to add this component</p>
+
+                  {/* Component Info */}
+                  <div className="space-y-2">
+                    <h4 className="text-white font-medium text-lg">{component.name}</h4>
+                    <p className="text-gray-400 text-sm">{component.description}</p>
+                    
+                    {/* Tags */}
+                    {component.tags && component.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {component.tags.slice(0, 3).map((tag: string, index: number) => (
+                          <Badge 
+                            key={index} 
+                            variant="secondary" 
+                            className="text-xs bg-blue-600/20 text-blue-300 hover:bg-blue-600/30"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                        {component.tags.length > 3 && (
+                          <Badge variant="secondary" className="text-xs bg-gray-600/20 text-gray-300">
+                            +{component.tags.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+
+                    <p className="text-blue-400 text-sm font-medium">Click to add this component</p>
+                  </div>
                 </div>
               ))}
           </div>

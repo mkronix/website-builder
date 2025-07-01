@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import * as Babel from '@babel/standalone';
 import { Component, useEditor } from '@/contexts/EditorContext';
@@ -32,29 +31,35 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
       
-      // Apply content customizations
+      // Apply content customizations with support for nested props
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
           if (key.endsWith('_content') && typeof value === 'string') {
-            // Replace content in the code
-            const elementType = key.replace('_content', '');
-            if (elementType === 'h1' || elementType === 'h2' || elementType === 'h3' || 
-                elementType === 'h4' || elementType === 'h5' || elementType === 'h6' || 
-                elementType === 'p' || elementType === 'span' || elementType === 'div') {
-              themedCode = themedCode.replace(
-                new RegExp(`<${elementType}[^>]*>([^<]*)</${elementType}>`, 'g'),
-                (match, originalContent) => match.replace(originalContent, value)
-              );
-            } else if (elementType === 'img') {
-              themedCode = themedCode.replace(
-                /src="[^"]*"/g,
-                `src="${value}"`
-              );
-            } else if (elementType === 'a') {
-              themedCode = themedCode.replace(
-                /href="[^"]*"/g,
-                `href="${value}"`
-              );
+            // Handle nested prop paths (e.g., "logo.value")
+            const propPath = key.replace('_content', '');
+            const propParts = propPath.split('.');
+            
+            if (propParts.length === 1) {
+              // Simple prop replacement
+              const elementType = propParts[0];
+              if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'].includes(elementType)) {
+                themedCode = themedCode.replace(
+                  new RegExp(`<${elementType}[^>]*>([^<]*)</${elementType}>`, 'g'),
+                  (match, originalContent) => match.replace(originalContent, value)
+                );
+              } else if (elementType === 'img') {
+                themedCode = themedCode.replace(/src="[^"]*"/g, `src="${value}"`);
+              } else if (elementType === 'a') {
+                themedCode = themedCode.replace(/href="[^"]*"/g, `href="${value}"`);
+              }
+            } else {
+              // Handle nested props like logo.value
+              const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
+              themedCode = themedCode.replace(regex, `"${value}"`);
+              
+              // Also handle optional chaining patterns
+              const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
+              themedCode = themedCode.replace(optionalRegex, `"${value}"`);
             }
           }
         });
@@ -161,7 +166,44 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const handleContentSave = (newContent: string) => {
     if (!selectedElement || !elementSelector) return;
 
-    const contentKey = `${selectedElement.tagName.toLowerCase()}_content`;
+    // Handle different content types and create appropriate keys
+    let contentKey = '';
+    const tagName = selectedElement.tagName.toLowerCase();
+    
+    if (tagName === 'img') {
+      contentKey = 'img_content';
+    } else if (tagName === 'a') {
+      contentKey = 'a_content';
+    } else if (selectedElement.textContent) {
+      // For text elements, try to identify nested props
+      const textContent = selectedElement.textContent.trim();
+      
+      // Check if this might be a nested prop like logo.value
+      if (component.default_props) {
+        const findNestedProp = (obj: any, path: string[] = []): string | null => {
+          for (const [key, value] of Object.entries(obj)) {
+            const currentPath = [...path, key];
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+              const result = findNestedProp(value, currentPath);
+              if (result) return result;
+            } else if (typeof value === 'string' && value === textContent) {
+              return currentPath.join('.');
+            }
+          }
+          return null;
+        };
+        
+        const nestedProp = findNestedProp(component.default_props);
+        if (nestedProp) {
+          contentKey = `${nestedProp}_content`;
+        } else {
+          contentKey = `${tagName}_content`;
+        }
+      } else {
+        contentKey = `${tagName}_content`;
+      }
+    }
+
     const updatedProps = {
       ...component.customizableProps,
       [contentKey]: newContent
