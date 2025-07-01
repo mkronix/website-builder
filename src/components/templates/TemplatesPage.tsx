@@ -10,7 +10,7 @@ import templatesData from '@/data/templates.json';
 
 export const TemplatesPage = () => {
   const navigate = useNavigate();
-  const { createProject, addComponent } = useEditor();
+  const { loadTemplate } = useEditor();
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
 
   // Get all components from the new structure
@@ -18,41 +18,13 @@ export const TemplatesPage = () => {
     category.components || []
   );
 
+  // Convert templates object to array
+  const templatesArray = Object.values(templatesData.templates);
+
   const createProjectFromTemplate = (template: any) => {
-    const projectId = `project_${Date.now()}`;
+    // Use loadTemplate from EditorContext
+    loadTemplate(template);
     
-    // Create new project
-    createProject({
-      id: projectId,
-      name: template.name,
-      description: template.description,
-      pages: [{
-        id: 'home',
-        name: 'Home',
-        path: '/',
-        components: []
-      }],
-      theme: 'default'
-    });
-
-    // Add components to the project
-    if (template.components) {
-      template.components.forEach((compId: string) => {
-        const component = allComponents.find(c => c.id === compId);
-        if (component) {
-          const newComponent = {
-            id: `${component.id}-${Date.now()}`,
-            category: component.category,
-            default_props: { ...component.default_props },
-            react_code: component.react_code,
-            customizableProps: {},
-            variant: component.variant || 'default'
-          };
-          addComponent('home', newComponent);
-        }
-      });
-    }
-
     // Navigate to editor
     navigate('/editor');
   };
@@ -66,7 +38,7 @@ export const TemplatesPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templatesData.templates.map((template) => (
+          {templatesArray.map((template) => (
             <Card key={template.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <div className="aspect-video bg-gray-200 relative overflow-hidden">
                 {template.preview_image ? (
@@ -122,7 +94,7 @@ export const TemplatesPage = () => {
         </div>
 
         {/* Empty State */}
-        {templatesData.templates.length === 0 && (
+        {templatesArray.length === 0 && (
           <div className="text-center py-12">
             <h3 className="text-lg font-medium text-gray-900 mb-2">No templates available</h3>
             <p className="text-gray-600 mb-4">Templates will be added soon</p>
