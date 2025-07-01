@@ -38,7 +38,7 @@ export const TemplatesPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {templatesArray.map((template) => (
+          {templatesArray.map((template: any) => (
             <Card key={template.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <div className="aspect-video bg-gray-200 relative overflow-hidden">
                 {template.preview_image ? (
@@ -68,16 +68,16 @@ export const TemplatesPage = () => {
                 <p className="text-gray-600 text-sm mb-3">{template.description}</p>
                 
                 {/* Only show tags if they exist */}
-                {template.tags && template.tags.length > 0 && (
+                {(template as any).tags && Array.isArray((template as any).tags) && (template as any).tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {template.tags.slice(0, 3).map((tag: string, index: number) => (
+                    {(template as any).tags.slice(0, 3).map((tag: string, index: number) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {tag}
                       </Badge>
                     ))}
-                    {template.tags.length > 3 && (
+                    {(template as any).tags.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{template.tags.length - 3}
+                        +{(template as any).tags.length - 3}
                       </Badge>
                     )}
                   </div>
