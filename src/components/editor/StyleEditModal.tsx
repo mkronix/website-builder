@@ -15,25 +15,53 @@ interface StyleEditModalProps {
   onSave: (newStyles: Record<string, string>) => void;
 }
 
-const fontFamilies = [
-  'font-sans', 'font-serif', 'font-mono'
-];
+const fontSizes = {
+  'text-xs': '0.75rem',
+  'text-sm': '0.875rem',
+  'text-base': '1rem',
+  'text-lg': '1.125rem',
+  'text-xl': '1.25rem',
+  'text-2xl': '1.5rem',
+  'text-3xl': '1.875rem',
+  'text-4xl': '2.25rem'
+};
 
-const fontSizes = [
-  'text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl', 'text-4xl'
-];
+const fontWeights = {
+  'font-thin': '100',
+  'font-light': '300',
+  'font-normal': '400',
+  'font-medium': '500',
+  'font-semibold': '600',
+  'font-bold': '700',
+  'font-extrabold': '800'
+};
 
-const fontWeights = [
-  'font-thin', 'font-light', 'font-normal', 'font-medium', 'font-semibold', 'font-bold', 'font-extrabold'
-];
+const fontFamilies = {
+  'font-sans': 'ui-sans-serif, system-ui, sans-serif',
+  'font-serif': 'ui-serif, Georgia, serif',
+  'font-mono': 'ui-monospace, monospace'
+};
+
+const spacingValues = {
+  '0': '0px',
+  '1': '0.25rem',
+  '2': '0.5rem',
+  '3': '0.75rem',
+  '4': '1rem',
+  '5': '1.25rem',
+  '6': '1.5rem',
+  '8': '2rem',
+  '10': '2.5rem',
+  '12': '3rem',
+  '16': '4rem',
+  '20': '5rem',
+  '24': '6rem'
+};
 
 const colorOptions = [
   '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
-  '#808080', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#C0C0C0'
-];
-
-const spacingOptions = [
-  '0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24'
+  '#808080', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#C0C0C0',
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'
 ];
 
 export const StyleEditModal: React.FC<StyleEditModalProps> = ({
@@ -42,20 +70,50 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
   currentStyles,
   onSave
 }) => {
-  const [styles, setStyles] = useState<Record<string, string>>(currentStyles);
+  const [styles, setStyles] = useState<Record<string, string>>({});
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [customColor, setCustomColor] = useState('#000000');
   const [customBgColor, setCustomBgColor] = useState('#FFFFFF');
 
   useEffect(() => {
-    setStyles(currentStyles);
-  }, [currentStyles]);
+    // Convert current styles to proper format
+    const convertedStyles = {
+      fontSize: currentStyles.fontSize || '1rem',
+      fontWeight: currentStyles.fontWeight || '400',
+      fontFamily: currentStyles.fontFamily || 'ui-sans-serif, system-ui, sans-serif',
+      color: currentStyles.color || '#000000',
+      backgroundColor: currentStyles.backgroundColor || 'transparent',
+      margin: currentStyles.margin || '0px',
+      padding: currentStyles.padding || '0px',
+      customClasses: '',
+      customCSS: ''
+    };
+    setStyles(convertedStyles);
+  }, [currentStyles, isOpen]);
 
   const handleStyleChange = (property: string, value: string) => {
     setStyles(prev => ({
       ...prev,
       [property]: value
     }));
+  };
+
+  const handleTailwindToCSS = (property: string, tailwindClass: string) => {
+    let cssValue = '';
+    
+    if (property === 'fontSize' && tailwindClass in fontSizes) {
+      cssValue = fontSizes[tailwindClass as keyof typeof fontSizes];
+    } else if (property === 'fontWeight' && tailwindClass in fontWeights) {
+      cssValue = fontWeights[tailwindClass as keyof typeof fontWeights];
+    } else if (property === 'fontFamily' && tailwindClass in fontFamilies) {
+      cssValue = fontFamilies[tailwindClass as keyof typeof fontFamilies];
+    } else if ((property === 'margin' || property === 'padding') && tailwindClass in spacingValues) {
+      cssValue = spacingValues[tailwindClass as keyof typeof spacingValues];
+    }
+    
+    if (cssValue) {
+      handleStyleChange(property, cssValue);
+    }
   };
 
   const handleSave = () => {
@@ -84,14 +142,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-white text-sm">Font Family</Label>
-                <Select value={styles.fontFamily || ''} onValueChange={(value) => handleStyleChange('fontFamily', value)}>
+                <Select 
+                  value={Object.keys(fontFamilies).find(key => fontFamilies[key as keyof typeof fontFamilies] === styles.fontFamily) || ''} 
+                  onValueChange={(value) => handleTailwindToCSS('fontFamily', value)}
+                >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
                     <SelectValue placeholder="Select font" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#272725] border-gray-600">
-                    {fontFamilies.map(font => (
-                      <SelectItem key={font} value={font} className="text-white hover:bg-[#1c1c1c]">
-                        {font.replace('font-', '')}
+                    {Object.entries(fontFamilies).map(([key, value]) => (
+                      <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
+                        {key.replace('font-', '')}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -100,14 +161,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
               
               <div>
                 <Label className="text-white text-sm">Font Size</Label>
-                <Select value={styles.fontSize || ''} onValueChange={(value) => handleStyleChange('fontSize', value)}>
+                <Select 
+                  value={Object.keys(fontSizes).find(key => fontSizes[key as keyof typeof fontSizes] === styles.fontSize) || ''} 
+                  onValueChange={(value) => handleTailwindToCSS('fontSize', value)}
+                >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#272725] border-gray-600">
-                    {fontSizes.map(size => (
-                      <SelectItem key={size} value={size} className="text-white hover:bg-[#1c1c1c]">
-                        {size.replace('text-', '')}
+                    {Object.entries(fontSizes).map(([key, value]) => (
+                      <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
+                        {key.replace('text-', '')} ({value})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -117,14 +181,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
             
             <div>
               <Label className="text-white text-sm">Font Weight</Label>
-              <Select value={styles.fontWeight || ''} onValueChange={(value) => handleStyleChange('fontWeight', value)}>
+              <Select 
+                value={Object.keys(fontWeights).find(key => fontWeights[key as keyof typeof fontWeights] === styles.fontWeight) || ''} 
+                onValueChange={(value) => handleTailwindToCSS('fontWeight', value)}
+              >
                 <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
                   <SelectValue placeholder="Select weight" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#272725] border-gray-600">
-                  {fontWeights.map(weight => (
-                    <SelectItem key={weight} value={weight} className="text-white hover:bg-[#1c1c1c]">
-                      {weight.replace('font-', '')}
+                  {Object.entries(fontWeights).map(([key, value]) => (
+                    <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
+                      {key.replace('font-', '')} ({value})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -143,7 +210,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   {colorOptions.map(color => (
                     <button
                       key={color}
-                      className="w-8 h-8 rounded border-2 border-gray-600"
+                      className="w-8 h-8 rounded border-2 border-gray-600 hover:border-white transition-colors"
                       style={{ backgroundColor: color }}
                       onClick={() => handleStyleChange('color', color)}
                     />
@@ -154,7 +221,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                     type="color"
                     value={customColor}
                     onChange={(e) => setCustomColor(e.target.value)}
-                    className="w-8 h-8 rounded"
+                    className="w-8 h-8 rounded border border-gray-600"
                   />
                   <Button
                     size="sm"
@@ -172,7 +239,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   {colorOptions.map(color => (
                     <button
                       key={color}
-                      className="w-8 h-8 rounded border-2 border-gray-600"
+                      className="w-8 h-8 rounded border-2 border-gray-600 hover:border-white transition-colors"
                       style={{ backgroundColor: color }}
                       onClick={() => handleStyleChange('backgroundColor', color)}
                     />
@@ -183,7 +250,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                     type="color"
                     value={customBgColor}
                     onChange={(e) => setCustomBgColor(e.target.value)}
-                    className="w-8 h-8 rounded"
+                    className="w-8 h-8 rounded border border-gray-600"
                   />
                   <Button
                     size="sm"
@@ -204,14 +271,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-white text-sm">Margin</Label>
-                <Select value={styles.margin || ''} onValueChange={(value) => handleStyleChange('margin', `m-${value}`)}>
+                <Select 
+                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.margin) || ''} 
+                  onValueChange={(value) => handleTailwindToCSS('margin', value)}
+                >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
                     <SelectValue placeholder="Select margin" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#272725] border-gray-600">
-                    {spacingOptions.map(space => (
-                      <SelectItem key={space} value={space} className="text-white hover:bg-[#1c1c1c]">
-                        {space}
+                    {Object.entries(spacingValues).map(([key, value]) => (
+                      <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
+                        {key} ({value})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -220,14 +290,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
               
               <div>
                 <Label className="text-white text-sm">Padding</Label>
-                <Select value={styles.padding || ''} onValueChange={(value) => handleStyleChange('padding', `p-${value}`)}>
+                <Select 
+                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.padding) || ''} 
+                  onValueChange={(value) => handleTailwindToCSS('padding', value)}
+                >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
                     <SelectValue placeholder="Select padding" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#272725] border-gray-600">
-                    {spacingOptions.map(space => (
-                      <SelectItem key={space} value={space} className="text-white hover:bg-[#1c1c1c]">
-                        {space}
+                    {Object.entries(spacingValues).map(([key, value]) => (
+                      <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
+                        {key} ({value})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -238,7 +311,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
 
           {/* Advanced Options */}
           <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
-            <CollapsibleTrigger className="flex items-center gap-2 text-white hover:text-blue-400">
+            <CollapsibleTrigger className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors">
               {showAdvanced ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               <span>Show Advanced</span>
             </CollapsibleTrigger>
@@ -249,7 +322,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   value={styles.customClasses || ''}
                   onChange={(e) => handleStyleChange('customClasses', e.target.value)}
                   placeholder="Enter Tailwind classes..."
-                  className="bg-[#272725] border-gray-600 text-white"
+                  className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400"
                 />
               </div>
               
@@ -259,7 +332,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   value={styles.customCSS || ''}
                   onChange={(e) => handleStyleChange('customCSS', e.target.value)}
                   placeholder="Enter custom CSS..."
-                  className="w-full p-2 bg-[#272725] border border-gray-600 text-white rounded-md resize-none"
+                  className="w-full p-2 bg-[#272725] border border-gray-600 text-white placeholder:text-gray-400 rounded-md resize-none"
                   rows={4}
                 />
               </div>

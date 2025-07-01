@@ -23,6 +23,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const [contentType, setContentType] = useState<'text' | 'url' | 'image' | 'video' | null>(null);
   const [currentContent, setCurrentContent] = useState('');
   const [currentStyles, setCurrentStyles] = useState<Record<string, string>>({});
+  const [elementSelector, setElementSelector] = useState<string>('');
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
@@ -31,6 +32,34 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
       
+      // Apply content customizations
+      if (component.customizableProps) {
+        Object.entries(component.customizableProps).forEach(([key, value]) => {
+          if (key.endsWith('_content') && typeof value === 'string') {
+            // Replace content in the code
+            const elementType = key.replace('_content', '');
+            if (elementType === 'h1' || elementType === 'h2' || elementType === 'h3' || 
+                elementType === 'h4' || elementType === 'h5' || elementType === 'h6' || 
+                elementType === 'p' || elementType === 'span' || elementType === 'div') {
+              themedCode = themedCode.replace(
+                new RegExp(`<${elementType}[^>]*>([^<]*)</${elementType}>`, 'g'),
+                (match, originalContent) => match.replace(originalContent, value)
+              );
+            } else if (elementType === 'img') {
+              themedCode = themedCode.replace(
+                /src="[^"]*"/g,
+                `src="${value}"`
+              );
+            } else if (elementType === 'a') {
+              themedCode = themedCode.replace(
+                /href="[^"]*"/g,
+                `href="${value}"`
+              );
+            }
+          }
+        });
+      }
+
       let cleanCode = themedCode
         .replace(/import\s+.*?from\s+['"][^'"]*['"];?\s*/g, '')
         .replace(/export\s+default\s+/, '')
@@ -62,7 +91,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       console.error('Error compiling component:', error);
       return null;
     }
-  }, [component.react_code, state.theme]);
+  }, [component.react_code, component.customizableProps, state.theme]);
 
   const detectContentType = (element: HTMLElement): 'text' | 'url' | 'image' | 'video' | null => {
     if (element.tagName === 'IMG') return 'image';
@@ -92,6 +121,15 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     };
   };
 
+  const getElementSelector = (element: HTMLElement): string => {
+    if (element.id) return `#${element.id}`;
+    if (element.className) {
+      const classes = element.className.split(' ').filter(cls => cls.trim());
+      if (classes.length > 0) return `.${classes[0]}`;
+    }
+    return element.tagName.toLowerCase();
+  };
+
   const handleElementClick = (event: React.MouseEvent) => {
     if (!isSelected) return;
     
@@ -100,6 +138,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     
     if (target !== componentRef.current) {
       setSelectedElement(target);
+      const selector = getElementSelector(target);
+      setElementSelector(selector);
       const type = detectContentType(target);
       if (type) {
         setContentType(type);
@@ -119,31 +159,61 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   };
 
   const handleContentSave = (newContent: string) => {
-    if (!selectedElement || !component.customizableProps) return;
+    if (!selectedElement || !elementSelector) return;
 
-    // Update the component's customizable props
+    const contentKey = `${selectedElement.tagName.toLowerCase()}_content`;
     const updatedProps = {
       ...component.customizableProps,
-      [selectedElement.tagName.toLowerCase() + '_content']: newContent
+      [contentKey]: newContent
     };
 
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
+
+    setContentModalOpen(false);
   };
 
   const handleStyleSave = (newStyles: Record<string, string>) => {
-    if (!selectedElement || !component.customizableProps) return;
+    if (!selectedElement || !elementSelector) return;
 
-    // Update the component's customizable props with style information
+    const styleKey = `${selectedElement.tagName.toLowerCase()}_styles`;
     const updatedProps = {
       ...component.customizableProps,
-      [selectedElement.tagName.toLowerCase() + '_styles']: newStyles
+      [styleKey]: newStyles
     };
 
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
+
+    setStyleModalOpen(false);
+  };
+
+  const generateCustomStyles = (): string => {
+    if (!component.customizableProps) return '';
+
+    let customCSS = '';
+    Object.entries(component.customizableProps).forEach(([key, value]) => {
+      if (key.endsWith('_styles') && typeof value === 'object') {
+        const elementType = key.replace('_styles', '');
+        const styles = value as Record<string, string>;
+        
+        let cssRules = '';
+        Object.entries(styles).forEach(([property, val]) => {
+          if (val && val !== 'undefined') {
+            const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
+            cssRules += `${cssProperty}: ${val}; `;
+          }
+        });
+
+        if (cssRules) {
+          customCSS += `.editor-canvas ${elementType} { ${cssRules} } `;
+        }
+      }
+    });
+
+    return customCSS;
   };
 
   const renderComponent = () => {
@@ -189,7 +259,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
+      <style dangerouslySetInnerHTML={{ 
+        __html: generateThemeCSS(state.theme) + generateCustomStyles() 
+      }} />
       <div
         ref={componentRef}
         className={`relative ${

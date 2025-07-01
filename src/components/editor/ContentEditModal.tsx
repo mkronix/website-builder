@@ -25,7 +25,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
 
   useEffect(() => {
     setValue(currentValue);
-  }, [currentValue]);
+  }, [currentValue, isOpen]);
 
   const handleSave = () => {
     onSave(value);
@@ -44,7 +44,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Enter text content..."
-                className="bg-[#272725] border-gray-600 text-white"
+                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
                 rows={4}
               />
             </div>
@@ -62,7 +62,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="https://example.com"
-                className="bg-[#272725] border-gray-600 text-white"
+                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
               />
             </div>
           </div>
@@ -79,13 +79,23 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="https://example.com/image.jpg"
-                className="bg-[#272725] border-gray-600 text-white"
+                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
               />
             </div>
             {value && (
               <div className="mt-4">
                 <Label className="text-white">Preview:</Label>
-                <img src={value} alt="Preview" className="mt-2 max-w-full h-32 object-cover rounded" />
+                <div className="mt-2 border border-gray-600 rounded-lg overflow-hidden">
+                  <img 
+                    src={value} 
+                    alt="Preview" 
+                    className="max-w-full h-32 object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -101,15 +111,19 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
                 type="url"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                placeholder="https://youtube.com/watch?v=..."
-                className="bg-[#272725] border-gray-600 text-white"
+                placeholder="https://youtube.com/watch?v=... or direct video URL"
+                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
               />
             </div>
           </div>
         );
       
       default:
-        return null;
+        return (
+          <div className="text-center text-gray-400">
+            <p>Select an element to edit its content</p>
+          </div>
+        );
     }
   };
 
@@ -136,6 +150,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             <Button
               onClick={handleSave}
               className="bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={!value.trim()}
             >
               Save Changes
             </Button>
