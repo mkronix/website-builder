@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ContentEditModal } from './ContentEditModal';
@@ -26,6 +26,16 @@ export const ElementEditModal: React.FC<ElementEditModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState('content');
 
+  const handleContentSave = (newContent: string) => {
+    onContentSave(newContent);
+    onClose();
+  };
+
+  const handleStyleSave = (newStyles: Record<string, string>) => {
+    onStyleSave(newStyles);
+    onClose();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-[#1c1c1c] border-gray-600 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -49,10 +59,7 @@ export const ElementEditModal: React.FC<ElementEditModalProps> = ({
               onClose={() => {}}
               contentType={contentType}
               currentValue={currentContent}
-              onSave={(newContent) => {
-                onContentSave(newContent);
-                onClose();
-              }}
+              onSave={handleContentSave}
             />
           </TabsContent>
 
@@ -61,10 +68,7 @@ export const ElementEditModal: React.FC<ElementEditModalProps> = ({
               isOpen={true}
               onClose={() => {}}
               currentStyles={currentStyles}
-              onSave={(newStyles) => {
-                onStyleSave(newStyles);
-                onClose();
-              }}
+              onSave={handleStyleSave}
             />
           </TabsContent>
         </Tabs>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { InlineContentEditor } from './InlineContentEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -23,7 +24,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
   onSave
 }) => {
   // When used inline (isOpen is true but we don't want the dialog wrapper)
-  if (isOpen && onClose === (() => { })) {
+  if (isOpen && onClose === (() => {})) {
     return (
       <InlineContentEditor
         contentType={contentType}

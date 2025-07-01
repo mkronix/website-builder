@@ -1,13 +1,15 @@
+
 import { Page, Project } from "./projectExporterTypes";
 
 export const generateSEOTags = (page: Page, project: Project): string => {
-    const pageTitle = page.seo?.title || `${page.name} | ${project.name}`;
-    const pageDescription = page.seo?.description || project.seo?.defaultDescription || project.description || '';
-    const siteName = project.seo?.siteName || project.name;
-    const author = project.seo?.author || '';
-    const twitterHandle = project.seo?.twitterHandle || '';
-    const keywords = page.seo?.keywords?.join(', ') || '';
-    const ogImage = page.seo?.ogImage || '/og-image.jpg';
+    const projectSeo = project.settings?.seo || {};
+    const pageTitle = page.seo?.title || projectSeo.title || `${page.name} | ${project.name}`;
+    const pageDescription = page.seo?.description || projectSeo.description || project.description || '';
+    const siteName = projectSeo.siteName || project.name;
+    const author = projectSeo.author || '';
+    const twitterHandle = projectSeo.twitterHandle || '';
+    const keywords = page.seo?.keywords?.join(', ') || projectSeo.keywords?.join(', ') || '';
+    const ogImage = page.seo?.ogImage || projectSeo.ogImage || '/og-image.jpg';
 
     return `
     <title>${pageTitle}</title>
@@ -29,7 +31,7 @@ export const generateSEOTags = (page: Page, project: Project): string => {
     <meta property="twitter:title" content="${pageTitle}" />
     <meta property="twitter:description" content="${pageDescription}" />
     <meta property="twitter:image" content="${ogImage}" />
-    ${twitterHandle && `<meta property="twitter:site" content="@${twitterHandle}" />`}
+    ${twitterHandle && `<meta property="twitter:site" content="${twitterHandle.startsWith('@') ? twitterHandle : '@' + twitterHandle}" />`}
     
     <!-- Additional SEO -->
     <meta name="robots" content="index, follow" />
