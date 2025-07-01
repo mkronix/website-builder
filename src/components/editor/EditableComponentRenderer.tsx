@@ -26,11 +26,11 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
-    if (!component.react_code) return null;
+    if (!component?.react_code) return null;
 
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
-      
+
       // Apply content customizations with support for nested props
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
@@ -38,7 +38,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
             // Handle nested prop paths (e.g., "logo.value")
             const propPath = key.replace('_content', '');
             const propParts = propPath.split('.');
-            
+
             if (propParts.length === 1) {
               // Simple prop replacement
               const elementType = propParts[0];
@@ -56,7 +56,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
               // Handle nested props like logo.value
               const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
               themedCode = themedCode.replace(regex, `"${value}"`);
-              
+
               // Also handle optional chaining patterns
               const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
               themedCode = themedCode.replace(optionalRegex, `"${value}"`);
@@ -137,10 +137,10 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const handleElementClick = (event: React.MouseEvent) => {
     if (!isSelected) return;
-    
+
     event.stopPropagation();
     const target = event.target as HTMLElement;
-    
+
     if (target !== componentRef.current) {
       setSelectedElement(target);
       const selector = getElementSelector(target);
@@ -156,7 +156,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const handleElementHover = (event: React.MouseEvent) => {
     if (!isSelected) return;
-    
+
     const target = event.target as HTMLElement;
     if (target !== componentRef.current && target !== hoveredElement) {
       setHoveredElement(target);
@@ -169,7 +169,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     // Handle different content types and create appropriate keys
     let contentKey = '';
     const tagName = selectedElement.tagName.toLowerCase();
-    
+
     if (tagName === 'img') {
       contentKey = 'img_content';
     } else if (tagName === 'a') {
@@ -177,7 +177,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     } else if (selectedElement.textContent) {
       // For text elements, try to identify nested props
       const textContent = selectedElement.textContent.trim();
-      
+
       // Check if this might be a nested prop like logo.value
       if (component.default_props) {
         const findNestedProp = (obj: any, path: string[] = []): string | null => {
@@ -192,7 +192,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           }
           return null;
         };
-        
+
         const nestedProp = findNestedProp(component.default_props);
         if (nestedProp) {
           contentKey = `${nestedProp}_content`;
@@ -240,7 +240,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       if (key.endsWith('_styles') && typeof value === 'object') {
         const elementType = key.replace('_styles', '');
         const styles = value as Record<string, string>;
-        
+
         let cssRules = '';
         Object.entries(styles).forEach(([property, val]) => {
           if (val && val !== 'undefined') {
@@ -301,14 +301,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ 
-        __html: generateThemeCSS(state.theme) + generateCustomStyles() 
+      <style dangerouslySetInnerHTML={{
+        __html: generateThemeCSS(state.theme) + generateCustomStyles()
       }} />
       <div
         ref={componentRef}
-        className={`relative ${
-          isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
-        } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+        className={`relative ${isSelected ? 'ring-2 ring-black ring-inset' : ''
+          } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
         onClick={(e) => {
           e.stopPropagation();
           selectComponent(component.id);
@@ -320,11 +319,11 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }}
       >
         {renderComponent()}
-        
+
         {/* Hover overlay */}
         {isSelected && hoveredElement && (
           <div
-            className="absolute pointer-events-none border-2 border-dashed border-blue-400 bg-blue-400 bg-opacity-10"
+            className="absolute pointer-events-none border-2 border-dashed border-black bg-black/30 bg-opacity-10"
             style={{
               top: hoveredElement.offsetTop,
               left: hoveredElement.offsetLeft,
@@ -350,7 +349,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
                   e.stopPropagation();
                   setContentModalOpen(true);
                 }}
-                className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                className="px-2 py-1 bg-black text-white text-xs rounded hover:bg-black/30"
               >
                 Edit Content
               </button>
@@ -360,7 +359,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
                 e.stopPropagation();
                 setStyleModalOpen(true);
               }}
-              className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+              className="px-2 py-1 bg-white text-black text-xs rounded hover:bg-white/30"
             >
               Edit Style
             </button>

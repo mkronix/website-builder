@@ -61,7 +61,7 @@ export const ProjectsPage = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-white">My Projects</h1>
-          <Button 
+          <Button
             className="bg-[#272725] hover:bg-gray-600 text-white"
             onClick={() => setShowCreateDialog(true)}
           >
@@ -102,18 +102,18 @@ export const ProjectsPage = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-2">
-                  <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button size="sm" className="flex-1 bg-black hover:bg-black/30 text-white">
                     <Eye className="w-4 h-4 mr-1" />
                     Open
                   </Button>
                   <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white hover:bg-[#1c1c1c]">
                     <Download className="w-4 h-4" />
                   </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
+                  <Button
+                    size="sm"
+                    variant="ghost"
                     className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                     onClick={() => deleteProject(project.id)}
                   >
@@ -130,7 +130,7 @@ export const ProjectsPage = () => {
             <DialogHeader>
               <DialogTitle className="text-white">Create New Project</DialogTitle>
             </DialogHeader>
-            
+
             <div className="space-y-4 mt-4">
               <Input
                 placeholder="Project name"
@@ -139,7 +139,7 @@ export const ProjectsPage = () => {
                 onKeyPress={(e) => e.key === 'Enter' && handleCreateProject()}
                 className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
               />
-              
+
               <div className="flex justify-end space-x-2">
                 <Button
                   variant="ghost"
@@ -150,7 +150,7 @@ export const ProjectsPage = () => {
                 </Button>
                 <Button
                   onClick={handleCreateProject}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-black hover:bg-black/30 text-white"
                 >
                   Create Project
                 </Button>

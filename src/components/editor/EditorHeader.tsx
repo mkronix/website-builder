@@ -108,13 +108,13 @@ export const EditorHeader = () => {
 
   return (
     <>
-      <header className="bg-[#1c1c1c] border-b border-gray-700 px-1 py-3 flex items-center justify-between">
+      <header className="bg-[#1c1c1c] fixed w-full z-50 border-b border-gray-700 p-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-gray-300 hover:text-white px-2"
+            className="text-gray-300 hover:text-white px-0"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
@@ -130,15 +130,15 @@ export const EditorHeader = () => {
 
         <div className="flex items-center gap-3">
           {/* Preview Mode Toggle */}
-          <div className="flex items-center bg-[#272725] rounded-lg p-1">
+          <div className="flex items-center bg-[#272725] rounded-lg">
             {previewModes.map(({ mode, icon: Icon, label }) => (
               <Button
                 key={mode}
                 variant={state.previewMode === mode ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setPreviewMode(mode)}
-                className={`px-3 py-1 ${state.previewMode === mode
-                  ? 'bg-blue-600 text-white'
+                className={`px-3 ${state.previewMode === mode
+                  ? 'bg-white text-black'
                   : 'text-gray-400 hover:text-white'
                   }`}
               >
@@ -150,7 +150,7 @@ export const EditorHeader = () => {
           <Button
             onClick={handleExport}
             disabled={isExporting}
-            className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
+            className="bg-white hover:bg-gray-200 text-black disabled:opacity-50"
             size="sm"
           >
             <Download className="w-4 h-4 mr-2" />
@@ -159,8 +159,8 @@ export const EditorHeader = () => {
 
           <Button
             onClick={() => setShowSaveDialog(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            size="sm"
+            className="bg-black hover:bg-black/25 text-white"
+            size="default"
           >
             <Save className="w-4 h-4 mr-2" />
             Save Project
@@ -213,7 +213,7 @@ export const EditorHeader = () => {
               <Button
                 onClick={handleSave}
                 disabled={!projectName.trim()}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-black hover:bg-black/25 text-white"
               >
                 {currentProject ? 'Update' : 'Save'} Project
               </Button>

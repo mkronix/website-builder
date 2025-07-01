@@ -61,7 +61,7 @@ export const DashboardPage = () => {
           </div>
           <Button
             onClick={handleCreateProject}
-            className={`${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
+            className={`${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-black hover:bg-black/30'} text-white`}
             disabled={userCredits <= 0}
           >
             <Plus className="w-4 h-4 mr-2" />

@@ -1,9 +1,8 @@
 
-import React, { useMemo } from 'react';
-import * as Babel from '@babel/standalone';
 import { Component, useEditor } from '@/contexts/EditorContext';
-import { renderStaticComponent } from '@/utils/compoenentRenderer';
 import { applyThemeToCode, generateThemeCSS } from '@/utils/themeUtils';
+import * as Babel from '@babel/standalone';
+import React, { useMemo } from 'react';
 
 interface ComponentRendererProps {
   component: Component;
@@ -22,7 +21,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     try {
       // Apply theme classes to the component code
       let themedCode = applyThemeToCode(component.react_code, state.theme);
-      
+
       let cleanCode = themedCode
         .replace(/import\s+.*?from\s+['"][^'"]*['"];?\s*/g, '')
         .replace(/export\s+default\s+/, '')
@@ -102,7 +101,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
     <>
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
       <div
-        className={`relative ${isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
+        className={`relative ${isSelected ? 'ring-2 ring-black ring-inset' : ''
           } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
         onClick={(e) => {
           e.stopPropagation();

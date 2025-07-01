@@ -100,7 +100,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
 
   const handleTailwindToCSS = (property: string, tailwindClass: string) => {
     let cssValue = '';
-    
+
     if (property === 'fontSize' && tailwindClass in fontSizes) {
       cssValue = fontSizes[tailwindClass as keyof typeof fontSizes];
     } else if (property === 'fontWeight' && tailwindClass in fontWeights) {
@@ -110,7 +110,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
     } else if ((property === 'margin' || property === 'padding') && tailwindClass in spacingValues) {
       cssValue = spacingValues[tailwindClass as keyof typeof spacingValues];
     }
-    
+
     if (cssValue) {
       handleStyleChange(property, cssValue);
     }
@@ -133,17 +133,17 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-white">Style Editor</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {/* Typography */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Typography</h3>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-white text-sm">Font Family</Label>
-                <Select 
-                  value={Object.keys(fontFamilies).find(key => fontFamilies[key as keyof typeof fontFamilies] === styles.fontFamily) || ''} 
+                <Select
+                  value={Object.keys(fontFamilies).find(key => fontFamilies[key as keyof typeof fontFamilies] === styles.fontFamily) || ''}
                   onValueChange={(value) => handleTailwindToCSS('fontFamily', value)}
                 >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
@@ -158,11 +158,11 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label className="text-white text-sm">Font Size</Label>
-                <Select 
-                  value={Object.keys(fontSizes).find(key => fontSizes[key as keyof typeof fontSizes] === styles.fontSize) || ''} 
+                <Select
+                  value={Object.keys(fontSizes).find(key => fontSizes[key as keyof typeof fontSizes] === styles.fontSize) || ''}
                   onValueChange={(value) => handleTailwindToCSS('fontSize', value)}
                 >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
@@ -178,11 +178,11 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label className="text-white text-sm">Font Weight</Label>
-              <Select 
-                value={Object.keys(fontWeights).find(key => fontWeights[key as keyof typeof fontWeights] === styles.fontWeight) || ''} 
+              <Select
+                value={Object.keys(fontWeights).find(key => fontWeights[key as keyof typeof fontWeights] === styles.fontWeight) || ''}
                 onValueChange={(value) => handleTailwindToCSS('fontWeight', value)}
               >
                 <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
@@ -202,7 +202,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
           {/* Colors */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Colors</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <Label className="text-white text-sm">Text Color</Label>
@@ -226,13 +226,13 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   <Button
                     size="sm"
                     onClick={() => applyColorFromPicker('text')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-black hover:bg-black/30 text-white"
                   >
                     Apply Custom
                   </Button>
                 </div>
               </div>
-              
+
               <div>
                 <Label className="text-white text-sm">Background Color</Label>
                 <div className="flex gap-2 flex-wrap mt-2">
@@ -255,7 +255,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   <Button
                     size="sm"
                     onClick={() => applyColorFromPicker('background')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-black hover:bg-black/30 text-white"
                   >
                     Apply Custom
                   </Button>
@@ -267,12 +267,12 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
           {/* Spacing */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Spacing</h3>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-white text-sm">Margin</Label>
-                <Select 
-                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.margin) || ''} 
+                <Select
+                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.margin) || ''}
                   onValueChange={(value) => handleTailwindToCSS('margin', value)}
                 >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
@@ -287,11 +287,11 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label className="text-white text-sm">Padding</Label>
-                <Select 
-                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.padding) || ''} 
+                <Select
+                  value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.padding) || ''}
                   onValueChange={(value) => handleTailwindToCSS('padding', value)}
                 >
                   <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
@@ -311,7 +311,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
 
           {/* Advanced Options */}
           <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
-            <CollapsibleTrigger className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors">
+            <CollapsibleTrigger className="flex items-center gap-2 text-white hover:text-black transition-colors">
               {showAdvanced ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               <span>Show Advanced</span>
             </CollapsibleTrigger>
@@ -325,7 +325,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
                   className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400"
                 />
               </div>
-              
+
               <div>
                 <Label className="text-white text-sm">Custom CSS</Label>
                 <textarea
@@ -349,7 +349,7 @@ export const StyleEditModal: React.FC<StyleEditModalProps> = ({
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-black hover:bg-black/30 text-white"
             >
               Apply Styles
             </Button>

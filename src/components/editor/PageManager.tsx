@@ -42,18 +42,17 @@ export const PageManager = () => {
         {state.pages.map((page) => (
           <div
             key={page.id}
-            className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-              state.currentPage === page.id
-                ? 'bg-[#272725] border border-blue-500'
-                : 'bg-[#272725] hover:bg-gray-600 border border-transparent'
-            }`}
+            className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${state.currentPage === page.id
+              ? 'bg-[#272725] border border-black'
+              : 'bg-[#272725] hover:bg-gray-600 border border-transparent'
+              }`}
             onClick={() => setCurrentPage(page.id)}
           >
             <div className="flex items-center">
               <FileText className="w-4 h-4 text-gray-400 mr-3" />
               <span className="text-white">{page.name}</span>
             </div>
-            
+
             {state.pages.length > 1 && (
               <Button
                 size="sm"
@@ -76,16 +75,16 @@ export const PageManager = () => {
           <DialogHeader>
             <DialogTitle className="text-white">Add New Page</DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4 mt-4">
             <Input
               placeholder="Page name"
               value={newPageName}
               onChange={(e) => setNewPageName(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddPage()}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddPage()}
               className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
             />
-            
+
             <div className="flex justify-end space-x-2">
               <Button
                 variant="ghost"
@@ -96,7 +95,7 @@ export const PageManager = () => {
               </Button>
               <Button
                 onClick={handleAddPage}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-black hover:bg-black/30 text-white"
               >
                 Add Page
               </Button>

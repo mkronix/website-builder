@@ -39,19 +39,18 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group ${
-        isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
-      } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+      className={`relative group ${isSelected ? 'ring-2 ring-black ring-inset' : ''
+        } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
       onClick={(e) => {
         e.stopPropagation();
         onSelect(component.id);
       }}
     >
-      <EditableComponentRenderer 
-        component={component} 
-        isSelected={isSelected} 
+      <EditableComponentRenderer
+        component={component}
+        isSelected={isSelected}
       />
-      
+
       {/* Drag handle and remove button */}
       <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-30">
         <Button
@@ -77,7 +76,7 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
       </div>
 
       {isSelected && (
-        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-30">
+        <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 rounded text-xs z-30">
           Selected: {component.category}
         </div>
       )}

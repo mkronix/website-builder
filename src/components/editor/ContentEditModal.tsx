@@ -50,7 +50,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             </div>
           </div>
         );
-      
+
       case 'url':
         return (
           <div className="space-y-4">
@@ -67,7 +67,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             </div>
           </div>
         );
-      
+
       case 'image':
         return (
           <div className="space-y-4">
@@ -86,9 +86,9 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
               <div className="mt-4">
                 <Label className="text-white">Preview:</Label>
                 <div className="mt-2 border border-gray-600 rounded-lg overflow-hidden">
-                  <img 
-                    src={value} 
-                    alt="Preview" 
+                  <img
+                    src={value}
+                    alt="Preview"
                     className="max-w-full h-32 object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -100,7 +100,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             )}
           </div>
         );
-      
+
       case 'video':
         return (
           <div className="space-y-4">
@@ -117,7 +117,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             </div>
           </div>
         );
-      
+
       default:
         return (
           <div className="text-center text-gray-400">
@@ -135,10 +135,10 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             Edit {contentType ? contentType.charAt(0).toUpperCase() + contentType.slice(1) : 'Content'}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           {renderContentEditor()}
-          
+
           <div className="flex justify-end space-x-2 pt-4">
             <Button
               variant="outline"
@@ -149,7 +149,7 @@ export const ContentEditModal: React.FC<ContentEditModalProps> = ({
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-black hover:bg-black/30 text-white"
               disabled={!value.trim()}
             >
               Save Changes
