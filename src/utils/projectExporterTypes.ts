@@ -1,0 +1,66 @@
+
+interface Theme {
+    primaryColor?: string;
+    secondaryColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
+}
+
+interface Component {
+    id: string;
+    category: string;
+    variant: string;
+    default_props: Record<string, any>;
+    react_code: string;
+}
+
+interface Page {
+    id: string;
+    name: string;
+    slug: string;
+    components: Component[];
+    seo?: {
+        title?: string;
+        description?: string;
+        keywords?: string[];
+        ogImage?: string;
+    };
+}
+
+interface Project {
+    id: string;
+    name: string;
+    description?: string;
+    theme?: {
+        primaryColor?: string;
+        secondaryColor?: string;
+        backgroundColor?: string;
+        textColor?: string;
+    };
+    seo?: {
+        siteName?: string;
+        defaultDescription?: string;
+        author?: string;
+        twitterHandle?: string;
+        favicon?: string;
+    };
+    created_at: string;
+    updated_at: string;
+}
+
+interface ProjectData {
+    project: Project;
+    pages: Page[];
+}
+
+interface ExportSettings {
+    includeAnimations: boolean;
+    includeRouting: boolean;
+    typescript: boolean;
+    prettier: boolean;
+    includeSEO: boolean;
+    includeAnalytics: boolean;
+    includeSitemap: boolean;
+    includeRobots: boolean;
+}
+export type { Component, Page, Theme, Project, ProjectData, ExportSettings };

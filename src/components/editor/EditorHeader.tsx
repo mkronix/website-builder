@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -15,11 +14,13 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { exportProject } from '@/utils/projectExporter';
 
 export const EditorHeader = () => {
   const navigate = useNavigate();
   const { state, setPreviewMode, saveProject, currentProject } = useEditor();
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || '');
   const [projectDescription, setProjectDescription] = useState(currentProject?.description || '');
 
@@ -30,19 +31,73 @@ export const EditorHeader = () => {
     }
   };
 
-  const handleExport = () => {
-    const exportData = {
-      project: currentProject,
-      state: state,
-      theme: state.theme,
-      pages: state.pages,
-      timestamp: new Date().toISOString(),
-      totalComponents: state.pages.reduce((total, page) => total + page.components.length, 0)
-    };
-    
-    console.log('=== PROJECT EXPORT DATA ===');
-    console.log(JSON.stringify(exportData, null, 2));
-    console.log('=== END EXPORT DATA ===');
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+
+      // Prepare project data for export
+      const projectData = {
+        project: {
+          id: currentProject?.id || 'temp-id',
+          name: currentProject?.name || 'React Project',
+          description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
+          theme: {
+            primaryColor: state.theme?.primaryColor || '#10B981',
+            secondaryColor: state.theme?.secondaryColor || '#059669',
+            backgroundColor: state.theme?.backgroundColor || '#F9FAFB',
+            textColor: state.theme?.textColor || '#111827'
+          },
+          created_at: currentProject?.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        pages: state.pages.map(page => ({
+          id: page.id,
+          name: page.name,
+          slug: page.slug || `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
+          components: page.components.map(component => ({
+            id: component.id,
+            category: component.category || 'general',
+            variant: component.variant || 'default',
+            default_props: component.default_props || {},
+            react_code: component.react_code || `const ${component.category || 'Component'} = () => {
+  return <div>Component</div>;
+};`
+          }))
+        }))
+      };
+
+      // Get all unique components from all pages
+      const allComponents = projectData.pages.reduce((acc, page) => {
+        page.components.forEach(comp => {
+          if (!acc.some(existing => existing.id === comp.id)) {
+            acc.push(comp);
+          }
+        });
+        return acc;
+      }, []);
+
+      // Export settings
+      const exportSettings = {
+        includeAnimations: true,
+        includeRouting: projectData.pages.length > 1,
+        typescript: false,
+        prettier: true,
+        includeSEO: true,
+        includeAnalytics: false,
+        includeSitemap: true,
+        includeRobots: true
+      };
+
+      // Call the export function
+      await exportProject(projectData, allComponents, exportSettings);
+
+      console.log('Project exported successfully!');
+    } catch (error) {
+      console.error('Export failed:', error);
+      // You might want to show a toast notification here
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const previewModes = [
@@ -94,11 +149,12 @@ export const EditorHeader = () => {
 
           <Button
             onClick={handleExport}
-            className="bg-green-600 hover:bg-green-700 text-white"
+            disabled={isExporting}
+            className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
             size="sm"
           >
             <Download className="w-4 h-4 mr-2" />
-            Export
+            {isExporting ? 'Exporting...' : 'Export'}
           </Button>
 
           <Button
@@ -122,7 +178,7 @@ export const EditorHeader = () => {
 
           <div className="space-y-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor='projectName' className="block text-sm font-medium text-gray-300 mb-2">
                 Project Name
               </label>
               <Input
@@ -134,7 +190,7 @@ export const EditorHeader = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor='projectDescription' className="block text-sm font-medium text-gray-300 mb-2">
                 Description (Optional)
               </label>
               <Textarea

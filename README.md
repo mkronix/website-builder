@@ -184,3 +184,11 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 - bg-[#1c1c1c] for background
 - bg-[#272725] for accents
 - text-white for texts 
+
+1. remove the ; from imports of app.jsx
+2. fix this code in  <img
+              src={hero_image.src}
+              alt={hero_image.alt}
+              className="mx-auto rounded-lg shadow-lg max-w-md"
+              loading="lazy" /> creativeMinimalHero.jsx
+              same for this SplitWithImageHero.jsx
