@@ -636,7 +636,10 @@ const generatePackageJson = (project: Project, settings: ExportSettings): Record
     react: '^18.2.0',
     'react-dom': '^18.2.0',
     'clsx': '^2.0.0',
-    'tailwind-merge': '^2.2.0'
+    'tailwind-merge': '^2.2.0',
+    'react-icons': '^4.11.0',
+    'react-helmet-async': '^1.3.0',
+    "lucide-react": "^0.462.0",
   };
 
   const conditionalDependencies: Record<string, string> = {};

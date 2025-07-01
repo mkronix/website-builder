@@ -201,12 +201,15 @@ ${animationImports}
 ${analyticsImport}
 ${pageImports}
 import ErrorBoundary from './ErrorBoundary';
+import { HelmetProvider } from 'react-helmet-async';
 import './App.css';
 
 function App() {
   return (
     <ErrorBoundary>
+    <HelmetProvider>
 ${appContent}
+    </HelmetProvider>
     </ErrorBoundary>
   );
 }
