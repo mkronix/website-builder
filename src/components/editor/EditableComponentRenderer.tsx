@@ -575,8 +575,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       }} />
       <div
         ref={componentRef}
-        className={`relative ${isSelected ? 'ring-2 ring-black ring-inset' : ''
-          } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+        className={`relative cursor-pointer`}
         onClick={(e) => {
           e.stopPropagation();
           selectComponent(component.id);
@@ -587,12 +586,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }}
       >
         {renderComponent()}
-
-        {isSelected && (
-          <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-30 pointer-events-none">
-            Click elements to edit
-          </div>
-        )}
       </div>
 
       {/* Edit Modal with Tabs */}

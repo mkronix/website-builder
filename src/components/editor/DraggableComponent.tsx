@@ -40,7 +40,7 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
       ref={setNodeRef}
       style={style}
       className={`relative group ${isSelected ? 'ring-2 ring-black ring-inset' : ''
-        } hover:ring-1 hover:ring-gray-300 hover:ring-inset transition-all cursor-pointer`}
+        } transition-all cursor-pointer`}
       onClick={(e) => {
         e.stopPropagation();
         onSelect(component.id);
@@ -74,12 +74,6 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
-
-      {/* {isSelected && (
-        <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 rounded text-xs z-30">
-          Selected: {component.category}
-        </div>
-      )} */}
     </div>
   );
 };
