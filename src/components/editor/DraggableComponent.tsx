@@ -75,11 +75,11 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
         </Button>
       </div>
 
-      {isSelected && (
+      {/* {isSelected && (
         <div className="absolute top-2 left-2 bg-black text-white px-2 py-1 rounded text-xs z-30">
           Selected: {component.category}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

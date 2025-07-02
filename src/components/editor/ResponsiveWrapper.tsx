@@ -44,7 +44,6 @@ export const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
           ${state.previewMode === 'mobile' ? `
             .responsive-container {
               max-width: 375px;
-              padding: 0 1rem;
             }
             .responsive-container .grid {
               grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
@@ -73,7 +72,6 @@ export const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
           ${state.previewMode === 'tablet' ? `
             .responsive-container {
               max-width: 768px;
-              padding: 0 1.5rem;
             }
             .responsive-container .grid-cols-3,
             .responsive-container .grid-cols-4 {
@@ -94,7 +92,6 @@ export const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
           ${state.previewMode === 'desktop' ? `
             .responsive-container {
               max-width: 100%;
-              padding: 0 2rem;
             }
           ` : ''}
         `

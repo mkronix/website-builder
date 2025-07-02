@@ -64,37 +64,37 @@ export const EditorCanvas = () => {
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
       <ResponsiveWrapper>
         <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
-        {currentPage?.components.length === 0 ? (
-          <div className="flex items-center justify-center h-96 text-muted-foreground">
-            <div className="text-center">
-              <h3 className="text-lg text-white font-medium mb-2">Start Building</h3>
-              <p className="text-sm text-white">Add components from the sidebar to get started</p>
-            </div>
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={currentPage?.components.map(comp => comp.id) || []}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="space-y-0">
-                {currentPage?.components.map((component) => (
-                  <DraggableComponent
-                    key={component.id}
-                    component={component}
-                    isSelected={state.selectedComponent === component.id}
-                    onSelect={selectComponent}
-                    onRemove={handleRemoveComponent}
-                  />
-                ))}
+          {currentPage?.components.length === 0 ? (
+            <div className="flex bg-[#1c1c1c] items-center justify-center w-full h-[calc(100vh_-_7rem)]">
+              <div className="text-center">
+                <h3 className="text-lg text-white font-medium mb-2">Start Building</h3>
+                <p className="text-sm text-white">Add components from the sidebar to get started</p>
               </div>
-            </SortableContext>
-          </DndContext>
-        )}
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={currentPage?.components.map(comp => comp.id) || []}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-0">
+                  {currentPage?.components.map((component) => (
+                    <DraggableComponent
+                      key={component.id}
+                      component={component}
+                      isSelected={state.selectedComponent === component.id}
+                      onSelect={selectComponent}
+                      onRemove={handleRemoveComponent}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
         </div>
       </ResponsiveWrapper>
     </div>

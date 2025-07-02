@@ -114,7 +114,7 @@ export const EditorHeader = () => {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-gray-300 hover:text-white px-0"
+            className="text-gray-300 hover:text-white px-0 hover:border-none"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
@@ -161,7 +161,7 @@ export const EditorHeader = () => {
               }}
               className="text-gray-400 hover:text-white"
             >
-              {previewModes.find(({ mode }) => mode === state.previewMode)?.icon && 
+              {previewModes.find(({ mode }) => mode === state.previewMode)?.icon &&
                 React.createElement(previewModes.find(({ mode }) => mode === state.previewMode)!.icon, { className: "w-4 h-4" })
               }
             </Button>
