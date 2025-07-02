@@ -36,11 +36,6 @@ export const ThemeCustomizer = () => {
 
   return (
     <div className="p-4 space-y-6 pb-10">
-      <div className="flex items-center gap-2 mb-4">
-        <Palette className="w-5 h-5 text-black" />
-        <h3 className="text-white font-semibold">Theme Customizer</h3>
-      </div>
-
       {/* Color Presets */}
       <div>
         <Label className="text-sm font-semibold text-white mb-3 block">

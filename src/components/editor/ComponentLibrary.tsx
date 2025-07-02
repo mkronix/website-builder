@@ -61,7 +61,6 @@ export const ComponentLibrary = () => {
 
   return (
     <div className="p-4 space-y-4">
-      <h3 className="text-white font-semibold mb-4">Add Components</h3>
 
       <div className="space-y-2">
         {componentCategories.map((category) => {
