@@ -1,13 +1,11 @@
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Bell, Settings, BarChart3, CreditCard, Shield } from 'lucide-react';
 import websiteData from '@/data/data.json';
+import { BarChart3, Bell, CreditCard, Settings, Shield } from 'lucide-react';
+import { useState } from 'react';
 
 export const SettingsPage = () => {
   const { system_settings, analytics, component_usage_stats, billing, notifications } = websiteData;
@@ -58,39 +56,39 @@ export const SettingsPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-white">Auto Save</label>
-                  <Switch 
+                  <label htmlFor='auto_save_enabled' className="text-white">Auto Save</label>
+                  <Switch
                     checked={settings.auto_save_enabled}
                     onCheckedChange={(checked) => updateSetting('auto_save_enabled', checked)}
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <label className="text-white">Dark Mode</label>
-                  <Switch 
+                  <label htmlFor='dark_mode' className="text-white">Dark Mode</label>
+                  <Switch
                     checked={settings.dark_mode}
                     onCheckedChange={(checked) => updateSetting('dark_mode', checked)}
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <label className="text-white">Responsive Preview</label>
-                  <Switch 
+                  <label htmlFor='responsive_preview' className="text-white">Responsive Preview</label>
+                  <Switch
                     checked={settings.responsive_preview}
                     onCheckedChange={(checked) => updateSetting('responsive_preview', checked)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-white">Auto Save Interval</label>
+                  <label htmlFor="auto_save_interval" className="text-white">Auto Save Interval</label>
                   <p className="text-gray-400">{settings.auto_save_interval} seconds</p>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-white">Session Timeout</label>
+                  <label htmlFor='session_timeout' className="text-white">Session Timeout</label>
                   <p className="text-gray-400">{system_settings.session_timeout} minutes</p>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-white">Supported Frameworks</label>
+                  <label htmlFor='supported_frameworks' className="text-white">Supported Frameworks</label>
                   <div className="flex flex-wrap gap-2">
                     {system_settings.supported_frameworks.map((framework) => (
-                      <Badge key={framework} className="bg-blue-500 text-white">{framework}</Badge>
+                      <Badge key={framework} className="bg-black text-white">{framework}</Badge>
                     ))}
                   </div>
                 </div>
@@ -140,7 +138,7 @@ export const SettingsPage = () => {
                       <p className="text-gray-400 text-sm">{pkg.description}</p>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-white">{pkg.credits} credits</span>
-                        <span className="text-blue-400">${pkg.price}</span>
+                        <span className="text-black">${pkg.price}</span>
                       </div>
                     </div>
                   ))}
@@ -185,7 +183,7 @@ export const SettingsPage = () => {
                           <p className="text-gray-300">{notification.message}</p>
                           <p className="text-gray-400 text-sm">{new Date(notification.created_at).toLocaleDateString()}</p>
                         </div>
-                        <Badge className={notification.is_read ? 'bg-gray-500' : 'bg-blue-500'}>
+                        <Badge className={notification.is_read ? 'bg-gray-500' : 'bg-black'}>
                           {notification.is_read ? 'Read' : 'Unread'}
                         </Badge>
                       </div>
@@ -210,7 +208,7 @@ export const SettingsPage = () => {
                         <p className="text-gray-400 text-sm">Most used: {stat.most_used_component}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-blue-400">{stat.component_additions} additions</span>
+                        <span className="text-black">{stat.component_additions} additions</span>
                         <p className="text-gray-400 text-sm">{stat.active_users} users</p>
                       </div>
                     </div>

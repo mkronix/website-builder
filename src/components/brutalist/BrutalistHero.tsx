@@ -140,8 +140,9 @@ const BrutalistHero = ({ onGetStarted }) => {
                   }}
                   transition={{ duration: 3, repeat: Infinity }}
                 >
-                  ESCAPE THE ORDINARY. CREATE WEBSITES THAT SCREAM DIGITAL REBELLION.
-                  NO RULES. NO LIMITS. PURE CREATIVE CHAOS.
+                  DESIGN LIKE A REBEL. BUILD LIKE AN ARTIST
+                  <br />
+                  No blueprints. No conformity. Just wild, expressive digital freedom.
                 </motion.p>
               </div>
             </motion.div>
@@ -155,7 +156,7 @@ const BrutalistHero = ({ onGetStarted }) => {
             >
               <motion.button
                 onClick={onGetStarted}
-                className="group relative bg-lime-400 text-black px-16 py-8 text-3xl font-black uppercase tracking-wide overflow-hidden"
+                className="group relative bg-lime-400 text-black px-16 py-6 text-3xl font-black uppercase tracking-wide overflow-hidden"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

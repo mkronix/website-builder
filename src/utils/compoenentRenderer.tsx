@@ -14,7 +14,6 @@ export const getComponentCategory = (type: string) => {
   return type;
 };
 
-
 export const renderStaticComponent = (component: Component) => {
   const props = component.default_props || {};
   const category = getComponentCategory(component.category);
@@ -22,10 +21,10 @@ export const renderStaticComponent = (component: Component) => {
   switch (category) {
     case 'navbar':
       return (
-        <nav className="bg-white shadow-lg">
+        <nav className="bg-background shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="text-xl font-bold text-gray-800">
+              <div className="text-xl font-bold text-foreground">
                 {props.logo?.value || props.logo || 'Brand'}
               </div>
               <div className="hidden md:flex space-x-8">
@@ -33,7 +32,7 @@ export const renderStaticComponent = (component: Component) => {
                   <a
                     key={index}
                     href={item.href || item.url || '#'}
-                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                    className="text-muted hover:text-primary transition-colors"
                   >
                     {item.label || item.text || `Link ${index + 1}`}
                   </a>
@@ -43,7 +42,7 @@ export const renderStaticComponent = (component: Component) => {
             {props.cta_button && (
               <a
                 href={props.cta_button.href || '#'}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+                className="bg-primary hover:bg-primary/80 text-background px-4 py-2 rounded-md transition-colors"
               >
                 {props.cta_button.text || 'CTA'}
               </a>
@@ -54,21 +53,21 @@ export const renderStaticComponent = (component: Component) => {
 
     case 'hero':
       return (
-        <section className="min-h-screen flex items-center bg-gradient-to-r from-blue-50 to-indigo-100">
+        <section className="min-h-screen flex items-center bg-gradient-to-r from-background to-secondary/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
-                <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
                   {props.headline || props.title || 'Welcome to Our Platform'}
                 </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
+                <p className="text-xl text-muted leading-relaxed">
                   {props.subheadline || props.subtitle || 'Build something amazing with our tools and services.'}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   {props.primary_cta && (
                     <a
                       href={props.primary_cta.href || '#'}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center"
+                      className="bg-primary hover:bg-primary/80 text-background px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center"
                     >
                       {props.primary_cta.text || 'Get Started'}
                     </a>
@@ -76,7 +75,7 @@ export const renderStaticComponent = (component: Component) => {
                   {props.secondary_cta && (
                     <a
                       href={props.secondary_cta.href || '#'}
-                      className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center"
+                      className="border-2 border-secondary hover:border-primary text-muted px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center"
                     >
                       {props.secondary_cta.text || 'Learn More'}
                     </a>
@@ -99,13 +98,13 @@ export const renderStaticComponent = (component: Component) => {
 
     case 'features':
       return (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-secondary/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 {props.section_title || 'Our Features'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-muted max-w-3xl mx-auto">
                 {props.section_subtitle || 'Discover what makes us different'}
               </p>
             </div>
@@ -113,14 +112,14 @@ export const renderStaticComponent = (component: Component) => {
               {(props.features || []).map((feature: any, index: number) => (
                 <div key={index} className="text-center">
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <div className="w-8 h-8 bg-blue-600 rounded"></div>
+                    <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-primary rounded"></div>
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
                     {feature.title || `Feature ${index + 1}`}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-muted">
                     {feature.description || 'Feature description goes here.'}
                   </p>
                 </div>
@@ -135,22 +134,22 @@ export const renderStaticComponent = (component: Component) => {
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 {props.section_title || 'Our Services'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-muted max-w-3xl mx-auto">
                 {props.section_subtitle || 'Comprehensive solutions for your needs'}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {(props.services || []).map((service: any, index: number) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg p-8 border">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
-                  <p className="text-gray-600 mb-6">{service.description}</p>
+                <div key={index} className="bg-background rounded-xl shadow-lg p-8 border border-secondary">
+                  <h3 className="text-2xl font-bold text-foreground mb-4">{service.title}</h3>
+                  <p className="text-muted mb-6">{service.description}</p>
                   {service.features && (
                     <ul className="space-y-2 mb-6">
                       {service.features.map((feature: string, featureIndex: number) => (
-                        <li key={featureIndex} className="flex items-center text-gray-600">
+                        <li key={featureIndex} className="flex items-center text-muted">
                           <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
                           {feature}
                         </li>
@@ -158,7 +157,7 @@ export const renderStaticComponent = (component: Component) => {
                     </ul>
                   )}
                   {service.pricing && (
-                    <div className="text-2xl font-bold text-blue-600">{service.pricing}</div>
+                    <div className="text-2xl font-bold text-primary">{service.pricing}</div>
                   )}
                 </div>
               ))}
@@ -172,10 +171,10 @@ export const renderStaticComponent = (component: Component) => {
         <section className="py-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-8">
                 {props.headline || 'About Us'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-xl text-muted max-w-4xl mx-auto leading-relaxed">
                 {props.story_content || 'Our story and mission'}
               </p>
             </div>
@@ -184,8 +183,8 @@ export const renderStaticComponent = (component: Component) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                 {props.values.map((value: any, index: number) => (
                   <div key={index} className="p-6">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h4>
-                    <p className="text-gray-600">{value.description}</p>
+                    <h4 className="text-xl font-semibold text-foreground mb-2">{value.title}</h4>
+                    <p className="text-muted">{value.description}</p>
                   </div>
                 ))}
               </div>
@@ -194,9 +193,9 @@ export const renderStaticComponent = (component: Component) => {
             {props.stats && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {props.stats.map((stat: any, index: number) => (
-                  <div key={index} className="text-center p-6 bg-blue-50 rounded-lg">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                    <div className="text-gray-600">{stat.label}</div>
+                  <div key={index} className="text-center p-6 bg-primary/5 rounded-lg">
+                    <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
+                    <div className="text-muted">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -210,50 +209,50 @@ export const renderStaticComponent = (component: Component) => {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                 {props.headline || 'Contact Us'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-muted max-w-3xl mx-auto">
                 {props.subheadline || 'Get in touch with us'}
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="bg-white rounded-xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h3>
+              <div className="bg-background rounded-xl shadow-lg p-8">
+                <h3 className="text-2xl font-bold text-foreground mb-6">Send us a message</h3>
                 <form className="space-y-6">
                   <input
                     type="text"
                     placeholder="Your Name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-primary"
                   />
                   <input
                     type="email"
                     placeholder="Your Email"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-primary"
                   />
                   <textarea
                     rows={4}
                     placeholder="Your Message"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-primary"
                   />
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                  <button className="w-full bg-primary hover:bg-primary/80 text-background py-3 px-6 rounded-lg font-semibold transition-colors">
                     Send Message
                   </button>
                 </form>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+              <div className="bg-secondary/5 rounded-xl p-8">
+                <h3 className="text-2xl font-bold text-foreground mb-6">Contact Information</h3>
                 <div className="space-y-4">
                   {props.contact_info?.address && (
-                    <p className="text-gray-600">{props.contact_info.address}</p>
+                    <p className="text-muted">{props.contact_info.address}</p>
                   )}
                   {props.contact_info?.phone && (
-                    <p className="text-gray-600">{props.contact_info.phone}</p>
+                    <p className="text-muted">{props.contact_info.phone}</p>
                   )}
                   {props.contact_info?.email && (
-                    <p className="text-gray-600">{props.contact_info.email}</p>
+                    <p className="text-muted">{props.contact_info.email}</p>
                   )}
                 </div>
               </div>
@@ -303,13 +302,13 @@ export const renderStaticComponent = (component: Component) => {
 
     default:
       return (
-        <div className="p-8 text-center text-gray-500 bg-gray-50 border border-gray-200 rounded-lg">
+        <div className="p-8 text-center text-muted-foreground bg-secondary/5 border border-secondary rounded-lg">
           <p className="font-medium">Unknown component type: "{component.category}"</p>
           <p className="text-sm mt-2">Category: "{category}"</p>
           {component.react_code && (
             <details className="mt-4 text-left">
               <summary className="cursor-pointer">Show raw code</summary>
-              <pre className="mt-2 p-3 bg-gray-100 rounded text-xs overflow-auto max-h-32 text-black">
+              <pre className="mt-2 p-3 bg-background rounded text-xs overflow-auto max-h-32 text-foreground">
                 {component.react_code}
               </pre>
             </details>

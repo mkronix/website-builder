@@ -59,8 +59,8 @@ const Index = () => {
                                 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight cursor-pointer"
                                 whileHover={{ scale: 1.05, rotate: 1 }}
                             >
-                                <span className="text-lime-400">DEV</span>
-                                <span className="text-pink-500">BUILDER</span>
+                                <span className="text-lime-400">Quick</span>
+                                <span className="text-pink-500">Builder</span>
                             </motion.div>
                         </motion.div>
 

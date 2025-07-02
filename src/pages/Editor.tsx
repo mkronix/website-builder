@@ -9,7 +9,7 @@ const Edtior = () => {
     <EditorProvider>
       <div className="min-h-screen bg-[#1c1c1c] flex flex-col">
         <EditorHeader />
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden pt-[4.1rem]">
           <EditorSidebar />
           <EditorCanvas />
         </div>

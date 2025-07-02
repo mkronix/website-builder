@@ -114,7 +114,7 @@ const BrutalistFooter: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="transform -rotate-1">
               <p className="text-gray-400 text-sm">
-                © 2024 DEVBUILDER. ALL RIGHTS RESERVED. BUILT WITH DIGITAL REBELLION.
+                © 2024 QuickBuilder. ALL RIGHTS RESERVED. BUILT WITH DIGITAL REBELLION.
               </p>
             </div>
 

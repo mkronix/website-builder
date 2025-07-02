@@ -12,8 +12,8 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ onViewChange }: LoginFormProps) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('kasimkkn@gmail.com');
+  const [password, setPassword] = useState('Kasim@123');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});

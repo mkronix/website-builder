@@ -1,0 +1,163 @@
+{
+  "templates": {
+    "modern-business": {
+      "id": "modern-business",
+      "name": "Modern Business",
+      "description": "Professional business website template with modern design",
+      "category": "business",
+      "preview_image": "/templates/modern-business.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_001",
+            "hero_001",
+            "features_001",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "About",
+          "slug": "/about",
+          "components": [
+            "navbar_002",
+            "about_001",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Services",
+          "slug": "/services",
+          "components": [
+            "navbar_002",
+            "services_001",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Contact",
+          "slug": "/contact",
+          "components": [
+            "navbar_002",
+            "contact_001",
+            "footer_001"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#3B82F6",
+        "secondary_color": "#1E40AF",
+        "accent_color": "#F59E0B",
+        "text_primary": "#111827",
+        "text_secondary": "#6B7280",
+        "background": "#FFFFFF",
+        "font_family": "Inter, sans-serif"
+      }
+    },
+    "creative-portfolio": {
+      "id": "creative-portfolio",
+      "name": "Creative Portfolio",
+      "description": "Elegant portfolio template for designers and creatives",
+      "category": "portfolio",
+      "preview_image": "/templates/creative-portfolio.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_003",
+            "hero_002",
+            "footer_002"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#FF6B6B",
+        "secondary_color": "#4ECDC4",
+        "accent_color": "#FFE66D",
+        "text_primary": "#2C3E50",
+        "text_secondary": "#7F8C8D",
+        "background": "#FFFFFF",
+        "font_family": "Inter, sans-serif",
+        "font_headings": "Playfair Display, serif"
+      }
+    },
+    "tech-startup": {
+      "id": "tech-startup",
+      "name": "Tech Startup",
+      "description": "Modern tech startup template with creative contact and advanced features",
+      "category": "startup",
+      "preview_image": "/templates/tech-startup.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_001",
+            "hero_001",
+            "features_001",
+            "contact_002",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Contact",
+          "slug": "/contact",
+          "components": [
+            "navbar_001",
+            "contact_004",
+            "footer_001"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#667eea",
+        "secondary_color": "#764ba2",
+        "accent_color": "#f093fb",
+        "text_primary": "#1a202c",
+        "text_secondary": "#718096",
+        "background": "#ffffff",
+        "font_family": "Inter, sans-serif"
+      }
+    },
+    "professional-services": {
+      "id": "professional-services",
+      "name": "Professional Services",
+      "description": "Comprehensive template for professional service companies",
+      "category": "services",
+      "preview_image": "/templates/professional-services.jpg",
+      "pages": [
+        {
+          "name": "Home",
+          "slug": "/",
+          "components": [
+            "navbar_002",
+            "hero_001",
+            "services_001",
+            "about_001",
+            "footer_001"
+          ]
+        },
+        {
+          "name": "Contact",
+          "slug": "/contact",
+          "components": [
+            "navbar_002",
+            "contact_003",
+            "footer_001"
+          ]
+        }
+      ],
+      "theme": {
+        "primary_color": "#2563eb",
+        "secondary_color": "#1d4ed8",
+        "accent_color": "#3b82f6",
+        "text_primary": "#111827",
+        "text_secondary": "#6b7280",
+        "background": "#ffffff",
+        "font_family": "Inter, sans-serif"
+      }
+    }
+  }
+}

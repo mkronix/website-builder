@@ -1,38 +1,41 @@
 
 import { useState } from 'react';
-import { useEditor } from '@/contexts/EditorContext';
+import { Component, useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { Navigation, Layout, FileText, Type } from 'lucide-react';
-import websiteData from '@/data/data.json';
+import componentsData from '@/data/components.json';
 
 export const ComponentLibrary = () => {
   const { addComponent, state } = useEditor();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const componentCategories = Object.entries(websiteData.component_library.categories).map(([key, category]) => ({
+  // Transform the new data structure to match our needs
+  const componentCategories = Object.entries(componentsData).map(([key, category]: [string, any]) => ({
     id: key,
     name: category.name,
-    icon: getIconForCategory(category.name),
+    description: category.description,
+    icon: getIconForCategory(key),
     components: category.components
   }));
 
-  function getIconForCategory(categoryName: string) {
-    switch (categoryName.toLowerCase()) {
-      case 'navigation': return Navigation;
-      case 'hero sections': return Type;
-      case 'layout': return Layout;
+  function getIconForCategory(categoryKey: string) {
+    switch (categoryKey.toLowerCase()) {
+      case 'navbar': return Navigation;
+      case 'hero': return Type;
+      case 'footer': return Layout;
       default: return FileText;
     }
   }
 
   const addComponentToPage = (component: any) => {
-    const newComponent = {
-      id: `component-${Date.now()}`,
-      category: component.id,
+    const newComponent: Component = {
+      id: `${component.id}-${Date.now()}`,
+      category: component.category,
       default_props: { ...component.default_props },
       react_code: component.react_code,
-      customizableProps: component.customizable_props,
+      customizableProps: {},
       variant: component.variant || 'default'
     };
 
@@ -51,54 +54,81 @@ export const ComponentLibrary = () => {
             <Button
               key={category.id}
               variant="ghost"
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-[#272725]"
+              className="w-full justify-start px-1 text-white hover:text-white hover:bg-[#272725]"
               onClick={() => setSelectedCategory(category.id)}
             >
-              <Icon className="w-4 h-4 mr-3" />
-              {category.name}
+              <Icon className="w-4 h-4 mr-2" />
+              <div className="text-left">
+                <div>{category.name}</div>
+                <div className="text-xs text-white/70 truncate text-ellipsis">{category.description.length > 34 ? category.description.slice(0, 34) + '...' : category.description}</div>
+              </div>
             </Button>
           );
         })}
       </div>
 
       <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
-        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white max-w-6xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white">
               {componentCategories.find(c => c.id === selectedCategory)?.name} Components
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="grid grid-cols-1 gap-6 mt-4">
             {componentCategories
               .find(c => c.id === selectedCategory)
               ?.components.map((component: any) => (
                 <div
                   key={component.id}
-                  className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
+                  className="p-4 bg-[#272725] rounded-lg border border-gray-600 cursor-pointer hover:border-black transition-colors"
                   onClick={() => addComponentToPage(component)}
                 >
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                  {/* Preview Image */}
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-40 flex items-center justify-center">
                     {component.preview_image ? (
                       <img
                         src={component.preview_image}
                         alt={component.name}
                         className="w-full h-full object-fill"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling.classList.remove('hidden');
+                        }}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                        No preview available
+                    ) : null}
+                    <div className="text-gray-500 text-sm hidden">
+                      Component Preview
+                    </div>
+                  </div>
+
+                  {/* Component Info */}
+                  <div className="space-y-2">
+                    <h4 className="text-white font-medium text-lg">{component.name}</h4>
+                    <p className="text-gray-400 text-sm">{component.description}</p>
+
+                    {/* Tags */}
+                    {component.tags && component.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {component.tags.slice(0, 3).map((tag: string, index: number) => (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs bg-black text-white hover:bg-black/30"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                        {component.tags.length > 3 && (
+                          <Badge variant="secondary" className="text-xs bg-black text-gray-300">
+                            +{component.tags.length - 3}
+                          </Badge>
+                        )}
                       </div>
                     )}
-                  </div>
-                  <h4 className="text-white font-medium mb-2">{component.name}</h4>
-                  <p className="text-gray-400 text-sm mb-2">{component.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {component.tags?.map((tag: string) => (
-                      <span key={tag} className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
-                        {tag}
-                      </span>
-                    ))}
+
+                    <p className="text-white text-sm font-medium">Click to add this component</p>
                   </div>
                 </div>
               ))}
