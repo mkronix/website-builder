@@ -21,7 +21,7 @@
           "name": "About",
           "slug": "/about",
           "components": [
-            "navbar_002",
+            "navbar_001",
             "about_001",
             "footer_001"
           ]
@@ -30,7 +30,7 @@
           "name": "Services",
           "slug": "/services",
           "components": [
-            "navbar_002",
+            "navbar_001",
             "services_001",
             "footer_001"
           ]
@@ -39,7 +39,7 @@
           "name": "Contact",
           "slug": "/contact",
           "components": [
-            "navbar_002",
+            "navbar_001",
             "contact_001",
             "footer_001"
           ]
@@ -66,9 +66,9 @@
           "name": "Home",
           "slug": "/",
           "components": [
-            "navbar_003",
-            "hero_002",
-            "footer_002"
+            "navbar_001",
+            "hero_001",
+            "footer_001"
           ]
         }
       ],
@@ -97,7 +97,7 @@
             "navbar_001",
             "hero_001",
             "features_001",
-            "contact_002",
+            "contact_001",
             "footer_001"
           ]
         },
@@ -106,7 +106,7 @@
           "slug": "/contact",
           "components": [
             "navbar_001",
-            "contact_004",
+            "contact_001",
             "footer_001"
           ]
         }
@@ -132,7 +132,7 @@
           "name": "Home",
           "slug": "/",
           "components": [
-            "navbar_002",
+            "navbar_001",
             "hero_001",
             "services_001",
             "about_001",
@@ -143,8 +143,8 @@
           "name": "Contact",
           "slug": "/contact",
           "components": [
-            "navbar_002",
-            "contact_003",
+            "navbar_001",
+            "contact_001",
             "footer_001"
           ]
         }

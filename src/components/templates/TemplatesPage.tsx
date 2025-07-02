@@ -1,31 +1,18 @@
 
-import { useState } from 'react';
-import { useEditor } from '@/contexts/EditorContext';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
-import componentsData from '@/data/components.json';
+import { useEditor } from '@/contexts/EditorContext';
 import templatesData from '@/data/templates.json';
+import { useNavigate } from 'react-router-dom';
 
 export const TemplatesPage = () => {
   const navigate = useNavigate();
   const { loadTemplate } = useEditor();
-  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
-
-  // Get all components from the new structure
-  const allComponents = Object.values(componentsData).flatMap((category: any) =>
-    category.components || []
-  );
-
-  // Convert templates object to array
   const templatesArray = Object.values(templatesData.templates);
 
   const createProjectFromTemplate = (template: any) => {
-    // Use loadTemplate from EditorContext
     loadTemplate(template);
-
-    // Navigate to editor
     navigate('/editor');
   };
 

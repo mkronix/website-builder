@@ -1,6 +1,6 @@
 
 import { EditorState, Page, Component } from '@/contexts/EditorContext';
-
+import components from '@/data/components.json';
 export interface Project {
   id: string;
   name: string;
@@ -40,7 +40,7 @@ export class ProjectService {
     try {
       const projects = this.getAllProjects();
       const existingIndex = projects.findIndex(p => p.id === project.id);
-      
+
       const updatedProject = {
         ...project,
         updated_at: new Date().toISOString()
@@ -90,21 +90,59 @@ export class ProjectService {
   }
 
   static createProjectFromTemplate(template: any, name: string): Project {
+    // Helper function to find component data by ID
+    const findComponentById = (componentId: string) => {
+      // Search through all categories in components.json
+      for (const category of Object.values(components)) {
+        if (category.components) {
+          const found = category.components.find((c: any) => c.id === componentId);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    // Transform template pages to project pages with full component data
+    const projectPages = template.pages.map((page: any) => ({
+      id: page.slug.replace('/', '') || 'home',
+      name: page.name,
+      slug: page.slug,
+      components: page.components.map((componentId: string) => {
+        const componentData = findComponentById(componentId);
+
+        if (!componentData) {
+          console.warn(`Component with ID "${componentId}" not found in components.json`);
+          return {
+            id: componentId,
+            name: 'Unknown Component',
+            type: 'unknown',
+            props: {}
+          };
+        }
+
+        return {
+          id: componentData.id,
+          name: componentData.name,
+          variant: componentData.variant,
+          category: componentData.category,
+          type: componentData.category, // Using category as type
+          props: componentData.default_props || {},
+          react_code: componentData.react_code,
+          dependencies: componentData.dependencies || []
+        };
+      })
+    }));
+
     return {
       id: `project-${Date.now()}`,
       name,
       description: `Project created from ${template.name} template`,
-      pages: template.pages.map((page: any) => ({
-        id: page.slug.replace('/', '') || 'home',
-        name: page.name,
-        slug: page.slug,
-        components: []
-      })),
+      pages: projectPages,
       theme: {
         primaryColor: template.theme.primary_color,
         secondaryColor: template.theme.secondary_color,
-        backgroundColor: template.theme.background_color,
-        textColor: template.theme.text_color
+        backgroundColor: template.theme.background || template.theme.background_color,
+        textColor: template.theme.text_primary || template.theme.text_color
       },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

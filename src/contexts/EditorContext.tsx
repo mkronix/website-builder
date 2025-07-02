@@ -4,9 +4,13 @@ import React, { createContext, ReactNode, useCallback, useContext, useEffect, us
 export interface Component {
   variant: string;
   id: string;
+  name?: string;
+  description?: string;
+  preview_image?: string;
   category: string;
+  tags?: string[];
   default_props: Record<string, any>;
-  content?: string;
+  dependencies?: [string];
   react_code?: string;
   customizableProps?: Record<string, any>;
 }
