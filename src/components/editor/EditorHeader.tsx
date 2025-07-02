@@ -12,7 +12,7 @@ import {
   Smartphone,
   Tablet
 } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { exportProject } from '@/utils/projectExporter';
 
@@ -130,7 +130,7 @@ export const EditorHeader = () => {
 
         <div className="flex items-center gap-3">
           {/* Preview Mode Toggle */}
-          <div className="flex items-center bg-[#272725] rounded-lg">
+          <div className="hidden md:flex items-center bg-[#272725] rounded-lg">
             {previewModes.map(({ mode, icon: Icon, label }) => (
               <Button
                 key={mode}
@@ -141,10 +141,30 @@ export const EditorHeader = () => {
                   ? 'bg-white text-black'
                   : 'text-gray-400 hover:text-white'
                   }`}
+                title={label}
               >
                 <Icon className="w-4 h-4" />
               </Button>
             ))}
+          </div>
+
+          {/* Mobile Preview Mode Toggle */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const modes = ['desktop', 'tablet', 'mobile'] as const;
+                const currentIndex = modes.indexOf(state.previewMode);
+                const nextIndex = (currentIndex + 1) % modes.length;
+                setPreviewMode(modes[nextIndex]);
+              }}
+              className="text-gray-400 hover:text-white"
+            >
+              {previewModes.find(({ mode }) => mode === state.previewMode)?.icon && 
+                React.createElement(previewModes.find(({ mode }) => mode === state.previewMode)!.icon, { className: "w-4 h-4" })
+              }
+            </Button>
           </div>
 
           <Button

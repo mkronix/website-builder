@@ -185,10 +185,26 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 - bg-[#272725] for accents
 - text-white for texts 
 
-1. remove the ; from imports of app.jsx
-2. fix this code in  <img
-              src={hero_image.src}
-              alt={hero_image.alt}
-              className="mx-auto rounded-lg shadow-lg max-w-md"
-              loading="lazy" /> creativeMinimalHero.jsx
-              same for this SplitWithImageHero.jsx
+
+We need to update and fix bugs/issues in our existing project. Below are the key tasks:
+
+Dynamic Array/Object Input Handling:
+When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI.
+
+Image & Video Upload with Live Preview:
+Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. When exporting code, these paths should be used to upload assets to our server and set the final URL in the component’s props correctly.
+
+Component Customization & JSON Update:
+Fully review and update the component.json file. Every single element used in the components must support customizable styles and editable content, ensuring maximum flexibility for users.
+
+Theme Integration Fix:
+Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
+
+Responsive Design Improvements:
+Ensure that the react_code is fully responsive.
+
+The toggle menu in the header must display correctly on smaller screens.
+
+The responsive view options (laptop, tablet, mobile) are functional, but the components themselves are not adapting properly. This needs to be fixed.
+
+Note: Please do not remove any components from the component.json file during this process.

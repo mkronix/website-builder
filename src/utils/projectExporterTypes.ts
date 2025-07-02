@@ -37,12 +37,33 @@ interface Project {
         backgroundColor?: string;
         textColor?: string;
     };
-    seo?: {
-        siteName?: string;
-        defaultDescription?: string;
-        author?: string;
-        twitterHandle?: string;
+    settings?: {
+        seo?: {
+            title?: string;
+            description?: string;
+            keywords?: string[];
+            author?: string;
+            siteName?: string;
+            twitterHandle?: string;
+            ogImage?: string;
+        };
         favicon?: string;
+        global_meta?: {
+            site_title?: string;
+            site_description?: string;
+            og_image?: string;
+        };
+        theme?: {
+            primary_color?: string;
+            secondary_color?: string;
+            accent_color?: string;
+            text_primary?: string;
+            text_secondary?: string;
+            background?: string;
+            font_family?: string;
+            font_headings?: string;
+        };
+        custom_css?: string;
     };
     created_at: string;
     updated_at: string;

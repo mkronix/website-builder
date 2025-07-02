@@ -11,6 +11,7 @@ import * as Babel from '@babel/standalone';
 import React, { useMemo, useRef, useState } from 'react';
 import StyleEditor from './StyleEditor';
 import ContentEditor from './ContentEditor';
+import { DynamicFieldEditor } from './DynamicFieldEditor';
 
 interface EditableComponentRendererProps {
   component: Component;
@@ -29,6 +30,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const [currentStyles, setCurrentStyles] = useState<Record<string, string>>({});
   const [elementSelector, setElementSelector] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'content' | 'style'>('content');
+  const [dynamicFieldEditor, setDynamicFieldEditor] = useState<{key: string, data: any} | null>(null);
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
@@ -37,10 +39,10 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
-      // Apply content customizations with support for nested props
+      // Apply content customizations with support for nested props and arrays/objects
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
-          if (key.endsWith('_content') && typeof value === 'string') {
+          if (key.endsWith('_content')) {
             // Handle nested prop paths (e.g., "logo.value")
             const propPath = key.replace('_content', '');
             const propParts = propPath.split('.');
@@ -51,21 +53,31 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
               if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'].includes(elementType)) {
                 themedCode = themedCode.replace(
                   new RegExp(`<${elementType}[^>]*>([^<]*)</${elementType}>`, 'g'),
-                  (match, originalContent) => match.replace(originalContent, value)
+                  (match, originalContent) => match.replace(originalContent, typeof value === 'string' ? value : JSON.stringify(value))
                 );
               } else if (elementType === 'img') {
-                themedCode = themedCode.replace(/src="[^"]*"/g, `src="${value}"`);
+                themedCode = themedCode.replace(/src="[^"]*"/g, `src="${typeof value === 'string' ? value : (value as any).src || ''}"`);
               } else if (elementType === 'a') {
-                themedCode = themedCode.replace(/href="[^"]*"/g, `href="${value}"`);
+                themedCode = themedCode.replace(/href="[^"]*"/g, `href="${typeof value === 'string' ? value : (value as any).href || ''}"`);
               }
             } else {
               // Handle nested props like logo.value
               const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
-              themedCode = themedCode.replace(regex, `"${value}"`);
+              themedCode = themedCode.replace(regex, `"${typeof value === 'string' ? value : JSON.stringify(value)}"`);
 
               // Also handle optional chaining patterns
               const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
-              themedCode = themedCode.replace(optionalRegex, `"${value}"`);
+              themedCode = themedCode.replace(optionalRegex, `"${typeof value === 'string' ? value : JSON.stringify(value)}"`);
+            }
+          } else if (!key.endsWith('_styles')) {
+            // Handle direct prop replacement for arrays and objects
+            const regex = new RegExp(`{${key}}`, 'g');
+            if (Array.isArray(value)) {
+              themedCode = themedCode.replace(regex, JSON.stringify(value));
+            } else if (typeof value === 'object' && value !== null) {
+              themedCode = themedCode.replace(regex, JSON.stringify(value));
+            } else {
+              themedCode = themedCode.replace(regex, `"${value}"`);
             }
           }
         });
@@ -153,6 +165,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       setElementSelector(selector);
       const type = detectContentType(target);
 
+      // Check if this element has a data attribute that maps to a complex prop
+      const dataKey = target.getAttribute('data-prop-key');
+      if (dataKey && component.default_props && component.default_props[dataKey]) {
+        const propValue = component.default_props[dataKey];
+        if (Array.isArray(propValue) || (typeof propValue === 'object' && propValue !== null)) {
+          setDynamicFieldEditor({ key: dataKey, data: propValue });
+          return;
+        }
+      }
+
       if (type) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
@@ -235,6 +257,23 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     });
 
     setEditModalOpen(false);
+  };
+
+  const handleDynamicFieldSave = (key: string, value: any) => {
+    const updatedProps = {
+      ...component.customizableProps,
+      [key]: value
+    };
+
+    updateComponent(state.currentPage, component.id, {
+      customizableProps: updatedProps,
+      default_props: {
+        ...component.default_props,
+        [key]: value
+      }
+    });
+
+    setDynamicFieldEditor(null);
   };
 
   const generateCustomStyles = (): string => {
@@ -350,6 +389,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           </Tabs>
         </DialogContent>
       </Dialog>
+
+      {/* Dynamic Field Editor */}
+      {dynamicFieldEditor && (
+        <DynamicFieldEditor
+          data={dynamicFieldEditor.data}
+          dataKey={dynamicFieldEditor.key}
+          onSave={handleDynamicFieldSave}
+          onClose={() => setDynamicFieldEditor(null)}
+        />
+      )}
     </>
   );
 };

@@ -498,17 +498,17 @@ const generateSEOConfig = (project: Project): string => {
   return `export const seoConfig = {
   defaultTitle: '${project.name || 'React App'}',
   titleTemplate: '%s | ${project.name || 'React App'}',
-  defaultDescription: '${project.seo?.defaultDescription || project.description || ''}',
+  defaultDescription: '${project.settings?.seo?.description || project.description || ''}',
   siteUrl: 'https://yoursite.com', // Configure this
-  siteName: '${project.seo?.siteName || project.name || 'React App'}',
-  author: '${project.seo?.author || ''}',
-  twitterHandle: '${project.seo?.twitterHandle || ''}',
+  siteName: '${project.settings?.seo?.siteName || project.name || 'React App'}',
+  author: '${project.settings?.seo?.author || ''}',
+  twitterHandle: '${project.settings?.seo?.twitterHandle || ''}',
   
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://yoursite.com',
-    siteName: '${project.seo?.siteName || project.name || 'React App'}',
+    siteName: '${project.settings?.seo?.siteName || project.name || 'React App'}',
     images: [
       {
         url: '/og-image.jpg',
@@ -520,8 +520,8 @@ const generateSEOConfig = (project: Project): string => {
   },
   
   twitter: {
-    handle: '${project.seo?.twitterHandle || ''}',
-    site: '${project.seo?.twitterHandle || ''}',
+    handle: '${project.settings?.seo?.twitterHandle || ''}',
+    site: '${project.settings?.seo?.twitterHandle || ''}',
     cardType: 'summary_large_image'
   }
 };`;
