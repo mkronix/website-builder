@@ -4,7 +4,7 @@ import { Component, useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Navigation, Layout, FileText, Type } from 'lucide-react';
+import { Navigation, Layout, FileText, Type, Info, Phone, Users, Briefcase, Star, MessageSquare } from 'lucide-react';
 import componentsData from '@/data/components.json';
 
 export const ComponentLibrary = () => {
@@ -22,10 +22,26 @@ export const ComponentLibrary = () => {
 
   function getIconForCategory(categoryKey: string) {
     switch (categoryKey.toLowerCase()) {
-      case 'navbar': return Navigation;
-      case 'hero': return Type;
-      case 'footer': return Layout;
-      default: return FileText;
+      case 'navbar':
+        return Navigation;
+      case 'hero':
+        return Type;
+      case 'footer':
+        return Layout;
+      case 'about':
+        return Info;
+      case 'contact':
+        return Phone;
+      case 'team':
+        return Users;
+      case 'services':
+        return Briefcase;
+      case 'features':
+        return Star;
+      case 'testimonials':
+        return MessageSquare;
+      default:
+        return FileText;
     }
   }
 

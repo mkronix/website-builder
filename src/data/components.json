@@ -1,4 +1,3 @@
-
 {
   "navbar": {
     "name": "Navigation",
@@ -73,8 +72,10 @@
             "label": "Contact Button Text"
           }
         ],
-        "react_code": "import { useState } from 'react';\n\nfunction CustomResponsiveNavbar({ logo, navigation_items, contact_button, ...customProps }) {\n  const [isMenuOpen, setIsMenuOpen] = useState(false);\n\n  return (\n    <nav className=\"bg-white shadow-md sticky top-0 z-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center h-16\">\n          \n          {/* Logo - Left Side */}\n          <div className=\"flex-shrink-0\">\n            <div className=\"flex items-center\">\n              <span className=\"text-2xl font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer\">\n                {logo?.value || logo}\n              </span>\n            </div>\n          </div>\n\n          {/* Desktop Menu - Center */}\n          <div className=\"hidden md:block\">\n            <div className=\"flex items-center space-x-8\">\n              {navigation_items?.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.isEditingMode ? '#' : item.href}\n                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group ${\n                    item.active ? 'text-blue-600' : ''\n                  }`}\n                >\n                  {item.label}\n                  <span className={`absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full ${\n                    item.active ? 'w-full' : 'w-0'\n                  }`}></span>\n                </a>\n              ))}\n            </div>\n          </div>\n\n          {/* Contact Button - Right Side (Desktop) */}\n          <div className=\"hidden md:block\">\n            <a\n              href={contact_button?.href || '#'}\n              className=\"bg-black hover:bg-black/30 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg\"\n            >\n              {contact_button?.text || 'Contact'}\n            </a>\n          </div>\n\n          {/* Mobile Menu Button */}\n          <div className=\"md:hidden\">\n            <button\n              onClick={() => setIsMenuOpen(!isMenuOpen)}\n              className=\"text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors\"\n              aria-label=\"Toggle menu\"\n            >\n              <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                <path\n                  strokeLinecap=\"round\"\n                  strokeLinejoin=\"round\"\n                  strokeWidth={2}\n                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}\n                />\n              </svg>\n            </button>\n          </div>\n        </div>\n\n        {/* Mobile Menu */}\n        <div className={`md:hidden transition-all duration-300 ease-in-out ${\n          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'\n        }`}>\n          <div className=\"px-2 pt-2 pb-3 space-y-1 border-t border-gray-200\">\n            {navigation_items?.map((item, index) => (\n              <a\n                key={index}\n                href={item.href}\n                className={`block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium transition-colors ${\n                  item.active ? 'text-blue-600 bg-blue-50' : ''\n                }`}\n                onClick={() => setIsMenuOpen(false)}\n              >\n                {item.label}\n              </a>\n            ))}\n            <a\n              href={contact_button?.href || '#'}\n              className=\"block bg-black hover:bg-black/30 text-white px-3 py-2 rounded-md text-base font-semibold transition-colors mt-4 text-center\"\n              onClick={() => setIsMenuOpen(false)}\n            >\n              {contact_button?.text || 'Contact'}\n            </a>\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
-        "dependencies": ["react"]
+        "react_code": "import { useState } from 'react';\n\nfunction CustomResponsiveNavbar({ logo, navigation_items, contact_button, ...customProps }) {\n  const [isMenuOpen, setIsMenuOpen] = useState(false);\n\n  return (\n    <nav className=\"bg-white shadow-md sticky top-0 z-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center h-16\">\n          \n          {/* Logo - Left Side */}\n          <div className=\"flex-shrink-0\">\n            <div className=\"flex items-center\">\n              <span className=\"text-2xl font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer\">\n                {logo?.value || logo}\n              </span>\n            </div>\n          </div>\n\n          {/* Desktop Menu - Center */}\n          <div className=\"hidden md:block\">\n            <div className=\"flex items-center space-x-8\">\n              {navigation_items?.map((item, index) => (\n                <a\n                  key={index}\n                  href={item.isEditingMode ? '#' : item.href}\n                  className={`text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group ${\n                    item.active ? 'text-blue-600' : ''\n                  }`}\n                >\n                  {item.label}\n                  <span className={`absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full ${\n                    item.active ? 'w-full' : 'w-0'\n                  }`}></span>\n                </a>\n              ))}\n            </div>\n          </div>\n\n          {/* Contact Button - Right Side (Desktop) */}\n          <div className=\"hidden md:block\">\n            <a\n              href={contact_button?.isEditingMode ? '#' : contact_button?.href || '#'}\n              className=\"bg-black hover:bg-black/30 text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg\"\n            >\n              {contact_button?.text || 'Contact'}\n            </a>\n          </div>\n\n          {/* Mobile Menu Button */}\n          <div className=\"md:hidden\">\n            <button\n              onClick={() => setIsMenuOpen(!isMenuOpen)}\n              className=\"text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors\"\n              aria-label=\"Toggle menu\"\n            >\n              <svg className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                <path\n                  strokeLinecap=\"round\"\n                  strokeLinejoin=\"round\"\n                  strokeWidth={2}\n                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}\n                />\n              </svg>\n            </button>\n          </div>\n        </div>\n\n        {/* Mobile Menu */}\n        <div className={`md:hidden transition-all duration-300 ease-in-out ${\n          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'\n        }`}>\n          <div className=\"px-2 pt-2 pb-3 space-y-1 border-t border-gray-200\">\n            {navigation_items?.map((item, index) => (\n              <a\n                key={index}\n                href={item.isEditingMode ? '#' : item.href}\n                className={`block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium transition-colors ${\n                  item.active ? 'text-blue-600 bg-blue-50' : ''\n                }`}\n                onClick={() => setIsMenuOpen(false)}\n              >\n                {item.label}\n              </a>\n            ))}\n            <a\n              href={contact_button?.isEditingMode ? '#' : contact_button?.href || '#'}\n              className=\"block bg-black hover:bg-black/30 text-white px-3 py-2 rounded-md text-base font-semibold transition-colors mt-4 text-center\"\n              onClick={() => setIsMenuOpen(false)}\n            >\n              {contact_button?.text || 'Contact'}\n            </a>\n          </div>\n        </div>\n      </div>\n    </nav>\n  );\n}",
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -89,7 +90,12 @@
         "category": "hero",
         "preview_image": "/previews/hero/hero1.png",
         "description": "Hero section with text on one side and image on the other",
-        "tags": ["split", "image", "cta", "modern"],
+        "tags": [
+          "split",
+          "image",
+          "cta",
+          "modern"
+        ],
         "default_props": {
           "headline": "Transform Your Business Today",
           "subheadline": "We help companies leverage technology to stay ahead in the competitive market.",
@@ -122,8 +128,10 @@
             "label": "Subheadline"
           }
         ],
-        "react_code": "function SplitWithImageHero({ headline, subheadline, primary_cta, secondary_cta, hero_image, ...customProps }) {\n  return (\n    <section className={`min-h-screen flex items-center ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 items-center\">\n          <div className=\"space-y-8\">\n            <h1 className=\"text-4xl md:text-6xl font-bold text-gray-900 leading-tight\">\n              {headline}\n            </h1>\n            <p className=\"text-xl text-gray-600 leading-relaxed\">\n              {subheadline}\n            </p>\n            <div className=\"flex flex-col sm:flex-row gap-4\">\n              <a\n                href={primary_cta?.href || '#'}\n                className=\"bg-black hover:bg-black/30 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center\"\n              >\n                {primary_cta?.text || 'Get Started'}\n              </a>\n              {secondary_cta && (\n                <a\n                  href={secondary_cta.href}\n                  className=\"border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center\"\n                >\n                  {secondary_cta.text}\n                </a>\n              )}\n            </div>\n          </div>\n          <div className=\"relative\">\n            <img\n              src={hero_image?.src || '/placeholder.svg'}\n              alt={hero_image?.alt || 'Hero image'}\n              className=\"rounded-lg shadow-2xl w-full h-auto\"\n            />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "react_code": "function SplitWithImageHero({ headline, subheadline, primary_cta, secondary_cta, hero_image, ...customProps }) {\n  return (\n    <section className={`min-h-screen flex items-center ${customProps.className || ''}`}>\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 items-center\">\n          <div className=\"space-y-8\">\n            <h1 className=\"text-4xl md:text-6xl font-bold text-gray-900 leading-tight\">\n              {headline}\n            </h1>\n            <p className=\"text-xl text-gray-600 leading-relaxed\">\n              {subheadline}\n            </p>\n            <div className=\"flex flex-col sm:flex-row gap-4\">\n              <a\n                href={primary.isEditingMode ? '#' : primary_cta?.href}\n                className=\"bg-black hover:bg-black/30 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center\"\n              >\n                {primary_cta?.text || 'Get Started'}\n              </a>\n              {secondary_cta && (\n                <a\n                  href={secondary.isEditingMode ? '#' : secondary_cta.href}\n                  className=\"border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors inline-block text-center\"\n                >\n                  {secondary_cta.text}\n                </a>\n              )}\n            </div>\n          </div>\n          <div className=\"relative\">\n            <img\n              src={hero_image?.src || '/placeholder.svg'}\n              alt={hero_image?.alt || 'Hero image'}\n              className=\"rounded-lg shadow-2xl w-full h-auto\"\n            />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -138,7 +146,12 @@
         "category": "services",
         "preview_image": "/previews/services/services1.png",
         "description": "Clean grid layout showcasing multiple services",
-        "tags": ["grid", "cards", "services", "professional"],
+        "tags": [
+          "grid",
+          "cards",
+          "services",
+          "professional"
+        ],
         "default_props": {
           "section_title": "Our Services",
           "section_subtitle": "We provide comprehensive solutions for your business needs",
@@ -178,7 +191,9 @@
           }
         ],
         "react_code": "function ServiceGrid({ section_title, section_subtitle, services, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-gray-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-12\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {section_title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {section_subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8\">\n          {services?.map((service, index) => (\n            <div key={index} className=\"bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow\">\n              <div className=\"text-4xl mb-4\">{service.icon}</div>\n              <h3 className=\"text-xl font-semibold text-gray-900 mb-2\">{service.title}</h3>\n              <p className=\"text-gray-600\">{service.description}</p>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -193,15 +208,29 @@
         "category": "about",
         "preview_image": "/previews/about/about1.png",
         "description": "About section with image and company description",
-        "tags": ["about", "company", "image", "story"],
+        "tags": [
+          "about",
+          "company",
+          "image",
+          "story"
+        ],
         "default_props": {
           "title": "About Our Company",
           "subtitle": "Building the future, one project at a time",
           "description": "We are a team of passionate professionals dedicated to delivering exceptional digital solutions. With years of experience and a commitment to innovation, we help businesses transform and grow in the digital age.",
           "stats": [
-            { "number": "500+", "label": "Projects Completed" },
-            { "number": "100+", "label": "Happy Clients" },
-            { "number": "10+", "label": "Years Experience" }
+            {
+              "number": "500+",
+              "label": "Projects Completed"
+            },
+            {
+              "number": "100+",
+              "label": "Happy Clients"
+            },
+            {
+              "number": "10+",
+              "label": "Years Experience"
+            }
           ],
           "image": {
             "src": "/placeholder.svg",
@@ -226,7 +255,9 @@
           }
         ],
         "react_code": "function AboutWithImage({ title, subtitle, description, stats, image, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-white\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12 items-center\">\n          <div className=\"space-y-6\">\n            <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900\">\n              {title}\n            </h2>\n            <h3 className=\"text-xl text-blue-600 font-medium\">\n              {subtitle}\n            </h3>\n            <p className=\"text-lg text-gray-600 leading-relaxed\">\n              {description}\n            </p>\n            \n            <div className=\"grid grid-cols-3 gap-6 pt-6\">\n              {stats?.map((stat, index) => (\n                <div key={index} className=\"text-center\">\n                  <div className=\"text-2xl font-bold text-blue-600\">{stat.number}</div>\n                  <div className=\"text-sm text-gray-600\">{stat.label}</div>\n                </div>\n              ))}\n            </div>\n          </div>\n          \n          <div className=\"relative\">\n            <img\n              src={image?.src || '/placeholder.svg'}\n              alt={image?.alt || 'About us'}\n              className=\"rounded-lg shadow-xl w-full h-auto\"\n            />\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -241,7 +272,12 @@
         "category": "features",
         "preview_image": "/previews/features/features1.png",
         "description": "Clean feature list with icons and descriptions",
-        "tags": ["features", "list", "icons", "benefits"],
+        "tags": [
+          "features",
+          "list",
+          "icons",
+          "benefits"
+        ],
         "default_props": {
           "title": "Why Choose Us",
           "subtitle": "We deliver exceptional results with these key features",
@@ -281,7 +317,9 @@
           }
         ],
         "react_code": "function FeatureList({ title, subtitle, features, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-white\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-12\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 gap-8\">\n          {features?.map((feature, index) => (\n            <div key={index} className=\"flex items-start space-x-4 p-6 bg-gray-50 rounded-lg\">\n              <div className=\"text-3xl flex-shrink-0\">{feature.icon}</div>\n              <div>\n                <h3 className=\"text-xl font-semibold text-gray-900 mb-2\">{feature.title}</h3>\n                <p className=\"text-gray-600\">{feature.description}</p>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -296,7 +334,12 @@
         "category": "contact",
         "preview_image": "/previews/contact/contact1.png",
         "description": "Professional contact form with company information",
-        "tags": ["contact", "form", "information", "professional"],
+        "tags": [
+          "contact",
+          "form",
+          "information",
+          "professional"
+        ],
         "default_props": {
           "title": "Get In Touch",
           "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
@@ -319,7 +362,9 @@
           }
         ],
         "react_code": "function ContactForm({ title, subtitle, contact_info, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-gray-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-12\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-12\">\n          <div className=\"space-y-6\">\n            <div>\n              <h3 className=\"text-lg font-semibold text-gray-900 mb-4\">Contact Information</h3>\n              <div className=\"space-y-3\">\n                <p className=\"flex items-center text-gray-600\">\n                  <span className=\"mr-3\">📧</span>\n                  {contact_info?.email}\n                </p>\n                <p className=\"flex items-center text-gray-600\">\n                  <span className=\"mr-3\">📞</span>\n                  {contact_info?.phone}\n                </p>\n                <p className=\"flex items-center text-gray-600\">\n                  <span className=\"mr-3\">📍</span>\n                  {contact_info?.address}\n                </p>\n              </div>\n            </div>\n          </div>\n          \n          <div>\n            <form className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div>\n                  <label className=\"block text-sm font-medium text-gray-700 mb-2\">First Name</label>\n                  <input type=\"text\" className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\" />\n                </div>\n                <div>\n                  <label className=\"block text-sm font-medium text-gray-700 mb-2\">Last Name</label>\n                  <input type=\"text\" className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\" />\n                </div>\n              </div>\n              <div>\n                <label className=\"block text-sm font-medium text-gray-700 mb-2\">Email</label>\n                <input type=\"email\" className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\" />\n              </div>\n              <div>\n                <label className=\"block text-sm font-medium text-gray-700 mb-2\">Message</label>\n                <textarea rows={4} className=\"w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea>\n              </div>\n              <button type=\"submit\" className=\"w-full bg-black hover:bg-black/80 text-white py-3 px-6 rounded-md font-semibold transition-colors\">\n                Send Message\n              </button>\n            </form>\n          </div>\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -334,7 +379,12 @@
         "category": "testimonials",
         "preview_image": "/previews/testimonials/testimonials1.png",
         "description": "Customer testimonials in card format",
-        "tags": ["testimonials", "reviews", "cards", "social-proof"],
+        "tags": [
+          "testimonials",
+          "reviews",
+          "cards",
+          "social-proof"
+        ],
         "default_props": {
           "title": "What Our Clients Say",
           "subtitle": "Don't just take our word for it - see what our satisfied customers have to say",
@@ -375,7 +425,9 @@
           }
         ],
         "react_code": "function TestimonialCards({ title, subtitle, testimonials, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-gray-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-12\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8\">\n          {testimonials?.map((testimonial, index) => (\n            <div key={index} className=\"bg-white p-6 rounded-lg shadow-md\">\n              <div className=\"flex items-center mb-4\">\n                {[...Array(testimonial.rating)].map((_, i) => (\n                  <span key={i} className=\"text-yellow-400\">⭐</span>\n                ))}\n              </div>\n              <p className=\"text-gray-600 mb-6 italic\">\"{testimonial.content}\"</p>\n              <div className=\"flex items-center\">\n                <img\n                  src={testimonial.avatar}\n                  alt={testimonial.name}\n                  className=\"w-12 h-12 rounded-full mr-4\"\n                />\n                <div>\n                  <h4 className=\"font-semibold text-gray-900\">{testimonial.name}</h4>\n                  <p className=\"text-sm text-gray-600\">{testimonial.role}</p>\n                </div>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -390,7 +442,12 @@
         "category": "team",
         "preview_image": "/previews/team/team1.png",
         "description": "Professional team member grid with photos and roles",
-        "tags": ["team", "members", "grid", "professional"],
+        "tags": [
+          "team",
+          "members",
+          "grid",
+          "professional"
+        ],
         "default_props": {
           "title": "Meet Our Team",
           "subtitle": "The talented people behind our success",
@@ -450,7 +507,9 @@
           }
         ],
         "react_code": "function TeamGrid({ title, subtitle, team_members, ...customProps }) {\n  return (\n    <section className=\"py-16 bg-white\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"text-center mb-12\">\n          <h2 className=\"text-3xl md:text-4xl font-bold text-gray-900 mb-4\">\n            {title}\n          </h2>\n          <p className=\"text-xl text-gray-600 max-w-3xl mx-auto\">\n            {subtitle}\n          </p>\n        </div>\n        \n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8\">\n          {team_members?.map((member, index) => (\n            <div key={index} className=\"text-center group\">\n              <div className=\"relative mb-4\">\n                <img\n                  src={member.image}\n                  alt={member.name}\n                  className=\"w-full h-64 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow\"\n                />\n                <div className=\"absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-lg\"></div>\n              </div>\n              <h3 className=\"text-xl font-semibold text-gray-900 mb-1\">{member.name}</h3>\n              <p className=\"text-blue-600 font-medium mb-2\">{member.role}</p>\n              <p className=\"text-gray-600 text-sm mb-4\">{member.bio}</p>\n              <div className=\"flex justify-center space-x-3\">\n                <a href={member.social?.linkedin} className=\"text-blue-600 hover:text-blue-800\">\n                  💼\n                </a>\n                <a href={member.social?.twitter} className=\"text-blue-400 hover:text-blue-600\">\n                  🐦\n                </a>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n    </section>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   },
@@ -465,7 +524,11 @@
         "category": "footer",
         "preview_image": "/previews/footer/footer1.png",
         "description": "Clean and simple footer with copyright information",
-        "tags": ["simple", "minimal", "copyright"],
+        "tags": [
+          "simple",
+          "minimal",
+          "copyright"
+        ],
         "default_props": {
           "company": "Your Company",
           "year": "2024"
@@ -483,7 +546,9 @@
           }
         ],
         "react_code": "function SimpleFooter({ company = 'Your Company', year = '2024' }) {\n  return (\n    <footer className=\"bg-muted text-muted-foreground py-8\">\n      <div className=\"container mx-auto px-4 text-center\">\n        <p>&copy; {year} {company}. All rights reserved.</p>\n      </div>\n    </footer>\n  );\n}",
-        "dependencies": ["react"]
+        "dependencies": [
+          "react"
+        ]
       }
     ]
   }
