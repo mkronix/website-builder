@@ -41,6 +41,7 @@ export const generateThemeCSS = (theme: any) => {
       --theme-text: ${theme.textColor};
     }
     
+    /* Base theme classes */
     .bg-primary { background-color: var(--theme-primary) !important; }
     .bg-secondary { background-color: var(--theme-secondary) !important; }
     .bg-background { background-color: var(--theme-background) !important; }
@@ -52,7 +53,62 @@ export const generateThemeCSS = (theme: any) => {
     .text-muted-foreground { color: color-mix(in srgb, var(--theme-text) 50%, transparent) !important; }
     .border-primary { border-color: var(--theme-primary) !important; }
     .border-secondary { border-color: var(--theme-secondary) !important; }
+    
+    /* Hover and interaction states */
     .hover\\:bg-primary\\/80:hover { background-color: color-mix(in srgb, var(--theme-primary) 80%, transparent) !important; }
     .hover\\:text-primary:hover { color: var(--theme-primary) !important; }
+    .hover\\:bg-secondary\\/80:hover { background-color: color-mix(in srgb, var(--theme-secondary) 80%, transparent) !important; }
+    
+    /* Responsive design improvements */
+    .editor-canvas {
+      /* Ensure all elements are responsive */
+    }
+    .editor-canvas * {
+      box-sizing: border-box;
+    }
+    .editor-canvas img,
+    .editor-canvas video {
+      max-width: 100%;
+      height: auto;
+    }
+    .editor-canvas .container,
+    .editor-canvas .max-w-6xl,
+    .editor-canvas .max-w-5xl,
+    .editor-canvas .max-w-4xl {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    @media (max-width: 768px) {
+      .editor-canvas .grid-cols-2,
+      .editor-canvas .grid-cols-3,
+      .editor-canvas .grid-cols-4 {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+      }
+      .editor-canvas .flex-row {
+        flex-direction: column !important;
+      }
+      .editor-canvas .text-4xl,
+      .editor-canvas .text-5xl,
+      .editor-canvas .text-6xl {
+        font-size: 2rem !important;
+        line-height: 2.5rem !important;
+      }
+      .editor-canvas .p-8,
+      .editor-canvas .p-12,
+      .editor-canvas .p-16 {
+        padding: 1rem !important;
+      }
+    }
+    @media (max-width: 480px) {
+      .editor-canvas .text-lg,
+      .editor-canvas .text-xl,
+      .editor-canvas .text-2xl {
+        font-size: 1rem !important;
+        line-height: 1.5rem !important;
+      }
+    }
   `;
 };

@@ -1,6 +1,7 @@
 
 import { useEditor } from '@/contexts/EditorContext';
 import { DraggableComponent } from './DraggableComponent';
+import { ResponsiveWrapper } from './ResponsiveWrapper';
 import { cn } from '@/lib/utils';
 import { generateThemeCSS } from '@/utils/themeUtils';
 import {
@@ -61,7 +62,8 @@ export const EditorCanvas = () => {
   return (
     <div className={canvasClasses}>
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
-      <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
+      <ResponsiveWrapper>
+        <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
         {currentPage?.components.length === 0 ? (
           <div className="flex items-center justify-center h-96 text-muted-foreground">
             <div className="text-center">
@@ -93,7 +95,8 @@ export const EditorCanvas = () => {
             </SortableContext>
           </DndContext>
         )}
-      </div>
+        </div>
+      </ResponsiveWrapper>
     </div>
   );
 };

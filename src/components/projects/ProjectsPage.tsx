@@ -73,20 +73,21 @@ export const ProjectsPage = () => {
       const updatedProjects = projects.map(p => 
         p.id === selectedProject.id 
           ? {
-              ...p,
-              settings: {
-                ...p.settings,
-                seo: {
-                  title: seoData.title,
-                  description: seoData.description,
-                  keywords: seoData.keywords.split(',').map(k => k.trim()).filter(k => k),
-                  author: seoData.author,
-                  siteName: seoData.siteName,
-                  twitterHandle: seoData.twitterHandle,
-                  ogImage: seoData.ogImage
+                  ...p,
+                  settings: {
+                    ...p.settings,
+                    seo: {
+                      title: seoData.title,
+                      description: seoData.description,
+                      keywords: seoData.keywords.split(',').map(k => k.trim()).filter(k => k),
+                      author: seoData.author,
+                      siteName: seoData.siteName,
+                      twitterHandle: seoData.twitterHandle,
+                      ogImage: seoData.ogImage
+                    },
+                    custom_css: (p.settings as any)?.custom_css || ''
+                  }
                 }
-              }
-            }
           : p
       );
       setProjects(updatedProjects);

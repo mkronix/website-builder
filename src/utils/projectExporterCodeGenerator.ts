@@ -104,7 +104,7 @@ import { SchemaMarkup } from '../components/seo/SchemaMarkup';`
   const seoComponent = settings.includeSEO ? `
       <SEOHead
         title="${page.seo?.title || `${page.name} | ${project.name}`}"
-        description="${page.seo?.description || project.seo?.defaultDescription || ''}"
+        description="${page.seo?.description || project.settings?.seo?.description || ''}"
         keywords={${JSON.stringify(page.seo?.keywords || [])}}
         ogImage="${page.seo?.ogImage || '/og-image.jpg'}"
         canonical="${page.slug}"
@@ -112,7 +112,7 @@ import { SchemaMarkup } from '../components/seo/SchemaMarkup';`
       <SchemaMarkup
         type="WebPage"
         name="${page.name}"
-        description="${page.seo?.description || project.seo?.defaultDescription || ''}"
+        description="${page.seo?.description || project.settings?.seo?.description || ''}"
         url="${page.slug}"
       />` : '';
 
