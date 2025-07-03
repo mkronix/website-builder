@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DeleteConfirmationModal } from '@/components/ui/delete-confirmation-modal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { ChevronDown, ChevronUp, Copy, Edit, Plus, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Edit, Plus, Trash2, X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
 interface SmartArrayCRUDProps {
@@ -24,6 +25,10 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
 }) => {
     const [items, setItems] = useState<any[]>([]);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; index: number | null }>({
+        isOpen: false,
+        index: null
+    });
 
     // Initialize items from data
     useEffect(() => {
@@ -92,15 +97,20 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
     };
 
     const handleDelete = (index: number) => {
-        if (window.confirm('Delete this item?')) {
-            const newItems = items.filter((_, i) => i !== index);
+        setDeleteModal({ isOpen: true, index });
+    };
+
+    const confirmDelete = () => {
+        if (deleteModal.index !== null) {
+            const newItems = items.filter((_, i) => i !== deleteModal.index);
             setItems(newItems);
-            if (editingIndex === index) {
+            if (editingIndex === deleteModal.index) {
                 setEditingIndex(null);
-            } else if (editingIndex !== null && editingIndex > index) {
+            } else if (editingIndex !== null && editingIndex > deleteModal.index) {
                 setEditingIndex(editingIndex - 1);
             }
         }
+        setDeleteModal({ isOpen: false, index: null });
     };
 
     const handleMove = (index: number, direction: 'up' | 'down') => {
@@ -151,149 +161,190 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
     };
 
     return (
-        <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="max-w-5xl max-h-[85vh] bg-[#1c1c1c] border-gray-700 text-white overflow-hidden flex flex-col">
-                {/* Header */}
-                <DialogHeader className="pb-4">
-                    <DialogTitle className="text-white text-xl">
-                        Edit {title} ({items.length} items)
-                    </DialogTitle>
-                    <Button
-                        onClick={handleCreate}
-                        className="absolute top-4 right-12 bg-blue-600 hover:bg-blue-700 text-white"
-                        size="sm"
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Item
-                    </Button>
-                </DialogHeader>
+        <>
+            <Dialog open={true} onOpenChange={onClose}>
+                <DialogContent className="max-w-6xl max-h-[90vh] bg-[#1c1c1c] border-gray-700 text-white overflow-hidden flex flex-col">
+                    {/* Header */}
+                    <DialogHeader className="pb-4 border-b border-gray-700">
+                        <div className="flex items-center justify-between">
+                            <DialogTitle className="text-white text-xl">
+                                Edit {title} ({items.length} items)
+                            </DialogTitle>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    onClick={handleCreate}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    size="sm"
+                                >
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Add Item
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogHeader>
 
-                {/* Items List */}
-                <div className="flex-1 overflow-y-auto pr-2">
-                    <div className="space-y-3">
-                        {items.map((item, index) => (
-                            <Card key={index} className="bg-[#272725] border-gray-600">
-                                <CardContent className="p-4">
-                                    {editingIndex === index ? (
-                                        // Edit Mode
-                                        <ItemEditor
-                                            item={item}
-                                            onChange={(updatedItem) => {
-                                                const newItems = [...items];
-                                                newItems[index] = updatedItem;
-                                                setItems(newItems);
-                                            }}
-                                            onSave={() => setEditingIndex(null)}
-                                            onCancel={() => setEditingIndex(null)}
-                                        />
-                                    ) : (
-                                        // View Mode
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex-1">
-                                                <div className="font-medium text-white mb-1">
-                                                    {getItemPreview(item)}
+                    {/* Items List */}
+                    <div className="flex-1 overflow-y-auto pr-2 py-4">
+                        <div className="space-y-4">
+                            {items.map((item, index) => (
+                                <Card key={index} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
+                                    <CardContent className="p-6">
+                                        {editingIndex === index ? (
+                                            // Edit Mode
+                                            <ItemEditor
+                                                item={item}
+                                                onChange={(updatedItem) => {
+                                                    const newItems = [...items];
+                                                    newItems[index] = updatedItem;
+                                                    setItems(newItems);
+                                                }}
+                                                onSave={() => setEditingIndex(null)}
+                                                onCancel={() => setEditingIndex(null)}
+                                            />
+                                        ) : (
+                                            // View Mode
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-semibold text-white mb-2 text-lg">
+                                                        {getItemPreview(item)}
+                                                    </div>
+                                                    <div className="text-sm text-gray-400 space-y-1">
+                                                        {typeof item === 'object' && item !== null ? 
+                                                            Object.entries(item)
+                                                                .filter(([key, value]) =>
+                                                                    key !== 'tailwindCss' &&
+                                                                    key !== 'customCss' &&
+                                                                    typeof value === 'string' &&
+                                                                    String(value).length > 0
+                                                                )
+                                                                .slice(0, 2)
+                                                                .map(([key, value]) => (
+                                                                    <div key={key} className="flex">
+                                                                        <span className="font-medium text-gray-300 capitalize w-20 flex-shrink-0">
+                                                                            {key}:
+                                                                        </span>
+                                                                        <span className="text-gray-400 truncate">
+                                                                            {String(value).slice(0, 50)}{String(value).length > 50 ? '...' : ''}
+                                                                        </span>
+                                                                    </div>
+                                                                ))
+                                                            : String(item)
+                                                        }
+                                                    </div>
                                                 </div>
-                                                <div className="text-sm text-gray-400">
-                                                    {typeof item === 'object' && item !== null ? 
-                                                        Object.entries(item)
-                                                            .filter(([key, value]) =>
-                                                                key !== 'tailwindCss' &&
-                                                                key !== 'customCss' &&
-                                                                typeof value === 'string' &&
-                                                                String(value).length > 0
-                                                            )
-                                                            .slice(0, 3)
-                                                            .map(([key, value]) => `${key}: ${String(value).slice(0, 30)}${String(value).length > 30 ? '...' : ''}`)
-                                                            .join(' • ') 
-                                                        : String(item)
-                                                    }
+
+                                                <div className="flex items-center gap-2 flex-shrink-0">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleMove(index, 'up')}
+                                                        disabled={index === 0}
+                                                        className="text-gray-400 hover:text-white hover:bg-[#1c1c1c] disabled:opacity-30 h-8 w-8 p-0"
+                                                        title="Move up"
+                                                    >
+                                                        <ChevronUp className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleMove(index, 'down')}
+                                                        disabled={index === items.length - 1}
+                                                        className="text-gray-400 hover:text-white hover:bg-[#1c1c1c] disabled:opacity-30 h-8 w-8 p-0"
+                                                        title="Move down"
+                                                    >
+                                                        <ChevronDown className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDuplicate(index)}
+                                                        className="text-green-400 hover:text-green-300 hover:bg-green-900/20 h-8 w-8 p-0"
+                                                        title="Duplicate"
+                                                    >
+                                                        <Copy className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => setEditingIndex(index)}
+                                                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 h-8 w-8 p-0"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDelete(index)}
+                                                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-8 w-8 p-0"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
                                                 </div>
                                             </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            ))}
 
-                                            <div className="flex items-center gap-1">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleMove(index, 'up')}
-                                                    disabled={index === 0}
-                                                    className="text-gray-400 hover:text-white hover:bg-[#1c1c1c] disabled:opacity-30"
-                                                >
-                                                    <ChevronUp className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleMove(index, 'down')}
-                                                    disabled={index === items.length - 1}
-                                                    className="text-gray-400 hover:text-white hover:bg-[#1c1c1c] disabled:opacity-30"
-                                                >
-                                                    <ChevronDown className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDuplicate(index)}
-                                                    className="text-green-400 hover:text-green-300 hover:bg-green-900/20"
-                                                >
-                                                    <Copy className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => setEditingIndex(index)}
-                                                    className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
-                                                >
-                                                    <Edit className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(index)}
-                                                    className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </div>
+                            {items.length === 0 && (
+                                <Card className="bg-[#272725] border-gray-600 border-dashed">
+                                    <CardContent className="text-center py-16">
+                                        <div className="text-gray-400 mb-4">
+                                            <Plus className="w-12 h-12 mx-auto mb-4 opacity-50" />
                                         </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        ))}
-
-                        {items.length === 0 && (
-                            <Card className="bg-[#272725] border-gray-600">
-                                <CardContent className="text-center py-12">
-                                    <p className="text-lg mb-2 text-gray-300">No items yet</p>
-                                    <p className="text-sm text-gray-400">Click "Add Item" to create your first item</p>
-                                </CardContent>
-                            </Card>
-                        )}
+                                        <p className="text-lg mb-2 text-gray-300">No items yet</p>
+                                        <p className="text-sm text-gray-400 mb-4">
+                                            Click "Add Item" to create your first item
+                                        </p>
+                                        <Button
+                                            onClick={handleCreate}
+                                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                                            size="sm"
+                                        >
+                                            <Plus className="w-4 h-4 mr-2" />
+                                            Add First Item
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </div>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <Separator className="bg-gray-600 my-4" />
-                <div className="flex justify-end gap-3">
-                    <Button
-                        variant="outline"
-                        onClick={onClose}
-                        className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleSaveAll}
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                        Save Changes
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
+                    {/* Footer */}
+                    <Separator className="bg-gray-600" />
+                    <div className="flex justify-end gap-3 pt-4">
+                        <Button
+                            variant="outline"
+                            onClick={onClose}
+                            className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleSaveAll}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            Save Changes ({items.length} items)
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={() => setDeleteModal({ isOpen: false, index: null })}
+                onConfirm={confirmDelete}
+                title="Delete this item?"
+                description="This action cannot be undone. The item will be permanently removed from the array."
+            />
+        </>
     );
 };
 
-// Smart Item Editor - Auto-generates fields based on item structure
+// Enhanced Item Editor with better layout
 const ItemEditor: React.FC<{
     item: any;
     onChange: (item: any) => void;
@@ -309,8 +360,8 @@ const ItemEditor: React.FC<{
         // Style fields get special treatment
         if (key === 'tailwindCss') {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block">Tailwind Classes</Label>
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">Tailwind Classes</Label>
                     <Input
                         value={value || ''}
                         onChange={(e) => handleFieldChange(key, e.target.value)}
@@ -323,8 +374,8 @@ const ItemEditor: React.FC<{
 
         if (key === 'customCss') {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block">Custom CSS (JSON)</Label>
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">Custom CSS (JSON)</Label>
                     <Textarea
                         value={JSON.stringify(value || {}, null, 2)}
                         onChange={(e) => {
@@ -347,7 +398,7 @@ const ItemEditor: React.FC<{
         // Auto-detect field type based on value and key name
         if (typeof value === 'boolean') {
             return (
-                <div key={key} className="mb-4">
+                <div key={key} className="space-y-2">
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id={key}
@@ -365,8 +416,8 @@ const ItemEditor: React.FC<{
 
         if (typeof value === 'number') {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block capitalize">
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">
                         {key.replace(/([A-Z])/g, ' $1')}
                     </Label>
                     <Input
@@ -381,8 +432,8 @@ const ItemEditor: React.FC<{
 
         if (Array.isArray(value)) {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block capitalize">
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">
                         {key.replace(/([A-Z])/g, ' $1')} (Array)
                     </Label>
                     <Textarea
@@ -399,8 +450,8 @@ const ItemEditor: React.FC<{
         // Handle object types (excluding null)
         if (typeof value === 'object' && value !== null) {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block capitalize">
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">
                         {key.replace(/([A-Z])/g, ' $1')} (Object)
                     </Label>
                     <Textarea
@@ -428,8 +479,8 @@ const ItemEditor: React.FC<{
 
         if (isLongText) {
             return (
-                <div key={key} className="mb-4">
-                    <Label className="text-white mb-2 block capitalize">
+                <div key={key} className="space-y-2">
+                    <Label className="text-white font-medium capitalize text-sm">
                         {key.replace(/([A-Z])/g, ' $1')}
                     </Label>
                     <Textarea
@@ -443,8 +494,8 @@ const ItemEditor: React.FC<{
         }
 
         return (
-            <div key={key} className="mb-4">
-                <Label className="text-white mb-2 block capitalize">
+            <div key={key} className="space-y-2">
+                <Label className="text-white font-medium capitalize text-sm">
                     {key.replace(/([A-Z])/g, ' $1')}
                 </Label>
                 <Input
@@ -459,34 +510,41 @@ const ItemEditor: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1c1c1c] border-blue-600 border-2">
-            <CardContent className="p-4">
-                <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-white mb-3">Edit Item</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {Object.entries(item).map(([key, value]) => renderField(key, value))}
-                    </div>
-                </div>
+        <div className="bg-[#1a1a1a] border-2 border-blue-500/50 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+                <h4 className="text-lg font-semibold text-white">Edit Item</h4>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onCancel}
+                    className="text-gray-400 hover:text-white h-8 w-8 p-0"
+                >
+                    <X className="w-4 h-4" />
+                </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                {Object.entries(item).map(([key, value]) => renderField(key, value))}
+            </div>
 
-                <Separator className="bg-gray-600 mb-4" />
-                <div className="flex justify-end gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={onCancel}
-                        className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        size="sm"
-                        onClick={onSave}
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                        Done
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
+            <Separator className="bg-gray-600 mb-6" />
+            <div className="flex justify-end gap-3">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onCancel}
+                    className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
+                >
+                    Cancel
+                </Button>
+                <Button
+                    size="sm"
+                    onClick={onSave}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                    Save Changes
+                </Button>
+            </div>
+        </div>
     );
 };

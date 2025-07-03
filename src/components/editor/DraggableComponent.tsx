@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { EditableComponentRenderer } from './EditableComponentRenderer';
 import { Component } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
-import { GripVertical, Trash2 } from 'lucide-react';
+import { GripVertical, Trash2, Edit } from 'lucide-react';
 
 interface DraggableComponentProps {
   component: Component;
@@ -39,8 +39,8 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group ${isSelected ? 'ring-2 ring-black ring-inset' : ''
-        } transition-all cursor-pointer`}
+      className={`relative group ${isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''
+        } transition-all cursor-pointer hover:ring-1 hover:ring-gray-400`}
       onClick={(e) => {
         e.stopPropagation();
         onSelect(component.id);
@@ -51,29 +51,50 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
         isSelected={isSelected}
       />
 
-      {/* Drag handle and remove button */}
-      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-30">
-        <Button
-          size="sm"
-          variant="secondary"
-          className="h-8 w-8 p-0 bg-white/90 hover:bg-white shadow-sm"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-4 w-4" />
-        </Button>
-        <Button
-          size="sm"
-          variant="destructive"
-          className="h-8 w-8 p-0 bg-red-500/90 hover:bg-red-600 shadow-sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove(component.id);
-          }}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+      {/* Improved hover controls with better positioning and accessibility */}
+      <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none group-hover:pointer-events-auto">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-1 flex gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            {...attributes}
+            {...listeners}
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-3 w-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(component.id);
+            }}
+            title="Edit component"
+          >
+            <Edit className="h-3 w-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(component.id);
+            }}
+            title="Delete component"
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
       </div>
+
+      {/* Selection overlay for better visual feedback */}
+      {isSelected && (
+        <div className="absolute inset-0 bg-blue-500/5 pointer-events-none rounded" />
+      )}
     </div>
   );
 };
