@@ -83,25 +83,72 @@ export const generateThemeCSS = (theme: any) => {
       --theme-secondary-hover: ${secondaryHover};
     }
     
-    /* Global theme classes - Only apply in editor canvas */
+    /* Global theme classes - comprehensive color mapping */
+    .editor-canvas {
+      /* Primary colors */
+      --tw-primary: var(--theme-primary);
+      --tw-secondary: var(--theme-secondary);
+      --tw-background: var(--theme-background);
+      --tw-text: var(--theme-text);
+    }
+    
+    /* Direct class replacements for theme colors */
+    .editor-canvas .bg-blue-600,
+    .editor-canvas .bg-blue-500,
+    .editor-canvas .bg-indigo-600,
+    .editor-canvas .bg-purple-600,
     .editor-canvas .bg-primary { background-color: var(--theme-primary) !important; }
+    
+    .editor-canvas .bg-gray-100,
+    .editor-canvas .bg-gray-50,
     .editor-canvas .bg-secondary { background-color: var(--theme-secondary) !important; }
+    
+    .editor-canvas .bg-white,
     .editor-canvas .bg-background { background-color: var(--theme-background) !important; }
+    
+    .editor-canvas .text-blue-600,
+    .editor-canvas .text-blue-500,
+    .editor-canvas .text-indigo-600,
+    .editor-canvas .text-purple-600,
     .editor-canvas .text-primary { color: var(--theme-primary) !important; }
-    .editor-canvas .text-secondary { color: var(--theme-secondary) !important; }
+    
+    .editor-canvas .text-gray-900,
+    .editor-canvas .text-gray-800,
+    .editor-canvas .text-gray-700,
     .editor-canvas .text-foreground { color: var(--theme-text) !important; }
-    .editor-canvas .text-background { color: var(--theme-background) !important; }
+    
+    .editor-canvas .text-gray-600,
+    .editor-canvas .text-gray-500,
     .editor-canvas .text-muted { color: var(--theme-muted) !important; }
+    
+    .editor-canvas .text-gray-400,
     .editor-canvas .text-muted-foreground { color: var(--theme-muted-foreground) !important; }
+    
+    .editor-canvas .text-white,
+    .editor-canvas .text-background { color: var(--theme-background) !important; }
+    
+    /* Border colors */
+    .editor-canvas .border-blue-600,
+    .editor-canvas .border-blue-500,
     .editor-canvas .border-primary { border-color: var(--theme-primary) !important; }
+    
+    .editor-canvas .border-gray-200,
+    .editor-canvas .border-gray-300,
     .editor-canvas .border-secondary { border-color: var(--theme-secondary) !important; }
     
-    /* Hover and interaction states */
+    /* Hover states */
+    .editor-canvas .hover\\:bg-blue-700:hover,
+    .editor-canvas .hover\\:bg-blue-600:hover,
     .editor-canvas .hover\\:bg-primary\\/80:hover { background-color: var(--theme-primary-hover) !important; }
-    .editor-canvas .hover\\:text-primary:hover { color: var(--theme-primary) !important; }
-    .editor-canvas .hover\\:bg-secondary\\/80:hover { background-color: var(--theme-secondary-hover) !important; }
     
-    /* Theme variable applications for common elements */
+    .editor-canvas .hover\\:text-blue-600:hover,
+    .editor-canvas .hover\\:text-primary:hover { color: var(--theme-primary) !important; }
+    
+    /* Focus states */
+    .editor-canvas .focus\\:ring-blue-500:focus,
+    .editor-canvas .focus\\:ring-primary:focus { ring-color: var(--theme-primary) !important; }
+    
+    /* Theme data attributes for direct application */
     .editor-canvas [data-theme-element="primary-bg"] { background-color: var(--theme-primary) !important; }
     .editor-canvas [data-theme-element="secondary-bg"] { background-color: var(--theme-secondary) !important; }
     .editor-canvas [data-theme-element="primary-text"] { color: var(--theme-primary) !important; }

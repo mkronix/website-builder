@@ -213,6 +213,23 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   };
 
   const getElementStyles = (element: HTMLElement): Record<string, string> => {
+    const elementId = element.getAttribute('data-element-id');
+    
+    // Try to get existing styles from component customizable props
+    if (elementId && component.customizableProps) {
+      const styleKey = `${elementId}_styles`;
+      const existingStyles = component.customizableProps[styleKey];
+      
+      if (existingStyles) {
+        return {
+          className: existingStyles.tailwindCss || '',
+          ...existingStyles.customCss || {},
+          ...existingStyles // Include any direct style properties
+        };
+      }
+    }
+    
+    // Fallback to computed styles if no custom styles found
     const computedStyles = window.getComputedStyle(element);
     return {
       fontSize: computedStyles.fontSize,
@@ -234,6 +251,12 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     return element.tagName.toLowerCase();
   };
 
+  // Check if element has complex children (non-text children)
+  const hasComplexChildren = (element: HTMLElement): boolean => {
+    const children = Array.from(element.children);
+    return children.length > 0 || element.querySelector('button, a, img, video, input, select, textarea') !== null;
+  };
+
   const handleElementClick = (event: React.MouseEvent) => {
     if (!isSelected) return;
 
@@ -246,14 +269,19 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       setElementSelector(selector);
       
       // Get unique element ID for individual styling
-      const elementId = target.getAttribute('data-element-id') || `${component.id}-${Date.now()}`;
+      let elementId = target.getAttribute('data-element-id');
+      if (!elementId) {
+        elementId = `${component.id}-${Date.now()}`;
+        target.setAttribute('data-element-id', elementId);
+      }
       setCurrentElementId(elementId);
       
       const type = detectContentType(target);
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
+      const isComplexElement = hasComplexChildren(target);
 
-      console.log('Element clicked:', { editableType, propPath, target, elementId });
+      console.log('Element clicked:', { editableType, propPath, target, elementId, isComplexElement });
 
       if (editableType && propPath) {
         const propValue = getPropByPath(component.default_props, propPath);
@@ -285,7 +313,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           console.log('Opening object editor with data:', objectData);
           setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
-        } else if (editableType === 'content' && propValue) {
+        } else if (editableType === 'content' && propValue && !isComplexElement) {
           let contentValue = '';
           
           if (propValue.value !== undefined) {
@@ -319,14 +347,24 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }
       }
 
-      // Default behavior for content/style editing
-      if (type) {
+      // For elements with complex children, only show style editor
+      if (isComplexElement) {
+        setContentType(null);
+        setCurrentStyles(getElementStyles(target));
+        setActiveTab('style');
+        setEditModalOpen(true);
+        return;
+      }
+
+      // Default behavior for simple elements
+      if (type && !isComplexElement) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
         setCurrentStyles(getElementStyles(target));
         setActiveTab('content');
         setEditModalOpen(true);
       } else {
+        setContentType(null);
         setCurrentStyles(getElementStyles(target));
         setActiveTab('style');
         setEditModalOpen(true);
@@ -558,7 +596,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           </DialogHeader>
 
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'content' | 'style')}>
-            <TabsList className="grid w-full grid-cols-2 bg-[#272725] text-white">
+            <TabsList className={`grid w-full ${contentType ? 'grid-cols-2' : 'grid-cols-1'} bg-[#272725] text-white`}>
               {contentType && (
                 <TabsTrigger value="content">Content</TabsTrigger>
               )}
