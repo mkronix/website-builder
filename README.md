@@ -204,7 +204,7 @@ The responsive view options (laptop, tablet, mobile) are functional, but the com
 
 <!-- my work -->
 
-1. Dynamic Array/Object Input Handling: ✅
+1. Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
 
 3. Component Customization & JSON Update:
@@ -213,7 +213,7 @@ Fully review and update the component.json file. Every single element used in th
 4. Theme Integration Fix:
 Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
 
-7. when editing any one element particularly like chaning it cotnent or style, the all the elements are refeclitng the changes. so fix that issue
+7. when editing any one element particularly like changing it content or style, the all the elements are refeclitng the changes. so fix that issue
 
 8. in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 

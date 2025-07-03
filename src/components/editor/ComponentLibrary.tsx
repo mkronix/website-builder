@@ -100,7 +100,7 @@ export const ComponentLibrary = () => {
                   onClick={() => addComponentToPage(component)}
                 >
                   {/* Preview Image */}
-                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden h-40 flex items-center justify-center">
+                  <div className="bg-gray-100 rounded-lg mb-3 overflow-hidden flex items-center justify-center">
                     {component.preview_image ? (
                       <img
                         src={component.preview_image}
