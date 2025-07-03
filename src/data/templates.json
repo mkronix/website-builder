@@ -6,45 +6,25 @@
       "description": "Professional business website template with modern design",
       "category": "business",
       "preview_image": "/templates/modern-business.jpg",
-      "pages": [
-        {
-          "name": "Home",
-          "slug": "/",
-          "components": [
-            "navbar_001",
-            "hero_001",
-            "features_001",
-            "footer_001"
-          ]
-        },
-        {
-          "name": "About",
-          "slug": "/about",
-          "components": [
-            "navbar_001",
-            "about_001",
-            "footer_001"
-          ]
-        },
-        {
-          "name": "Services",
-          "slug": "/services",
-          "components": [
-            "navbar_001",
-            "services_001",
-            "footer_001"
-          ]
-        },
-        {
-          "name": "Contact",
-          "slug": "/contact",
-          "components": [
-            "navbar_001",
-            "contact_001",
-            "footer_001"
-          ]
-        }
+      "tags": [
+        "business",
+        "professional",
+        "modern",
+        "corporate"
       ],
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "is_premium": false,
+      "usage_count": 0,
+      "global_meta": {
+        "site_title": "Modern Business - Professional Solutions",
+        "site_description": "Professional business website showcasing modern solutions and services",
+        "og_image": "/templates/modern-business-og.jpg",
+        "keywords": "business, professional, services, solutions"
+      },
+      "favicon": "/templates/modern-business-favicon.ico",
+      "custom_css": "/* Modern Business Custom Styles */\n.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }",
+      "custom_scripts": "<!-- Analytics placeholder -->\n<!-- <script>console.log('Modern Business Template Loaded');</script> -->",
       "theme": {
         "primary_color": "#3B82F6",
         "secondary_color": "#1E40AF",
@@ -52,112 +32,186 @@
         "text_primary": "#111827",
         "text_secondary": "#6B7280",
         "background": "#FFFFFF",
-        "font_family": "Inter, sans-serif"
-      }
-    },
-    "creative-portfolio": {
-      "id": "creative-portfolio",
-      "name": "Creative Portfolio",
-      "description": "Elegant portfolio template for designers and creatives",
-      "category": "portfolio",
-      "preview_image": "/templates/creative-portfolio.jpg",
-      "pages": [
-        {
-          "name": "Home",
-          "slug": "/",
-          "components": [
-            "navbar_001",
-            "hero_001",
-            "footer_001"
-          ]
-        }
-      ],
-      "theme": {
-        "primary_color": "#FF6B6B",
-        "secondary_color": "#4ECDC4",
-        "accent_color": "#FFE66D",
-        "text_primary": "#2C3E50",
-        "text_secondary": "#7F8C8D",
-        "background": "#FFFFFF",
         "font_family": "Inter, sans-serif",
-        "font_headings": "Playfair Display, serif"
-      }
-    },
-    "tech-startup": {
-      "id": "tech-startup",
-      "name": "Tech Startup",
-      "description": "Modern tech startup template with creative contact and advanced features",
-      "category": "startup",
-      "preview_image": "/templates/tech-startup.jpg",
+        "font_headings": "Poppins, sans-serif"
+      },
       "pages": [
         {
+          "id": "home",
           "name": "Home",
           "slug": "/",
+          "meta": {
+            "title": "Home - Modern Business Solutions",
+            "description": "Welcome to our modern business solutions homepage",
+            "keywords": "home, business, solutions, services",
+            "og_title": "Modern Business - Home",
+            "og_description": "Professional business solutions for modern companies",
+            "og_image": "/templates/home-og.jpg"
+          },
+          "custom_scripts": "<!-- Page specific scripts -->",
           "components": [
-            "navbar_001",
-            "hero_001",
-            "features_001",
-            "contact_001",
-            "footer_001"
-          ]
-        },
-        {
-          "name": "Contact",
-          "slug": "/contact",
-          "components": [
-            "navbar_001",
-            "contact_001",
-            "footer_001"
+            {
+              "id": "navbar_home",
+              "component_id": "navbar_001",
+              "order": 1,
+              "props": {
+                "logo": {
+                  "type": "text",
+                  "value": "ModernBiz",
+                  "tailwindCss": "text-xl md:text-2xl font-bold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer",
+                  "customCss": {}
+                },
+                "navigation_items": {
+                  "type": "array",
+                  "value": [
+                    {
+                      "label": "Home",
+                      "href": "/",
+                      "active": true,
+                      "tailwindCss": "text-gray-700 hover:text-blue-600 px-2 md:px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group",
+                      "customCss": {}
+                    }
+                  ],
+                  "tailwindCss": "flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 lg:space-x-8",
+                  "customCss": {}
+                },
+                "contact_button": {
+                  "type": "object",
+                  "value": {
+                    "text": "Get Quote",
+                    "href": "/contact",
+                    "active": false,
+                    "tailwindCss": "bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg w-full md:w-auto text-center",
+                    "customCss": {}
+                  }
+                },
+                "mobile_menu_container": {
+                  "type": "object",
+                  "value": {
+                    "tailwindCss": "md:hidden transition-all duration-300 ease-in-out overflow-hidden",
+                    "customCss": {}
+                  }
+                }
+              }
+            },
+            {
+              "id": "contact_main",
+              "component_id": "contact_001",
+              "order": 2,
+              "props": {
+                "title": {
+                  "type": "text",
+                  "value": "Get In Touch",
+                  "tailwindCss": "text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 text-center",
+                  "customCss": {}
+                },
+                "subtitle": {
+                  "type": "text",
+                  "value": "Ready to transform your business? We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
+                  "tailwindCss": "text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto text-center",
+                  "customCss": {}
+                },
+                "contact_info": {
+                  "type": "object",
+                  "value": {
+                    "email": "hello@modernbiz.com",
+                    "phone": "+1 (555) 123-4567",
+                    "address": "123 Business Street, Modern City, MC 12345",
+                    "tailwindCss": "space-y-4 md:space-y-6",
+                    "customCss": {}
+                  }
+                },
+                "form_fields": {
+                  "type": "array",
+                  "value": [
+                    {
+                      "name": "firstName",
+                      "label": "First Name",
+                      "type": "text",
+                      "required": true,
+                      "tailwindCss": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base",
+                      "customCss": {}
+                    },
+                    {
+                      "name": "lastName",
+                      "label": "Last Name",
+                      "type": "text",
+                      "required": true,
+                      "tailwindCss": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base",
+                      "customCss": {}
+                    },
+                    {
+                      "name": "email",
+                      "label": "Email",
+                      "type": "email",
+                      "required": true,
+                      "tailwindCss": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base",
+                      "customCss": {}
+                    },
+                    {
+                      "name": "message",
+                      "label": "Message",
+                      "type": "textarea",
+                      "required": true,
+                      "tailwindCss": "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base",
+                      "customCss": {}
+                    }
+                  ],
+                  "tailwindCss": "space-y-4 md:space-y-6",
+                  "customCss": {}
+                },
+                "submit_button": {
+                  "type": "object",
+                  "value": {
+                    "text": "Send Message",
+                    "tailwindCss": "w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md font-semibold transition-colors text-sm md:text-base",
+                    "customCss": {}
+                  }
+                },
+                "container": {
+                  "type": "object",
+                  "value": {
+                    "tailwindCss": "py-12 md:py-16 lg:py-20 bg-gray-50",
+                    "customCss": {}
+                  }
+                }
+              }
+            },
+            {
+              "id": "footer_contact",
+              "component_id": "footer_001",
+              "order": 3,
+              "props": {
+                "company": {
+                  "type": "text",
+                  "value": "ModernBiz Solutions",
+                  "tailwindCss": "font-medium text-gray-600",
+                  "customCss": {}
+                },
+                "year": {
+                  "type": "text",
+                  "value": "2024",
+                  "tailwindCss": "text-gray-600",
+                  "customCss": {}
+                },
+                "copyright_text": {
+                  "type": "text",
+                  "value": "All rights reserved.",
+                  "tailwindCss": "text-gray-600",
+                  "customCss": {}
+                },
+                "container": {
+                  "type": "object",
+                  "value": {
+                    "tailwindCss": "bg-gray-100 text-gray-600 py-6 md:py-8",
+                    "customCss": {}
+                  }
+                }
+              }
+            }
           ]
         }
-      ],
-      "theme": {
-        "primary_color": "#667eea",
-        "secondary_color": "#764ba2",
-        "accent_color": "#f093fb",
-        "text_primary": "#1a202c",
-        "text_secondary": "#718096",
-        "background": "#ffffff",
-        "font_family": "Inter, sans-serif"
-      }
-    },
-    "professional-services": {
-      "id": "professional-services",
-      "name": "Professional Services",
-      "description": "Comprehensive template for professional service companies",
-      "category": "services",
-      "preview_image": "/templates/professional-services.jpg",
-      "pages": [
-        {
-          "name": "Home",
-          "slug": "/",
-          "components": [
-            "navbar_001",
-            "hero_001",
-            "services_001",
-            "about_001",
-            "footer_001"
-          ]
-        },
-        {
-          "name": "Contact",
-          "slug": "/contact",
-          "components": [
-            "navbar_001",
-            "contact_001",
-            "footer_001"
-          ]
-        }
-      ],
-      "theme": {
-        "primary_color": "#2563eb",
-        "secondary_color": "#1d4ed8",
-        "accent_color": "#3b82f6",
-        "text_primary": "#111827",
-        "text_secondary": "#6b7280",
-        "background": "#ffffff",
-        "font_family": "Inter, sans-serif"
-      }
+      ]
     }
   }
 }

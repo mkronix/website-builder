@@ -1,3 +1,4 @@
+import { Theme } from "@/contexts/editorTypes";
 
 export const applyThemeToCode = (reactCode: string, theme: any, customizableProps?: Record<string, any>) => {
   if (!reactCode) return reactCode;
@@ -7,78 +8,78 @@ export const applyThemeToCode = (reactCode: string, theme: any, customizableProp
   // Apply global theme variables with more comprehensive mapping
   updatedCode = updatedCode
     // Background colors - comprehensive replacement with theme variables
-    .replace(/className="([^"]*?)bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1bg-[var(--theme-primary)]$4"')
-    .replace(/className="([^"]*?)bg-gray-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)bg-gray-(\d+)([^"]*?)"/g,
       'className="$1bg-[var(--theme-secondary)]$3"')
-    .replace(/className="([^"]*?)bg-white([^"]*?)"/g, 
+    .replace(/className="([^"]*?)bg-white([^"]*?)"/g,
       'className="$1bg-[var(--theme-background)]$2"')
-    .replace(/className="([^"]*?)bg-black([^"]*?)"/g, 
+    .replace(/className="([^"]*?)bg-black([^"]*?)"/g,
       'className="$1bg-[var(--theme-text)]$2"')
-    .replace(/className="([^"]*?)bg-slate-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)bg-slate-(\d+)([^"]*?)"/g,
       'className="$1bg-[var(--theme-secondary)]$3"')
 
     // Text colors - comprehensive replacement
-    .replace(/className="([^"]*?)text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1text-[var(--theme-primary)]$4"')
-    .replace(/className="([^"]*?)text-gray-900([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-900([^"]*?)"/g,
       'className="$1text-[var(--theme-text)]$2"')
-    .replace(/className="([^"]*?)text-gray-800([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-800([^"]*?)"/g,
       'className="$1text-[var(--theme-text)]$2"')
-    .replace(/className="([^"]*?)text-gray-700([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-700([^"]*?)"/g,
       'className="$1text-[var(--theme-muted)]$2"')
-    .replace(/className="([^"]*?)text-gray-600([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-600([^"]*?)"/g,
       'className="$1text-[var(--theme-muted)]$2"')
-    .replace(/className="([^"]*?)text-gray-500([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-500([^"]*?)"/g,
       'className="$1text-[var(--theme-muted-foreground)]$2"')
-    .replace(/className="([^"]*?)text-gray-400([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-gray-400([^"]*?)"/g,
       'className="$1text-[var(--theme-muted-foreground)]$2"')
-    .replace(/className="([^"]*?)text-white([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-white([^"]*?)"/g,
       'className="$1text-[var(--theme-background)]$2"')
-    .replace(/className="([^"]*?)text-black([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-black([^"]*?)"/g,
       'className="$1text-[var(--theme-text)]$2"')
-    .replace(/className="([^"]*?)text-slate-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)text-slate-(\d+)([^"]*?)"/g,
       'className="$1text-[var(--theme-muted)]$3"')
 
     // Border colors
-    .replace(/className="([^"]*?)border-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)border-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1border-[var(--theme-primary)]$4"')
-    .replace(/className="([^"]*?)border-gray-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)border-gray-(\d+)([^"]*?)"/g,
       'className="$1border-[var(--theme-secondary)]$3"')
-    .replace(/className="([^"]*?)border-white([^"]*?)"/g, 
+    .replace(/className="([^"]*?)border-white([^"]*?)"/g,
       'className="$1border-[var(--theme-background)]$2"')
-    .replace(/className="([^"]*?)border-slate-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)border-slate-(\d+)([^"]*?)"/g,
       'className="$1border-[var(--theme-secondary)]$3"')
 
     // Hover states
-    .replace(/className="([^"]*?)hover:bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)hover:bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1hover:bg-[var(--theme-primary-hover)]$4"')
-    .replace(/className="([^"]*?)hover:text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)hover:text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1hover:text-[var(--theme-primary)]$4"')
-    .replace(/className="([^"]*?)hover:bg-gray-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)hover:bg-gray-(\d+)([^"]*?)"/g,
       'className="$1hover:bg-[var(--theme-secondary-hover)]$3"')
 
     // Ring colors for focus states
-    .replace(/className="([^"]*?)ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1ring-[var(--theme-primary)]$4"')
-    .replace(/className="([^"]*?)focus:ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+    .replace(/className="([^"]*?)focus:ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g,
       'className="$1focus:ring-[var(--theme-primary)]$4"');
 
   return updatedCode;
 };
 
-export const generateThemeCSS = (theme: any) => {
-  const primaryHover = adjustColorBrightness(theme.primaryColor, -0.1);
-  const secondaryHover = adjustColorBrightness(theme.secondaryColor, -0.1);
-  
+export const generateThemeCSS = (theme: Theme) => {
+  const primaryHover = adjustColorBrightness(theme.primary_color, -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondary_color, -0.1);
+
   return `
     :root {
-      --theme-primary: ${theme.primaryColor};
-      --theme-secondary: ${theme.secondaryColor};
-      --theme-background: ${theme.backgroundColor};
-      --theme-text: ${theme.textColor};
-      --theme-muted: ${adjustColorOpacity(theme.textColor, 0.7)};
-      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor, 0.5)};
+      --theme-primary: ${theme.primary_color};
+      --theme-secondary: ${theme.secondary_color};
+      --theme-background: ${theme.background};
+      --theme-text: ${theme.text_primary};
+      --theme-muted: ${adjustColorOpacity(theme.primary_color, 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.text_secondary, 0.5)};
       --theme-primary-hover: ${primaryHover};
       --theme-secondary-hover: ${secondaryHover};
     }
@@ -187,7 +188,7 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
   if (!customizableProps) return '';
 
   let css = '';
-  
+
   Object.entries(customizableProps).forEach(([key, value]) => {
     if (key.endsWith('_styles') && typeof value === 'object' && value !== null) {
       const elementId = key.replace('_styles', '');
@@ -214,7 +215,7 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
           }
         }
       });
-      
+
       if (cssRules.length > 0) {
         css += `.editor-canvas [data-element-id="${elementId}"] { ${cssRules.join('; ')} !important; }\n`;
       }
@@ -225,6 +226,6 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
       }
     }
   });
-  
+
   return css;
 };

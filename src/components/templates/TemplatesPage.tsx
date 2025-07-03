@@ -44,7 +44,7 @@ export const TemplatesPage = () => {
                   </div>
                 )}
                 <div className="absolute top-2 right-2">
-                  <Badge variant="secondary" className="bg-black text-white">
+                  <Badge className="bg-black text-white">
                     {template.category}
                   </Badge>
                 </div>
@@ -53,18 +53,16 @@ export const TemplatesPage = () => {
               <CardContent className="p-4">
                 <h3 className="text-lg font-semibold text-white mb-2">{template.name}</h3>
                 <p className="text-white text-sm mb-3">{template.description.length > 52 ? template.description.slice(0, 52) + '...' : template.description}</p>
-
-                {/* Only show tags if they exist */}
-                {(template as any).tags && Array.isArray((template as any).tags) && (template as any).tags.length > 0 && (
+                {template.tags && Array.isArray(template.tags) && template.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {(template as any).tags.slice(0, 3).map((tag: string, index: number) => (
-                      <Badge key={index} variant="outline" className="text-xs">
+                    {template.tags.slice(0, 3).map((tag: string, index: number) => (
+                      <Badge key={index} className="text-xs bg-black text-white">
                         {tag}
                       </Badge>
                     ))}
-                    {(template as any).tags.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{(template as any).tags.length - 3}
+                    {template.tags.length > 3 && (
+                      <Badge className="text-xs bg-black text-white">
+                        +{template.tags.length - 3}
                       </Badge>
                     )}
                   </div>

@@ -5,14 +5,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Component, useEditor } from '@/contexts/EditorContext';
-import { applyThemeToCode, generateThemeCSS, generateElementSpecificCSS } from '@/utils/themeUtils';
+import { useEditor } from '@/contexts/EditorContext';
+import { Component } from '@/contexts/editorTypes';
+import { applyThemeToCode, generateElementSpecificCSS } from '@/utils/themeUtils';
 import * as Babel from '@babel/standalone';
 import React, { useMemo, useRef, useState } from 'react';
-import StyleEditor from './StyleEditor';
 import ContentEditor from './ContentEditor';
 import { DynamicFieldEditor } from './DynamicFieldEditor';
 import { SmartArrayCRUD } from './SmartArrayCRUD';
+import StyleEditor from './StyleEditor';
 
 interface EditableComponentRendererProps {
   component: Component;
@@ -110,6 +111,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
+    console.log("component.react_code:", component);
     if (!component?.react_code) {
       console.error('No react_code found in component:', component);
       return null;
@@ -214,12 +216,12 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const getElementStyles = (element: HTMLElement): Record<string, string> => {
     const elementId = element.getAttribute('data-element-id');
-    
+
     // Try to get existing styles from component customizable props
     if (elementId && component.customizableProps) {
       const styleKey = `${elementId}_styles`;
       const existingStyles = component.customizableProps[styleKey];
-      
+
       if (existingStyles) {
         return {
           className: existingStyles.tailwindCss || '',
@@ -228,7 +230,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         };
       }
     }
-    
+
     // Fallback to computed styles if no custom styles found
     const computedStyles = window.getComputedStyle(element);
     return {
@@ -267,7 +269,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       setSelectedElement(target);
       const selector = getElementSelector(target);
       setElementSelector(selector);
-      
+
       // Get unique element ID for individual styling
       let elementId = target.getAttribute('data-element-id');
       if (!elementId) {
@@ -275,7 +277,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         target.setAttribute('data-element-id', elementId);
       }
       setCurrentElementId(elementId);
-      
+
       const type = detectContentType(target);
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
@@ -289,7 +291,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
         if (editableType === 'array') {
           let arrayData = [];
-          
+
           if (propValue?.value && Array.isArray(propValue.value)) {
             arrayData = propValue.value;
           } else if (Array.isArray(propValue)) {
@@ -297,31 +299,31 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           } else if (propValue?.type === 'array' && propValue?.value) {
             arrayData = propValue.value;
           }
-          
+
           console.log('Opening array editor with data:', arrayData);
           setArrayEditor({ key: propPath, data: arrayData });
           return;
         } else if (editableType === 'object') {
           let objectData = {};
-          
+
           if (propValue?.value && typeof propValue.value === 'object') {
             objectData = propValue.value;
           } else if (typeof propValue === 'object' && !Array.isArray(propValue)) {
             objectData = propValue;
           }
-          
+
           console.log('Opening object editor with data:', objectData);
           setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
         } else if (editableType === 'content' && propValue && !isComplexElement) {
           let contentValue = '';
-          
+
           if (propValue.value !== undefined) {
             contentValue = propValue.value;
           } else if (typeof propValue === 'string') {
             contentValue = propValue;
           }
-          
+
           setContentType('text');
           setCurrentContent(contentValue);
           setCurrentStyles(getElementStyles(target));
@@ -335,7 +337,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const dataKey = target.getAttribute('data-prop-key');
       if (dataKey && component.default_props && component.default_props[dataKey]) {
         const propValue = component.default_props[dataKey];
-        
+
         if (Array.isArray(propValue)) {
           console.log('Opening array editor (fallback) with data:', propValue);
           setArrayEditor({ key: dataKey, data: propValue });
@@ -439,7 +441,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     if (!selectedElement || !elementSelector) return;
 
     const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
-    
+
     if (!elementId) {
       console.error('No element ID found for styling');
       return;
@@ -447,7 +449,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
     // Create a unique style key for this specific element
     const styleKey = `${elementId}_styles`;
-    
+
     // Separate Tailwind classes from custom CSS
     const tailwindCss = newStyles.className || '';
     const customCss = { ...newStyles };
@@ -458,7 +460,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       customCss,
       ...customCss // Keep other direct style properties for backward compatibility
     };
-    
+
     const updatedProps = {
       ...component.customizableProps,
       [styleKey]: elementStyles
@@ -490,10 +492,10 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const handleArraySave = (key: string, newData: any[]) => {
     console.log('Saving array data:', { key, newData });
-    
+
     // Get the existing prop structure to maintain other properties
     const existingProp = getPropByPath(component.default_props, key);
-    
+
     let updatedPropValue;
     if (existingProp && typeof existingProp === 'object' && existingProp.type) {
       // New structure - update the value while keeping type and styling
