@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronDown, ChevronUp, Copy, Edit, Plus, Trash2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SmartArrayCRUDProps {
     title: string;
@@ -22,12 +22,29 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
     onSave,
     onClose
 }) => {
-    const [items, setItems] = useState([...data]);
+    const [items, setItems] = useState<any[]>([]);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-    // Auto-detect structure from first item
+    // Initialize items from data
+    useEffect(() => {
+        if (Array.isArray(data)) {
+            setItems([...data]);
+        } else {
+            setItems([]);
+        }
+    }, [data]);
+
+    // Auto-detect structure from first item or create a basic template
     const getItemStructure = () => {
-        if (items.length === 0) return {};
+        if (items.length === 0) {
+            // Return a basic template for new arrays
+            return {
+                title: '',
+                description: '',
+                tailwindCss: '',
+                customCss: {}
+            };
+        }
         return items[0];
     };
 
@@ -36,16 +53,20 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
         const template = getItemStructure();
         const newItem: any = {};
 
-        Object.entries(template).forEach(([key, value]) => {
-            if (key === 'tailwindCss' || key === 'customCss') {
-                newItem[key] = value; // Keep styling
+        Object.entries(template).forEach(([key, value]: [string, any]) => {
+            if (key === 'tailwindCss') {
+                newItem[key] = ''; // Empty Tailwind classes
+            } else if (key === 'customCss') {
+                newItem[key] = {}; // Empty CSS object
             } else if (typeof value === 'string') {
                 newItem[key] = ''; // Empty string for text
             } else if (typeof value === 'boolean') {
                 newItem[key] = false; // Default boolean
+            } else if (typeof value === 'number') {
+                newItem[key] = 0; // Default number
             } else if (Array.isArray(value)) {
                 newItem[key] = []; // Empty array
-            } else if (typeof value === 'object') {
+            } else if (typeof value === 'object' && value !== null) {
                 newItem[key] = {}; // Empty object
             } else {
                 newItem[key] = value; // Keep other types as-is
@@ -58,7 +79,8 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
     // CRUD Operations
     const handleCreate = () => {
         const newItem = createNewItem();
-        setItems([...items, newItem]);
+        const newItems = [...items, newItem];
+        setItems(newItems);
         setEditingIndex(items.length); // Edit the new item immediately
     };
 
@@ -73,6 +95,11 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
         if (window.confirm('Delete this item?')) {
             const newItems = items.filter((_, i) => i !== index);
             setItems(newItems);
+            if (editingIndex === index) {
+                setEditingIndex(null);
+            } else if (editingIndex !== null && editingIndex > index) {
+                setEditingIndex(editingIndex - 1);
+            }
         }
     };
 
@@ -83,33 +110,49 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
         if (targetIndex >= 0 && targetIndex < items.length) {
             [newItems[index], newItems[targetIndex]] = [newItems[targetIndex], newItems[index]];
             setItems(newItems);
+            
+            // Update editing index if needed
+            if (editingIndex === index) {
+                setEditingIndex(targetIndex);
+            } else if (editingIndex === targetIndex) {
+                setEditingIndex(index);
+            }
         }
     };
 
     const handleSaveAll = () => {
+        // Close editing mode first
+        setEditingIndex(null);
+        // Save the items
         onSave(items);
         onClose();
     };
 
     // Get preview text for an item
     const getItemPreview = (item: any) => {
+        if (!item || typeof item !== 'object') {
+            return String(item) || 'Empty Item';
+        }
+
         const keys = Object.keys(item).filter(key =>
-            key !== 'tailwindCss' && key !== 'customCss' && typeof item[key] === 'string'
+            key !== 'tailwindCss' && key !== 'customCss' && 
+            typeof item[key] === 'string' && item[key].trim() !== ''
         );
 
-        const previewKey = keys.find(key =>
-            key.toLowerCase().includes('title') ||
-            key.toLowerCase().includes('name') ||
-            key.toLowerCase().includes('label')
-        ) || keys[0];
+        // Priority order for preview text
+        const priorityKeys = ['title', 'name', 'label', 'text', 'heading'];
+        const previewKey = priorityKeys.find(key => keys.includes(key)) || keys[0];
 
-        return item[previewKey] || 'Untitled';
+        if (previewKey && item[previewKey]) {
+            return String(item[previewKey]).slice(0, 50) + (item[previewKey].length > 50 ? '...' : '');
+        }
+
+        return 'Untitled Item';
     };
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
             <DialogContent className="max-w-5xl max-h-[85vh] bg-[#1c1c1c] border-gray-700 text-white overflow-hidden flex flex-col">
-
                 {/* Header */}
                 <DialogHeader className="pb-4">
                     <DialogTitle className="text-white text-xl">
@@ -151,16 +194,18 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                                                     {getItemPreview(item)}
                                                 </div>
                                                 <div className="text-sm text-gray-400">
-                                                    {Object.entries(item)
-                                                        .filter(([key, value]) =>
-                                                            key !== 'tailwindCss' &&
-                                                            key !== 'customCss' &&
-                                                            typeof value === 'string' &&
-                                                            value.length > 0
-                                                        )
-                                                        .slice(0, 3)
-                                                        .map(([key, value]) => `${key}: ${String(value).slice(0, 30)}${String(value).length > 30 ? '...' : ''}`)
-                                                        .join(' • ')
+                                                    {typeof item === 'object' && item !== null ? 
+                                                        Object.entries(item)
+                                                            .filter(([key, value]) =>
+                                                                key !== 'tailwindCss' &&
+                                                                key !== 'customCss' &&
+                                                                typeof value === 'string' &&
+                                                                String(value).length > 0
+                                                            )
+                                                            .slice(0, 3)
+                                                            .map(([key, value]) => `${key}: ${String(value).slice(0, 30)}${String(value).length > 30 ? '...' : ''}`)
+                                                            .join(' • ') 
+                                                        : String(item)
                                                     }
                                                 </div>
                                             </div>
@@ -261,7 +306,6 @@ const ItemEditor: React.FC<{
     };
 
     const renderField = (key: string, value: any) => {
-
         // Style fields get special treatment
         if (key === 'tailwindCss') {
             return (
@@ -288,7 +332,8 @@ const ItemEditor: React.FC<{
                                 const parsed = JSON.parse(e.target.value);
                                 handleFieldChange(key, parsed);
                             } catch (err) {
-                                // Invalid JSON, keep typing
+                                // Invalid JSON, keep the current value
+                                console.warn('Invalid JSON input');
                             }
                         }}
                         className="bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-400 font-mono text-sm"
@@ -318,6 +363,22 @@ const ItemEditor: React.FC<{
             );
         }
 
+        if (typeof value === 'number') {
+            return (
+                <div key={key} className="mb-4">
+                    <Label className="text-white mb-2 block capitalize">
+                        {key.replace(/([A-Z])/g, ' $1')}
+                    </Label>
+                    <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => handleFieldChange(key, parseFloat(e.target.value) || 0)}
+                        className="bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-400"
+                    />
+                </div>
+            );
+        }
+
         if (Array.isArray(value)) {
             return (
                 <div key={key} className="mb-4">
@@ -335,8 +396,34 @@ const ItemEditor: React.FC<{
             );
         }
 
+        // Handle object types (excluding null)
+        if (typeof value === 'object' && value !== null) {
+            return (
+                <div key={key} className="mb-4">
+                    <Label className="text-white mb-2 block capitalize">
+                        {key.replace(/([A-Z])/g, ' $1')} (Object)
+                    </Label>
+                    <Textarea
+                        value={JSON.stringify(value, null, 2)}
+                        onChange={(e) => {
+                            try {
+                                const parsed = JSON.parse(e.target.value);
+                                handleFieldChange(key, parsed);
+                            } catch (err) {
+                                console.warn('Invalid JSON input');
+                            }
+                        }}
+                        className="bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-400 font-mono text-sm"
+                        rows={3}
+                        placeholder='{}'
+                    />
+                </div>
+            );
+        }
+
         // Text fields with smart detection
         const isUrl = key.toLowerCase().includes('url') || key.toLowerCase().includes('href') || key.toLowerCase().includes('link');
+        const isEmail = key.toLowerCase().includes('email');
         const isLongText = key.toLowerCase().includes('description') || key.toLowerCase().includes('content') || key.toLowerCase().includes('bio');
 
         if (isLongText) {
@@ -361,11 +448,11 @@ const ItemEditor: React.FC<{
                     {key.replace(/([A-Z])/g, ' $1')}
                 </Label>
                 <Input
-                    type={isUrl ? 'url' : 'text'}
+                    type={isUrl ? 'url' : isEmail ? 'email' : 'text'}
                     value={value || ''}
                     onChange={(e) => handleFieldChange(key, e.target.value)}
                     className="bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-400"
-                    placeholder={isUrl ? 'https://example.com' : ''}
+                    placeholder={isUrl ? 'https://example.com' : isEmail ? 'email@example.com' : ''}
                 />
             </div>
         );

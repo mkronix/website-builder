@@ -261,28 +261,57 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
 
+      console.log('Element clicked:', { editableType, propPath, target });
+
       if (editableType && propPath) {
         // Get the actual prop value using the path
         const propValue = getPropByPath(component.default_props, propPath);
+        console.log('Prop value found:', propValue);
 
         if (editableType === 'array') {
           // Handle array editing with SmartArrayCRUD
-          const arrayData = propValue?.value || propValue || [];
+          let arrayData = [];
+          
+          if (propValue?.value && Array.isArray(propValue.value)) {
+            arrayData = propValue.value;
+          } else if (Array.isArray(propValue)) {
+            arrayData = propValue;
+          } else if (propValue?.type === 'array' && propValue?.value) {
+            arrayData = propValue.value;
+          }
+          
+          console.log('Opening array editor with data:', arrayData);
           setArrayEditor({ key: propPath, data: arrayData });
+          return;
+        } else if (editableType === 'object') {
+          // Handle object editing
+          let objectData = {};
+          
+          if (propValue?.value && typeof propValue.value === 'object') {
+            objectData = propValue.value;
+          } else if (typeof propValue === 'object' && !Array.isArray(propValue)) {
+            objectData = propValue;
+          }
+          
+          console.log('Opening object editor with data:', objectData);
+          setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
         } else if (editableType === 'content' && propValue) {
           // Handle content editing
-          if (propValue.type === 'object' && propValue.value) {
-            setDynamicFieldEditor({ key: propPath, data: propValue.value });
-            return;
-          } else if (propValue.type === 'text' || typeof propValue.value === 'string') {
-            setContentType('text');
-            setCurrentContent(propValue.value || propValue);
-            setCurrentStyles(getElementStyles(target));
-            setActiveTab('content');
-            setEditModalOpen(true);
-            return;
+          let contentValue = '';
+          
+          if (propValue.value !== undefined) {
+            contentValue = propValue.value;
+          } else if (typeof propValue === 'string') {
+            contentValue = propValue;
           }
+          
+          setContentType('text');
+          setCurrentContent(contentValue);
+          setCurrentStyles(getElementStyles(target));
+          setActiveTab('content');
+          setEditModalOpen(true);
+          return;
         }
       }
 
@@ -290,12 +319,19 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const dataKey = target.getAttribute('data-prop-key');
       if (dataKey && component.default_props && component.default_props[dataKey]) {
         const propValue = component.default_props[dataKey];
-        if (Array.isArray(propValue) || (typeof propValue === 'object' && propValue !== null)) {
+        
+        if (Array.isArray(propValue)) {
+          console.log('Opening array editor (fallback) with data:', propValue);
+          setArrayEditor({ key: dataKey, data: propValue });
+          return;
+        } else if (typeof propValue === 'object' && propValue !== null) {
+          console.log('Opening object editor (fallback) with data:', propValue);
           setDynamicFieldEditor({ key: dataKey, data: propValue });
           return;
         }
       }
 
+      // Default behavior for simple content editing
       if (type) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
@@ -437,12 +473,31 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   };
 
   const handleArraySave = (key: string, newData: any[]) => {
-    const updatedProps = setPropByPath(component.default_props, key, {
-      type: 'array',
-      value: newData,
-      tailwindCss: getPropByPath(component.default_props, key)?.tailwindCss || '',
-      customCss: getPropByPath(component.default_props, key)?.customCss || {}
-    });
+    console.log('Saving array data:', { key, newData });
+    
+    // Get the existing prop structure to maintain other properties
+    const existingProp = getPropByPath(component.default_props, key);
+    
+    let updatedPropValue;
+    if (existingProp && typeof existingProp === 'object' && existingProp.type) {
+      // New structure - update the value while keeping type and styling
+      updatedPropValue = {
+        ...existingProp,
+        value: newData
+      };
+    } else {
+      // Create new structure
+      updatedPropValue = {
+        type: 'array',
+        value: newData,
+        tailwindCss: existingProp?.tailwindCss || '',
+        customCss: existingProp?.customCss || {}
+      };
+    }
+
+    const updatedProps = setPropByPath(component.default_props, key, updatedPropValue);
+
+    console.log('Updated props:', updatedProps);
 
     updateComponent(state.currentPage, component.id, {
       default_props: updatedProps
@@ -588,7 +643,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       {/* Smart Array CRUD Editor */}
       {arrayEditor && (
         <SmartArrayCRUD
-          title={arrayEditor.key}
+          title={`Edit ${arrayEditor.key}`}
           data={arrayEditor.data}
           onSave={(newData) => handleArraySave(arrayEditor.key, newData)}
           onClose={() => setArrayEditor(null)}
