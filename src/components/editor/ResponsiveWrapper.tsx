@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useEditor } from '@/contexts/EditorContext';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
       getResponsiveClasses(),
       className
     )}>
+      {/* Responsive CSS only - no theme CSS injection here */}
       <style dangerouslySetInnerHTML={{
         __html: `
           /* Responsive utilities for editor */

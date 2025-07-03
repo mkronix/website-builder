@@ -1,4 +1,3 @@
-
 import { useEditor } from '@/contexts/EditorContext';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -25,34 +24,11 @@ export const ThemeCustomizer = () => {
       backgroundColor: preset.background,
       textColor: preset.text,
     });
-    
-    // Force re-render of canvas to apply theme immediately
-    setTimeout(() => {
-      const canvas = document.querySelector('.editor-canvas');
-      if (canvas) {
-        canvas.dispatchEvent(new Event('theme-updated'));
-      }
-    }, 100);
   };
 
   const handleColorChange = (colorType: keyof typeof state.theme, value: string) => {
     updateTheme({ [colorType]: value });
-    
-    // Force immediate update
-    setTimeout(() => {
-      const canvas = document.querySelector('.editor-canvas');
-      if (canvas) {
-        canvas.dispatchEvent(new Event('theme-updated'));
-      }
-    }, 50);
   };
-
-  const themeStyle = {
-    '--theme-primary': state.theme.primaryColor,
-    '--theme-secondary': state.theme.secondaryColor,
-    '--theme-background': state.theme.backgroundColor,
-    '--theme-text': state.theme.textColor,
-  } as React.CSSProperties;
 
   return (
     <div className="p-4 space-y-6 pb-10">
@@ -205,24 +181,6 @@ export const ThemeCustomizer = () => {
           </div>
         </div>
       </div>
-
-      {/* Real-time CSS injection for the canvas */}
-      <style>
-        {`
-          .editor-canvas {
-            --theme-primary: ${state.theme.primaryColor} !important;
-            --theme-secondary: ${state.theme.secondaryColor} !important;
-            --theme-background: ${state.theme.backgroundColor} !important;
-            --theme-text: ${state.theme.textColor} !important;
-            --theme-muted: rgba(${hexToRgb(state.theme.textColor)}, 0.7) !important;
-            --theme-muted-foreground: rgba(${hexToRgb(state.theme.textColor)}, 0.5) !important;
-          }
-          
-          .editor-canvas * {
-            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
-          }
-        `}
-      </style>
     </div>
   );
 };

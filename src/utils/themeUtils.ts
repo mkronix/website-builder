@@ -4,58 +4,65 @@ export const applyThemeToCode = (reactCode: string, theme: any, customizableProp
 
   let updatedCode = reactCode;
 
-  // Apply global theme variables first
+  // Apply global theme variables with more comprehensive mapping
   updatedCode = updatedCode
-    // Background colors - more comprehensive replacement
-    .replace(/bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'bg-[var(--theme-primary)]')
-    .replace(/bg-gray-(\d+)/g, 'bg-[var(--theme-secondary)]')
-    .replace(/bg-white/g, 'bg-[var(--theme-background)]')
-    .replace(/bg-black/g, 'bg-[var(--theme-text)]')
-    .replace(/bg-slate-(\d+)/g, 'bg-[var(--theme-secondary)]')
+    // Background colors - comprehensive replacement with theme variables
+    .replace(/className="([^"]*?)bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1bg-[var(--theme-primary)]$4"')
+    .replace(/className="([^"]*?)bg-gray-(\d+)([^"]*?)"/g, 
+      'className="$1bg-[var(--theme-secondary)]$3"')
+    .replace(/className="([^"]*?)bg-white([^"]*?)"/g, 
+      'className="$1bg-[var(--theme-background)]$2"')
+    .replace(/className="([^"]*?)bg-black([^"]*?)"/g, 
+      'className="$1bg-[var(--theme-text)]$2"')
+    .replace(/className="([^"]*?)bg-slate-(\d+)([^"]*?)"/g, 
+      'className="$1bg-[var(--theme-secondary)]$3"')
 
-    // Text colors - more comprehensive replacement
-    .replace(/text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'text-[var(--theme-primary)]')
-    .replace(/text-gray-900/g, 'text-[var(--theme-text)]')
-    .replace(/text-gray-800/g, 'text-[var(--theme-text)]')
-    .replace(/text-gray-700/g, 'text-[var(--theme-muted)]')
-    .replace(/text-gray-600/g, 'text-[var(--theme-muted)]')
-    .replace(/text-gray-500/g, 'text-[var(--theme-muted-foreground)]')
-    .replace(/text-gray-400/g, 'text-[var(--theme-muted-foreground)]')
-    .replace(/text-white/g, 'text-[var(--theme-background)]')
-    .replace(/text-black/g, 'text-[var(--theme-text)]')
-    .replace(/text-slate-(\d+)/g, 'text-[var(--theme-muted)]')
+    // Text colors - comprehensive replacement
+    .replace(/className="([^"]*?)text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1text-[var(--theme-primary)]$4"')
+    .replace(/className="([^"]*?)text-gray-900([^"]*?)"/g, 
+      'className="$1text-[var(--theme-text)]$2"')
+    .replace(/className="([^"]*?)text-gray-800([^"]*?)"/g, 
+      'className="$1text-[var(--theme-text)]$2"')
+    .replace(/className="([^"]*?)text-gray-700([^"]*?)"/g, 
+      'className="$1text-[var(--theme-muted)]$2"')
+    .replace(/className="([^"]*?)text-gray-600([^"]*?)"/g, 
+      'className="$1text-[var(--theme-muted)]$2"')
+    .replace(/className="([^"]*?)text-gray-500([^"]*?)"/g, 
+      'className="$1text-[var(--theme-muted-foreground)]$2"')
+    .replace(/className="([^"]*?)text-gray-400([^"]*?)"/g, 
+      'className="$1text-[var(--theme-muted-foreground)]$2"')
+    .replace(/className="([^"]*?)text-white([^"]*?)"/g, 
+      'className="$1text-[var(--theme-background)]$2"')
+    .replace(/className="([^"]*?)text-black([^"]*?)"/g, 
+      'className="$1text-[var(--theme-text)]$2"')
+    .replace(/className="([^"]*?)text-slate-(\d+)([^"]*?)"/g, 
+      'className="$1text-[var(--theme-muted)]$3"')
 
     // Border colors
-    .replace(/border-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'border-[var(--theme-primary)]')
-    .replace(/border-gray-(\d+)/g, 'border-[var(--theme-secondary)]')
-    .replace(/border-white/g, 'border-[var(--theme-background)]')
-    .replace(/border-slate-(\d+)/g, 'border-[var(--theme-secondary)]')
+    .replace(/className="([^"]*?)border-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1border-[var(--theme-primary)]$4"')
+    .replace(/className="([^"]*?)border-gray-(\d+)([^"]*?)"/g, 
+      'className="$1border-[var(--theme-secondary)]$3"')
+    .replace(/className="([^"]*?)border-white([^"]*?)"/g, 
+      'className="$1border-[var(--theme-background)]$2"')
+    .replace(/className="([^"]*?)border-slate-(\d+)([^"]*?)"/g, 
+      'className="$1border-[var(--theme-secondary)]$3"')
 
     // Hover states
-    .replace(/hover:bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'hover:bg-[var(--theme-primary-hover)]')
-    .replace(/hover:text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'hover:text-[var(--theme-primary)]')
-    .replace(/hover:bg-gray-(\d+)/g, 'hover:bg-[var(--theme-secondary-hover)]')
+    .replace(/className="([^"]*?)hover:bg-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1hover:bg-[var(--theme-primary-hover)]$4"')
+    .replace(/className="([^"]*?)hover:text-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1hover:text-[var(--theme-primary)]$4"')
+    .replace(/className="([^"]*?)hover:bg-gray-(\d+)([^"]*?)"/g, 
+      'className="$1hover:bg-[var(--theme-secondary-hover)]$3"')
 
     // Ring colors for focus states
-    .replace(/ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'ring-[var(--theme-primary)]')
-    .replace(/focus:ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)/g, 'focus:ring-[var(--theme-primary)]');
-
-  // Apply individual element customizations if they exist
-  if (customizableProps) {
-    Object.entries(customizableProps).forEach(([key, value]) => {
-      if (key.includes('_styles') && typeof value === 'object' && value !== null) {
-        // This will be handled by the component renderer
-        return;
-      }
-      
-      if (key.includes('_content') && typeof value === 'string') {
-        const elementType = key.replace('_content', '');
-        // Apply content changes without affecting global theme
-        const contentRegex = new RegExp(`(data-prop-path="[^"]*${elementType}[^"]*"[^>]*>)([^<]*)(</[^>]*>)`, 'g');
-        updatedCode = updatedCode.replace(contentRegex, `$1${value}$3`);
-      }
-    });
-  }
+    .replace(/className="([^"]*?)ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1ring-[var(--theme-primary)]$4"')
+    .replace(/className="([^"]*?)focus:ring-(blue|indigo|purple|pink|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|violet|fuchsia|rose)-(\d+)([^"]*?)"/g, 
+      'className="$1focus:ring-[var(--theme-primary)]$4"');
 
   return updatedCode;
 };
@@ -76,36 +83,31 @@ export const generateThemeCSS = (theme: any) => {
       --theme-secondary-hover: ${secondaryHover};
     }
     
-    /* Global theme classes */
-    .bg-primary { background-color: var(--theme-primary) !important; }
-    .bg-secondary { background-color: var(--theme-secondary) !important; }
-    .bg-background { background-color: var(--theme-background) !important; }
-    .text-primary { color: var(--theme-primary) !important; }
-    .text-secondary { color: var(--theme-secondary) !important; }
-    .text-foreground { color: var(--theme-text) !important; }
-    .text-background { color: var(--theme-background) !important; }
-    .text-muted { color: var(--theme-muted) !important; }
-    .text-muted-foreground { color: var(--theme-muted-foreground) !important; }
-    .border-primary { border-color: var(--theme-primary) !important; }
-    .border-secondary { border-color: var(--theme-secondary) !important; }
+    /* Global theme classes - Only apply in editor canvas */
+    .editor-canvas .bg-primary { background-color: var(--theme-primary) !important; }
+    .editor-canvas .bg-secondary { background-color: var(--theme-secondary) !important; }
+    .editor-canvas .bg-background { background-color: var(--theme-background) !important; }
+    .editor-canvas .text-primary { color: var(--theme-primary) !important; }
+    .editor-canvas .text-secondary { color: var(--theme-secondary) !important; }
+    .editor-canvas .text-foreground { color: var(--theme-text) !important; }
+    .editor-canvas .text-background { color: var(--theme-background) !important; }
+    .editor-canvas .text-muted { color: var(--theme-muted) !important; }
+    .editor-canvas .text-muted-foreground { color: var(--theme-muted-foreground) !important; }
+    .editor-canvas .border-primary { border-color: var(--theme-primary) !important; }
+    .editor-canvas .border-secondary { border-color: var(--theme-secondary) !important; }
     
     /* Hover and interaction states */
-    .hover\\:bg-primary\\/80:hover { background-color: var(--theme-primary-hover) !important; }
-    .hover\\:text-primary:hover { color: var(--theme-primary) !important; }
-    .hover\\:bg-secondary\\/80:hover { background-color: var(--theme-secondary-hover) !important; }
+    .editor-canvas .hover\\:bg-primary\\/80:hover { background-color: var(--theme-primary-hover) !important; }
+    .editor-canvas .hover\\:text-primary:hover { color: var(--theme-primary) !important; }
+    .editor-canvas .hover\\:bg-secondary\\/80:hover { background-color: var(--theme-secondary-hover) !important; }
     
-    /* Component-specific theme application */
+    /* Theme variable applications for common elements */
     .editor-canvas [data-theme-element="primary-bg"] { background-color: var(--theme-primary) !important; }
     .editor-canvas [data-theme-element="secondary-bg"] { background-color: var(--theme-secondary) !important; }
     .editor-canvas [data-theme-element="primary-text"] { color: var(--theme-primary) !important; }
     .editor-canvas [data-theme-element="secondary-text"] { color: var(--theme-secondary) !important; }
     .editor-canvas [data-theme-element="text"] { color: var(--theme-text) !important; }
     .editor-canvas [data-theme-element="background"] { background-color: var(--theme-background) !important; }
-    
-    /* Individual element overrides */
-    .editor-canvas [data-element-id] {
-      transition: all 0.2s ease-in-out;
-    }
   `;
 };
 
@@ -134,22 +136,48 @@ const adjustColorOpacity = (color: string, opacity: number): string => {
   return color;
 };
 
-export const generateElementSpecificCSS = (elementId: string, styles: Record<string, any>): string => {
+export const generateElementSpecificCSS = (componentId: string, customizableProps: Record<string, any>): string => {
+  if (!customizableProps) return '';
+
   let css = '';
-  const selector = `[data-element-id="${elementId}"]`;
   
-  const cssRules: string[] = [];
-  
-  Object.entries(styles).forEach(([property, value]) => {
-    if (value && value !== 'undefined' && value !== '') {
-      const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
-      cssRules.push(`${cssProperty}: ${value}`);
+  Object.entries(customizableProps).forEach(([key, value]) => {
+    if (key.endsWith('_styles') && typeof value === 'object' && value !== null) {
+      const elementId = key.replace('_styles', '');
+      const styles = value as Record<string, string>;
+
+      let cssRules: string[] = [];
+      Object.entries(styles).forEach(([property, val]) => {
+        if (val && val !== 'undefined' && val !== '') {
+          const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
+          // Handle Tailwind CSS classes
+          if (property === 'tailwindCss' && val) {
+            // Don't add tailwindCss as a CSS property
+            return;
+          } else if (property === 'customCss' && typeof val === 'object') {
+            // Handle custom CSS object
+            Object.entries(val as Record<string, string>).forEach(([cssProp, cssVal]) => {
+              if (cssVal && cssVal !== 'undefined') {
+                const cssProperty = cssProp.replace(/([A-Z])/g, '-$1').toLowerCase();
+                cssRules.push(`${cssProperty}: ${cssVal}`);
+              }
+            });
+          } else {
+            cssRules.push(`${cssProperty}: ${val}`);
+          }
+        }
+      });
+      
+      if (cssRules.length > 0) {
+        css += `.editor-canvas [data-element-id="${elementId}"] { ${cssRules.join('; ')} !important; }\n`;
+      }
+
+      // Handle Tailwind CSS classes separately
+      if (styles.tailwindCss) {
+        css += `.editor-canvas [data-element-id="${elementId}"] { @apply ${styles.tailwindCss}; }\n`;
+      }
     }
   });
-  
-  if (cssRules.length > 0) {
-    css = `.editor-canvas ${selector} { ${cssRules.join('; ')} !important; }`;
-  }
   
   return css;
 };

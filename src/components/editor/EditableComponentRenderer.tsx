@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Component, useEditor } from '@/contexts/EditorContext';
-import { applyThemeToCode, generateThemeCSS } from '@/utils/themeUtils';
+import { applyThemeToCode, generateThemeCSS, generateElementSpecificCSS } from '@/utils/themeUtils';
 import * as Babel from '@babel/standalone';
 import React, { useMemo, useRef, useState } from 'react';
 import StyleEditor from './StyleEditor';
@@ -120,34 +120,25 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
       // Add unique identifiers to elements for individual styling
+      let elementCounter = 0;
       themedCode = themedCode.replace(
         /(<[^>]+)(className="[^"]*")([^>]*>)/g,
         (match, start, classNamePart, end) => {
-          const elementId = `${component.id}-${Math.random().toString(36).substr(2, 9)}`;
+          elementCounter++;
+          const elementId = `${component.id}-el-${elementCounter}`;
           return `${start}${classNamePart} data-element-id="${elementId}"${end}`;
         }
       );
 
-      // Apply customizations if they exist
+      // Apply content customizations
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
-          if (key.endsWith('_content')) {
-            // Handle content updates for individual elements
-            const elementType = key.replace('_content', '');
-            const propPath = key.replace('_content', '');
-            
-            if (propPath.includes('.')) {
-              // Handle nested prop paths
-              const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
-              themedCode = themedCode.replace(regex, `"${typeof value === 'string' ? value : JSON.stringify(value)}"`);
-            } else {
-              // Handle direct element content
-              if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div', 'button', 'a'].includes(elementType)) {
-                const contentRegex = new RegExp(`(<${elementType}[^>]*>)([^<]*)(</\s*${elementType}>)`, 'g');
-                themedCode = themedCode.replace(contentRegex, `$1${value}$3`);
-              }
+          if (key.endsWith('_content') && !key.endsWith('_styles')) {
+            const regex = new RegExp(`{${key.replace('_content', '')}}`, 'g');
+            if (typeof value === 'string') {
+              themedCode = themedCode.replace(regex, value);
             }
-          } else if (!key.endsWith('_styles')) {
+          } else if (!key.endsWith('_styles') && !key.endsWith('_content')) {
             // Handle other prop replacements
             const regex = new RegExp(`{${key}}`, 'g');
             if (Array.isArray(value)) {
@@ -419,9 +410,20 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     // Create a unique style key for this specific element
     const styleKey = `${elementId}_styles`;
     
+    // Separate Tailwind classes from custom CSS
+    const tailwindCss = newStyles.className || '';
+    const customCss = { ...newStyles };
+    delete customCss.className;
+
+    const elementStyles = {
+      tailwindCss,
+      customCss,
+      ...customCss // Keep other direct style properties for backward compatibility
+    };
+    
     const updatedProps = {
       ...component.customizableProps,
-      [styleKey]: newStyles
+      [styleKey]: elementStyles
     };
 
     updateComponent(state.currentPage, component.id, {
@@ -483,29 +485,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   };
 
   const generateCustomStyles = (): string => {
-    if (!component.customizableProps) return '';
-
-    let customCSS = '';
-    Object.entries(component.customizableProps).forEach(([key, value]) => {
-      if (key.endsWith('_styles') && typeof value === 'object') {
-        const elementId = key.replace('_styles', '');
-        const styles = value as Record<string, string>;
-
-        let cssRules = '';
-        Object.entries(styles).forEach(([property, val]) => {
-          if (val && val !== 'undefined') {
-            const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
-            cssRules += `${cssProperty}: ${val}; `;
-          }
-        });
-
-        if (cssRules) {
-          customCSS += `.editor-canvas [data-element-id="${elementId}"] { ${cssRules} } `;
-        }
-      }
-    });
-
-    return customCSS;
+    return generateElementSpecificCSS(component.id, component.customizableProps);
   };
 
   const renderComponent = () => {
@@ -549,8 +529,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   return (
     <>
+      {/* Only generate custom styles for individual elements, not global theme */}
       <style dangerouslySetInnerHTML={{
-        __html: generateThemeCSS(state.theme) + generateCustomStyles()
+        __html: generateCustomStyles()
       }} />
       <div
         ref={componentRef}

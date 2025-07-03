@@ -61,6 +61,7 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
+      {/* Global theme CSS - single source of truth */}
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
       <ResponsiveWrapper>
         <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
