@@ -115,8 +115,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     }
 
     try {
-      console.log('Starting component compilation for:', component.id);
-
       // Apply theme to code
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
@@ -164,33 +162,23 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         });
       }
 
-      // Clean the code
       let cleanCode = themedCode
         .replace(/import\s+.*?from\s+['"][^'"]*['"];?\s*/g, '')
         .replace(/export\s+default\s+/, '')
         .trim();
 
-      console.log('Cleaned code:', cleanCode);
-
-      // Transpile JSX to JS using Babel
       const transpiledCode = Babel.transform(cleanCode, {
         presets: ['react'],
       }).code;
 
-      console.log('Transpiled code:', transpiledCode);
-
-      // IMPROVED: Better function name detection
-      // Look for all function declarations, not just the first one
       const functionMatches = transpiledCode.matchAll(/function\s+([A-Za-z0-9_]+)\s*\(/g);
       const functions = Array.from(functionMatches).map(match => match[1]);
 
-      console.log('All found functions:', functions);
-
       // Filter out utility functions like _extends, _objectSpread, etc.
       const componentFunction = functions.find(name =>
-        !name.startsWith('_') && // Exclude Babel helpers
+        !name.startsWith('_') &&
         !['extends', 'objectSpread', 'defineProperty', 'slicedToArray'].includes(name) &&
-        name.length > 2 // Component names are usually longer
+        name.length > 2
       );
 
       if (!componentFunction) {
@@ -198,12 +186,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         throw new Error('Unable to find component function name');
       }
 
-      console.log('Using component function:', componentFunction);
-
-      // Create a React component that calls the function properly
       const componentRenderer = (props: any) => {
         try {
-          // Execute the transpiled code in a function scope
           const execFunction = new Function('React', 'props', `
             const { useState, useEffect, useMemo, useCallback } = React;
             ${transpiledCode}
@@ -217,15 +201,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }
       };
 
-      console.log('Component function created successfully');
       return componentRenderer;
     } catch (error) {
       console.error('Error compiling component:', error);
-      console.error('Component data:', {
-        id: component.id,
-        react_code: component.react_code,
-        default_props: component.default_props
-      });
       return null;
     }
   }, [component.react_code, component.customizableProps, state.theme]);
@@ -504,44 +482,14 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       try {
         // Normalize props to ensure compatibility
         const normalizedProps = normalizeProps(component.default_props);
-        console.log('Calling DynamicComponent with normalized props:', normalizedProps);
-
         const result = DynamicComponent(normalizedProps);
-        console.log('Component execution result:', result);
-
         if (React.isValidElement(result)) {
-          console.log('Valid React element returned');
           return result;
         } else {
           console.error('Invalid React element returned:', result);
         }
       } catch (error: any) {
         console.error('Error executing dynamic component:', error);
-        return (
-          <div className="p-4 text-red-500 bg-red-50 border border-red-200 rounded-lg">
-            <div className="font-semibold">Component Execution Error</div>
-            <div className="text-sm mt-1">{error.message}</div>
-            <details className="mt-2">
-              <summary className="cursor-pointer text-xs">Show error details</summary>
-              <div className="mt-2 p-2 bg-gray-100 rounded text-black text-xs">
-                <div><strong>Error:</strong> {error.message}</div>
-                <div><strong>Stack:</strong> {error.stack}</div>
-                <div className="mt-2"><strong>Component Props:</strong></div>
-                <pre className="text-xs overflow-auto max-h-32">
-                  {JSON.stringify(component.default_props, null, 2)}
-                </pre>
-                <div className="mt-2"><strong>Normalized Props:</strong></div>
-                <pre className="text-xs overflow-auto max-h-32">
-                  {JSON.stringify(normalizeProps(component.default_props), null, 2)}
-                </pre>
-                <div className="mt-2"><strong>React Code:</strong></div>
-                <pre className="text-xs overflow-auto max-h-32">
-                  {component.react_code}
-                </pre>
-              </div>
-            </details>
-          </div>
-        );
       }
     }
 
