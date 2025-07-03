@@ -25,6 +25,26 @@ export const ThemeCustomizer = () => {
       backgroundColor: preset.background,
       textColor: preset.text,
     });
+    
+    // Force re-render of canvas to apply theme immediately
+    setTimeout(() => {
+      const canvas = document.querySelector('.editor-canvas');
+      if (canvas) {
+        canvas.dispatchEvent(new Event('theme-updated'));
+      }
+    }, 100);
+  };
+
+  const handleColorChange = (colorType: keyof typeof state.theme, value: string) => {
+    updateTheme({ [colorType]: value });
+    
+    // Force immediate update
+    setTimeout(() => {
+      const canvas = document.querySelector('.editor-canvas');
+      if (canvas) {
+        canvas.dispatchEvent(new Event('theme-updated'));
+      }
+    }, 50);
   };
 
   const themeStyle = {
@@ -82,12 +102,12 @@ export const ThemeCustomizer = () => {
               <input
                 type="color"
                 value={state.theme.primaryColor}
-                onChange={(e) => updateTheme({ primaryColor: e.target.value })}
+                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
                 value={state.theme.primaryColor}
-                onChange={(e) => updateTheme({ primaryColor: e.target.value })}
+                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#3B82F6"
               />
@@ -100,12 +120,12 @@ export const ThemeCustomizer = () => {
               <input
                 type="color"
                 value={state.theme.secondaryColor}
-                onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
+                onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
                 value={state.theme.secondaryColor}
-                onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
+                onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#8B5CF6"
               />
@@ -118,12 +138,12 @@ export const ThemeCustomizer = () => {
               <input
                 type="color"
                 value={state.theme.backgroundColor}
-                onChange={(e) => updateTheme({ backgroundColor: e.target.value })}
+                onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
                 value={state.theme.backgroundColor}
-                onChange={(e) => updateTheme({ backgroundColor: e.target.value })}
+                onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#FFFFFF"
               />
@@ -136,12 +156,12 @@ export const ThemeCustomizer = () => {
               <input
                 type="color"
                 value={state.theme.textColor}
-                onChange={(e) => updateTheme({ textColor: e.target.value })}
+                onChange={(e) => handleColorChange('textColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
                 value={state.theme.textColor}
-                onChange={(e) => updateTheme({ textColor: e.target.value })}
+                onChange={(e) => handleColorChange('textColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#1F2937"
               />
@@ -157,27 +177,27 @@ export const ThemeCustomizer = () => {
           Theme Preview
         </Label>
         <div
-          className="p-4 rounded-lg border border-gray-600"
+          className="p-4 rounded-lg border border-gray-600 transition-all duration-300"
           style={{
             backgroundColor: state.theme.backgroundColor,
             color: state.theme.textColor,
           }}
         >
-          <h4 className="font-semibold mb-2" style={{ color: state.theme.primaryColor }}>
+          <h4 className="font-semibold mb-2 transition-colors duration-300" style={{ color: state.theme.primaryColor }}>
             Primary Color Text
           </h4>
-          <p className="text-sm mb-2">
+          <p className="text-sm mb-2 transition-colors duration-300">
             This is how your text will look with the current theme settings.
           </p>
           <div className='flex flex-col gap-2'>
             <button
-              className="px-4 py-2 rounded text-white text-sm font-medium"
+              className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
               style={{ backgroundColor: state.theme.primaryColor }}
             >
               Primary Button
             </button>
             <button
-              className="px-4 py-2 rounded text-white text-sm font-medium"
+              className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
               style={{ backgroundColor: state.theme.secondaryColor }}
             >
               Secondary Button
@@ -186,17 +206,31 @@ export const ThemeCustomizer = () => {
         </div>
       </div>
 
-      {/* Apply theme to canvas */}
+      {/* Real-time CSS injection for the canvas */}
       <style>
         {`
           .editor-canvas {
-            --theme-primary: ${state.theme.primaryColor};
-            --theme-secondary: ${state.theme.secondaryColor};
-            --theme-background: ${state.theme.backgroundColor};
-            --theme-text: ${state.theme.textColor};
+            --theme-primary: ${state.theme.primaryColor} !important;
+            --theme-secondary: ${state.theme.secondaryColor} !important;
+            --theme-background: ${state.theme.backgroundColor} !important;
+            --theme-text: ${state.theme.textColor} !important;
+            --theme-muted: rgba(${hexToRgb(state.theme.textColor)}, 0.7) !important;
+            --theme-muted-foreground: rgba(${hexToRgb(state.theme.textColor)}, 0.5) !important;
+          }
+          
+          .editor-canvas * {
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
           }
         `}
       </style>
     </div>
   );
+};
+
+// Helper function to convert hex to rgb
+const hexToRgb = (hex: string): string => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result 
+    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+    : '0, 0, 0';
 };

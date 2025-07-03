@@ -106,6 +106,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const [activeTab, setActiveTab] = useState<'content' | 'style'>('content');
   const [dynamicFieldEditor, setDynamicFieldEditor] = useState<{ key: string, data: any } | null>(null);
   const [arrayEditor, setArrayEditor] = useState<{ key: string, data: any[] } | null>(null);
+  const [currentElementId, setCurrentElementId] = useState<string>('');
   const componentRef = useRef<HTMLDivElement>(null);
 
   const DynamicComponent = useMemo(() => {
@@ -115,41 +116,39 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     }
 
     try {
-      // Apply theme to code
+      // Apply global theme to code
       let themedCode = applyThemeToCode(component.react_code, state.theme);
+
+      // Add unique identifiers to elements for individual styling
+      themedCode = themedCode.replace(
+        /(<[^>]+)(className="[^"]*")([^>]*>)/g,
+        (match, start, classNamePart, end) => {
+          const elementId = `${component.id}-${Math.random().toString(36).substr(2, 9)}`;
+          return `${start}${classNamePart} data-element-id="${elementId}"${end}`;
+        }
+      );
 
       // Apply customizations if they exist
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
           if (key.endsWith('_content')) {
-            // Handle nested prop paths (e.g., "logo.value")
+            // Handle content updates for individual elements
+            const elementType = key.replace('_content', '');
             const propPath = key.replace('_content', '');
-            const propParts = propPath.split('.');
-
-            if (propParts.length === 1) {
-              // Simple prop replacement
-              const elementType = propParts[0];
-              if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div'].includes(elementType)) {
-                themedCode = themedCode.replace(
-                  new RegExp(`<${elementType}[^>]*>([^<]*)</${elementType}>`, 'g'),
-                  (match, originalContent) => match.replace(originalContent, typeof value === 'string' ? value : JSON.stringify(value))
-                );
-              } else if (elementType === 'img') {
-                themedCode = themedCode.replace(/src="[^"]*"/g, `src="${typeof value === 'string' ? value : (value as any).src || ''}"`);
-              } else if (elementType === 'a') {
-                themedCode = themedCode.replace(/href="[^"]*"/g, `href="${typeof value === 'string' ? value : (value as any).href || ''}"`);
-              }
-            } else {
-              // Handle nested props like logo.value
+            
+            if (propPath.includes('.')) {
+              // Handle nested prop paths
               const regex = new RegExp(`{${propPath.replace('.', '\\?\\.')}}`, 'g');
               themedCode = themedCode.replace(regex, `"${typeof value === 'string' ? value : JSON.stringify(value)}"`);
-
-              // Also handle optional chaining patterns
-              const optionalRegex = new RegExp(`{${propPath.replace('.', '\\?\\.').replace('?', '\\?')}}`, 'g');
-              themedCode = themedCode.replace(optionalRegex, `"${typeof value === 'string' ? value : JSON.stringify(value)}"`);
+            } else {
+              // Handle direct element content
+              if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div', 'button', 'a'].includes(elementType)) {
+                const contentRegex = new RegExp(`(<${elementType}[^>]*>)([^<]*)(</\s*${elementType}>)`, 'g');
+                themedCode = themedCode.replace(contentRegex, `$1${value}$3`);
+              }
             }
           } else if (!key.endsWith('_styles')) {
-            // Handle direct prop replacement for arrays and objects
+            // Handle other prop replacements
             const regex = new RegExp(`{${key}}`, 'g');
             if (Array.isArray(value)) {
               themedCode = themedCode.replace(regex, JSON.stringify(value));
@@ -174,7 +173,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const functionMatches = transpiledCode.matchAll(/function\s+([A-Za-z0-9_]+)\s*\(/g);
       const functions = Array.from(functionMatches).map(match => match[1]);
 
-      // Filter out utility functions like _extends, _objectSpread, etc.
       const componentFunction = functions.find(name =>
         !name.startsWith('_') &&
         !['extends', 'objectSpread', 'defineProperty', 'slicedToArray'].includes(name) &&
@@ -255,21 +253,22 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       setSelectedElement(target);
       const selector = getElementSelector(target);
       setElementSelector(selector);
+      
+      // Get unique element ID for individual styling
+      const elementId = target.getAttribute('data-element-id') || `${component.id}-${Date.now()}`;
+      setCurrentElementId(elementId);
+      
       const type = detectContentType(target);
-
-      // Enhanced detection for new data structure
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
 
-      console.log('Element clicked:', { editableType, propPath, target });
+      console.log('Element clicked:', { editableType, propPath, target, elementId });
 
       if (editableType && propPath) {
-        // Get the actual prop value using the path
         const propValue = getPropByPath(component.default_props, propPath);
         console.log('Prop value found:', propValue);
 
         if (editableType === 'array') {
-          // Handle array editing with SmartArrayCRUD
           let arrayData = [];
           
           if (propValue?.value && Array.isArray(propValue.value)) {
@@ -284,7 +283,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           setArrayEditor({ key: propPath, data: arrayData });
           return;
         } else if (editableType === 'object') {
-          // Handle object editing
           let objectData = {};
           
           if (propValue?.value && typeof propValue.value === 'object') {
@@ -297,7 +295,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
         } else if (editableType === 'content' && propValue) {
-          // Handle content editing
           let contentValue = '';
           
           if (propValue.value !== undefined) {
@@ -331,7 +328,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }
       }
 
-      // Default behavior for simple content editing
+      // Default behavior for content/style editing
       if (type) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
@@ -381,9 +378,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     let contentKey = '';
     const tagName = selectedElement.tagName.toLowerCase();
     const propPath = selectedElement.getAttribute('data-prop-path');
+    const elementId = selectedElement.getAttribute('data-element-id');
 
     if (propPath) {
-      // New structure - update using prop path
       const updatedProps = setPropByPath(component.default_props, propPath, {
         ...getPropByPath(component.default_props, propPath),
         value: newContent
@@ -393,38 +390,8 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         default_props: updatedProps
       });
     } else {
-      // Old structure fallback
-      if (tagName === 'img') {
-        contentKey = 'img_content';
-      } else if (tagName === 'a') {
-        contentKey = 'a_content';
-      } else if (selectedElement.textContent) {
-        const textContent = selectedElement.textContent.trim();
-
-        if (component.default_props) {
-          const findNestedProp = (obj: any, path: string[] = []): string | null => {
-            for (const [key, value] of Object.entries(obj)) {
-              const currentPath = [...path, key];
-              if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                const result = findNestedProp(value, currentPath);
-                if (result) return result;
-              } else if (typeof value === 'string' && value === textContent) {
-                return currentPath.join('.');
-              }
-            }
-            return null;
-          };
-
-          const nestedProp = findNestedProp(component.default_props);
-          if (nestedProp) {
-            contentKey = `${nestedProp}_content`;
-          } else {
-            contentKey = `${tagName}_content`;
-          }
-        } else {
-          contentKey = `${tagName}_content`;
-        }
-      }
+      // Create a unique key for this specific element
+      contentKey = elementId ? `${elementId}_content` : `${tagName}_content_${Date.now()}`;
 
       const updatedProps = {
         ...component.customizableProps,
@@ -442,7 +409,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const handleStyleSave = (newStyles: Record<string, string>) => {
     if (!selectedElement || !elementSelector) return;
 
-    const styleKey = `${selectedElement.tagName.toLowerCase()}_styles`;
+    const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
+    
+    if (!elementId) {
+      console.error('No element ID found for styling');
+      return;
+    }
+
+    // Create a unique style key for this specific element
+    const styleKey = `${elementId}_styles`;
+    
     const updatedProps = {
       ...component.customizableProps,
       [styleKey]: newStyles
@@ -512,7 +488,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     let customCSS = '';
     Object.entries(component.customizableProps).forEach(([key, value]) => {
       if (key.endsWith('_styles') && typeof value === 'object') {
-        const elementType = key.replace('_styles', '');
+        const elementId = key.replace('_styles', '');
         const styles = value as Record<string, string>;
 
         let cssRules = '';
@@ -524,7 +500,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         });
 
         if (cssRules) {
-          customCSS += `.editor-canvas ${elementType} { ${cssRules} } `;
+          customCSS += `.editor-canvas [data-element-id="${elementId}"] { ${cssRules} } `;
         }
       }
     });
