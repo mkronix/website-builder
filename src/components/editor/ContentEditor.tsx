@@ -129,7 +129,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
       {renderContentEditor()}
       <div className="flex justify-end space-x-2 pt-4">
         <Button
-          variant="outline"
+
           onClick={onClose}
           className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
         >

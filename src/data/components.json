@@ -167,7 +167,7 @@
         "name": "Service Grid",
         "variant": "grid-layout",
         "category": "services",
-        "preview_image": "/previews/services/services1.png",
+        "preview_image": "/previews/services/service1.png",
         "description": "Clean grid layout showcasing multiple services",
         "tags": [
           "grid",

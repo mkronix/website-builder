@@ -120,7 +120,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
         if (targetIndex >= 0 && targetIndex < items.length) {
             [newItems[index], newItems[targetIndex]] = [newItems[targetIndex], newItems[index]];
             setItems(newItems);
-            
+
             // Update editing index if needed
             if (editingIndex === index) {
                 setEditingIndex(targetIndex);
@@ -145,7 +145,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
         }
 
         const keys = Object.keys(item).filter(key =>
-            key !== 'tailwindCss' && key !== 'customCss' && 
+            key !== 'tailwindCss' && key !== 'customCss' &&
             typeof item[key] === 'string' && item[key].trim() !== ''
         );
 
@@ -168,12 +168,12 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                     <DialogHeader className="pb-4 border-b border-gray-700">
                         <div className="flex items-center justify-between">
                             <DialogTitle className="text-white text-xl">
-                                Edit {title} ({items.length} items)
+                                {title} ({items.length} items)
                             </DialogTitle>
                             <div className="flex items-center gap-2">
                                 <Button
                                     onClick={handleCreate}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    className="bg-black hover:bg-black/30 text-white"
                                     size="sm"
                                 >
                                     <Plus className="w-4 h-4 mr-2" />
@@ -188,7 +188,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                         <div className="space-y-4">
                             {items.map((item, index) => (
                                 <Card key={index} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
-                                    <CardContent className="p-6">
+                                    <CardContent className="p-3">
                                         {editingIndex === index ? (
                                             // Edit Mode
                                             <ItemEditor
@@ -209,7 +209,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                                                         {getItemPreview(item)}
                                                     </div>
                                                     <div className="text-sm text-gray-400 space-y-1">
-                                                        {typeof item === 'object' && item !== null ? 
+                                                        {typeof item === 'object' && item !== null ?
                                                             Object.entries(item)
                                                                 .filter(([key, value]) =>
                                                                     key !== 'tailwindCss' &&
@@ -300,7 +300,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                                         </p>
                                         <Button
                                             onClick={handleCreate}
-                                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                                            className="bg-black hover:bg-black/30 text-white"
                                             size="sm"
                                         >
                                             <Plus className="w-4 h-4 mr-2" />
@@ -316,15 +316,14 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                     <Separator className="bg-gray-600" />
                     <div className="flex justify-end gap-3 pt-4">
                         <Button
-                            variant="outline"
                             onClick={onClose}
-                            className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
+                            className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={handleSaveAll}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            className="bg-black hover:bg-black/30 text-white"
                         >
                             Save Changes ({items.length} items)
                         </Button>
@@ -510,7 +509,7 @@ const ItemEditor: React.FC<{
     };
 
     return (
-        <div className="bg-[#1a1a1a] border-2 border-blue-500/50 rounded-lg p-6">
+        <div className="bg-[#1a1a1a] rounded-lg p-5">
             <div className="flex items-center justify-between mb-6">
                 <h4 className="text-lg font-semibold text-white">Edit Item</h4>
                 <Button
@@ -522,7 +521,7 @@ const ItemEditor: React.FC<{
                     <X className="w-4 h-4" />
                 </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {Object.entries(item).map(([key, value]) => renderField(key, value))}
             </div>
@@ -530,17 +529,16 @@ const ItemEditor: React.FC<{
             <Separator className="bg-gray-600 mb-6" />
             <div className="flex justify-end gap-3">
                 <Button
-                    variant="outline"
                     size="sm"
                     onClick={onCancel}
-                    className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
+                    className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
                 >
                     Cancel
                 </Button>
                 <Button
                     size="sm"
                     onClick={onSave}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-black hover:bg-black/30 text-white"
                 >
                     Save Changes
                 </Button>

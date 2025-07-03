@@ -35,13 +35,13 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel 
+          <AlertDialogCancel
             onClick={onClose}
-            className="border-gray-600 text-gray-300 hover:text-white hover:bg-[#272725]"
+            className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
           >
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={onConfirm}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
