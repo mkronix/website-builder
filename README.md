@@ -191,23 +191,27 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 
 We need to update and fix bugs/issues in our existing project. Below are the key tasks:
 
-1. Dynamic Array/Object Input Handling:
-When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI.
+<!-- moin work -->
 
 2. Image & Video Upload with Live Preview:
 Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. When exporting code, these paths should be used to upload assets to our server and set the final URL in the component’s props correctly.
-
-3. Component Customization & JSON Update:
-Fully review and update the component.json file. Every single element used in the components must support customizable styles and editable content, ensuring maximum flexibility for users.
-
-4. Theme Integration Fix:
-Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
 
 5. Responsive Design Improvements:
 Ensure that the react_code is fully responsive.
 
 6.The toggle menu in the header must display correctly on smaller screens.
 The responsive view options (laptop, tablet, mobile) are functional, but the components themselves are not adapting properly. This needs to be fixed.
+
+<!-- my work -->
+
+1. Dynamic Array/Object Input Handling: ✅
+When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
+
+3. Component Customization & JSON Update:
+Fully review and update the component.json file. Every single element used in the components must support customizable styles and editable content, ensuring maximum flexibility for users.
+
+4. Theme Integration Fix:
+Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
 
 7. when editing any one element particularly like chaning it cotnent or style, the all the elements are refeclitng the changes. so fix that issue
 
