@@ -120,10 +120,10 @@ export const ProjectsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1c1c1c] p-6">
+    <div className="min-h-screen bg-[#1c1c1c] p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-white">My Projects</h1>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">My Projects</h1>
           <Button
             className="bg-[#272725] hover:bg-gray-600 text-white"
             onClick={() => setShowCreateDialog(true)}
@@ -133,7 +133,7 @@ export const ProjectsPage = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
             <Card key={project.id} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
               <CardHeader>

@@ -3,6 +3,8 @@ import { Component, ComponentDefinition, EditorState, Page, Project, ProjectSett
 import { getDefaultProps, mergeComponentProps, mergeTheme } from './editorUtils';
 import ProjectService from './projectService';
 
+export type { Component, EditorState, Page, Project, ProjectSettings, Template, Theme } from './editorTypes';
+
 interface EditorContextType {
   state: EditorState;
   currentProject: Project | null;

@@ -20,11 +20,11 @@ export const TemplatesPage = () => {
     <div className="min-h-screen bg-[#1c1c1c]">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Choose a Template</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Choose a Template</h1>
           <p className="text-white">Start with a pre-built template and customize it to your needs</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {templatesArray.map((template: any) => (
             <Card key={template.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-[#1c1c1c]">
               <div className="aspect-video bg-[#272725] relative overflow-hidden">

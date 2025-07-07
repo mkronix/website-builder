@@ -51,10 +51,10 @@ export const DashboardPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1c1c1c] p-6">
+    <div className="min-h-screen bg-[#1c1c1c] p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Dashboard</h1>
             <p className="text-gray-400 mt-1">Welcome back! Here's what's happening with your projects.</p>
@@ -72,7 +72,7 @@ export const DashboardPage = () => {
         {/* Credits Warning */}
         {userCredits <= 0 && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <CreditCard className="w-5 h-5 text-red-500" />
               <div>
                 <h3 className="text-red-500 font-semibold">No Credits Remaining</h3>
@@ -80,7 +80,7 @@ export const DashboardPage = () => {
               </div>
               <Button
                 onClick={() => navigate('/settings')}
-                className="bg-red-600 hover:bg-red-700 text-white ml-auto"
+                className="bg-red-600 hover:bg-red-700 text-white sm:ml-auto w-full sm:w-auto mt-2 sm:mt-0"
               >
                 Buy Credits
               </Button>
@@ -107,7 +107,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
             onClick={() => navigate('/projects')}>
             <CardHeader>

@@ -7,10 +7,10 @@ export interface Project {
   description?: string;
   pages: Page[];
   theme: {
-    primaryColor: string;
-    secondaryColor: string;
-    backgroundColor: string;
-    textColor: string;
+    primary_color?: string;
+    secondary_color?: string;
+    background?: string;
+    text_primary?: string;
   };
   created_at: string;
   updated_at: string;
@@ -139,10 +139,10 @@ export class ProjectService {
       description: `Project created from ${template.name} template`,
       pages: projectPages,
       theme: {
-        primaryColor: template.theme.primary_color,
-        secondaryColor: template.theme.secondary_color,
-        backgroundColor: template.theme.background || template.theme.background_color,
-        textColor: template.theme.text_primary || template.theme.text_color
+        primary_color: template.theme.primary_color,
+        secondary_color: template.theme.secondary_color,
+        background: template.theme.background || template.theme.background_color,
+        text_primary: template.theme.text_primary || template.theme.text_color
       },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

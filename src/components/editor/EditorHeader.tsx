@@ -23,11 +23,21 @@ export const EditorHeader = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || '');
   const [projectDescription, setProjectDescription] = useState(currentProject?.description || '');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (projectName.trim()) {
-      saveProject(projectName, projectDescription);
-      setShowSaveDialog(false);
+      setSaveStatus('saving');
+      try {
+        await saveProject(projectName, projectDescription);
+        setSaveStatus('saved');
+        setShowSaveDialog(false);
+        // Reset status after 2 seconds
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      } catch (error) {
+        setSaveStatus('idle');
+        console.error('Save failed:', error);
+      }
     }
   };
 
@@ -42,10 +52,10 @@ export const EditorHeader = () => {
           name: currentProject?.name || 'React Project',
           description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
           theme: {
-            primaryColor: state.theme?.primaryColor || '#10B981',
-            secondaryColor: state.theme?.secondaryColor || '#059669',
-            backgroundColor: state.theme?.backgroundColor || '#F9FAFB',
-            textColor: state.theme?.textColor || '#111827'
+            primaryColor: state.theme?.primary_color || '#10B981',
+            secondaryColor: state.theme?.secondary_color || '#059669',
+            backgroundColor: state.theme?.background || '#F9FAFB',
+            textColor: state.theme?.text_primary || '#111827'
           },
           created_at: currentProject?.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString()
@@ -181,9 +191,10 @@ export const EditorHeader = () => {
             onClick={() => setShowSaveDialog(true)}
             className="bg-black hover:bg-black/25 text-white"
             size="default"
+            disabled={saveStatus === 'saving'}
           >
             <Save className="w-4 h-4 mr-2" />
-            Save Project
+            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Project Saved' : 'Save Project'}
           </Button>
         </div>
       </header>
