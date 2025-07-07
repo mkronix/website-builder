@@ -53,7 +53,7 @@ const BrutalistLoginForm = ({ onViewChange, onLoginSuccess }: BrutalistLoginForm
       if (email === 'kasimkkn@gmail.com' && password === 'Kasim@123') {
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userEmail', email);
-        
+
         toast({
           title: "REBELLION ACTIVATED!",
           description: "Welcome to the digital uprising",

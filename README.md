@@ -189,34 +189,33 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 
 <!-- Remaining Task to complet  -->
 
-We need to update and fix bugs/issues in our existing project. Below are the key tasks:
-
-<!-- moin work -->
-
-2. Image & Video Upload with Live Preview:
+- Image & Video Upload with Live Preview:
 Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. When exporting code, these paths should be used to upload assets to our server and set the final URL in the component’s props correctly.
 
-5. Responsive Design Improvements:
-Ensure that the react_code is fully responsive.
-
-6.The toggle menu in the header must display correctly on smaller screens.
+- The toggle menu in the header must display correctly on smaller screens.
 The responsive view options (laptop, tablet, mobile) are functional, but the components themselves are not adapting properly. This needs to be fixed.
 
-<!-- my work -->
+- each and every componet content which will be editable must be propperly updated in that component and must be saved in the currrent proejct json
 
-1. Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
+- Responsive Design Improvements:
+Ensure that the react_code is fully responsive.
+
+- Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
 
-3. Component Customization & JSON Update:
+- Component Customization & JSON Update:
 Fully review and update the component.json file. Every single element used in the components must support customizable styles and editable content, ensuring maximum flexibility for users.
 
-4. Theme Integration Fix:
+- Theme Integration Fix:
 Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
 
-7. when editing any one element particularly like changing it content or style, the all the elements are refeclitng the changes. so fix that issue
+- when editing any one element particularly like changing it content or style, the all the elements are refeclitng the changes. so fix that issue
 
-8. in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
+- in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
-Note: Please do not remove any components from the component.json file during this process.
+- need to add the SEO management feature like meta tags , title, description, favicon, keywords etc. In settings Tab and that data must be saved in the project json file
 
+- update the text after save the project from update the project beside the export button in Ui and that information must be saved in the project json file
+
+- need to make the dashboard , projects , template , settings tab perfecly responsive for all the devices and all the components must be responsive
 

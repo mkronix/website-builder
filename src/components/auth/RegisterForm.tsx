@@ -38,22 +38,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onViewChange }) => {
       <div className="relative mb-8">
         <div className="absolute -top-4 -left-4 w-16 h-2 bg-lime-400 transform rotate-12" />
         <div className="absolute -top-2 -right-2 w-8 h-8 bg-pink-500 rounded-full" />
-        
-        <motion.h1 
+
+        <motion.h1
           className="text-4xl font-black text-white mb-2 transform -rotate-1"
           initial={{ y: -20 }}
           animate={{ y: 0 }}
         >
           JOIN THE
         </motion.h1>
-        <motion.h2 
+        <motion.h2
           className="text-5xl font-black text-lime-400 transform rotate-1"
           initial={{ y: 20 }}
           animate={{ y: 0 }}
         >
           REBELLION
         </motion.h2>
-        
+
         <div className="absolute -bottom-2 right-0 w-24 h-1 bg-orange-500 transform -rotate-2" />
       </div>
 
