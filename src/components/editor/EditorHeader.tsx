@@ -1,12 +1,12 @@
 
-import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEditor } from '@/contexts/EditorContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const EditorHeader = () => {
-  const { state, setPreviewMode, currentProject } = useEditor();
+  const { state, setPreviewMode, currentProject, saveProject } = useEditor();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ export const EditorHeader = () => {
               onClick={() => setPreviewMode(mode)}
               className={
                 state.previewMode === mode
-                  ? "bg-blue-600 text-white"
+                  ? "bg-emerald-600 text-white"
                   : "text-gray-400 hover:text-white hover:bg-[#1c1c1c]"
               }
             >
@@ -68,6 +68,15 @@ export const EditorHeader = () => {
 
         {/* Right side */}
         <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={saveProject}
+            className="text-white hover:bg-[#272725] bg-emerald-600 hover:bg-emerald-700"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Save</span>
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -100,6 +109,19 @@ export const EditorHeader = () => {
               variant="ghost"
               size="sm"
               onClick={() => {
+                saveProject();
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-white hover:bg-[#272725] justify-start bg-emerald-600 hover:bg-emerald-700"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Project
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
                 navigate('/settings');
                 setIsMobileMenuOpen(false);
               }}
@@ -124,7 +146,7 @@ export const EditorHeader = () => {
                     }}
                     className={
                       state.previewMode === mode
-                        ? "bg-blue-600 text-white justify-start"
+                        ? "bg-emerald-600 text-white justify-start"
                         : "text-gray-400 hover:text-white hover:bg-[#272725] justify-start"
                     }
                   >

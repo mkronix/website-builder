@@ -10,12 +10,12 @@ export const ThemeCustomizer = () => {
   const { state, updateTheme } = useEditor();
 
   const colorPresets = [
-    { name: 'Ocean Blue', primary: '#3B82F6', secondary: '#8B5CF6', background: '#FFFFFF', text: '#1F2937' },
+    { name: 'Ocean Emerald', primary: '#10B981', secondary: '#059669', background: '#FFFFFF', text: '#1F2937' },
     { name: 'Forest Green', primary: '#10B981', secondary: '#059669', background: '#F9FAFB', text: '#111827' },
     { name: 'Sunset Purple', primary: '#8B5CF6', secondary: '#A855F7', background: '#FFFFFF', text: '#1F2937' },
     { name: 'Rose Pink', primary: '#EC4899', secondary: '#F472B6', background: '#FDF2F8', text: '#831843' },
     { name: 'Amber Orange', primary: '#F59E0B', secondary: '#F97316', background: '#FFFBEB', text: '#92400E' },
-    { name: 'Dark Mode', primary: '#3B82F6', secondary: '#8B5CF6', background: '#111827', text: '#F9FAFB' },
+    { name: 'Dark Mode', primary: '#10B981', secondary: '#059669', background: '#111827', text: '#F9FAFB' },
   ];
 
   const applyPreset = (preset: typeof colorPresets[0]) => {
@@ -78,15 +78,15 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.primaryColor || '#3B82F6'}
+                value={state.theme.primaryColor || '#10B981'}
                 onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.primaryColor || '#3B82F6'}
+                value={state.theme.primaryColor || '#10B981'}
                 onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
-                placeholder="#3B82F6"
+                placeholder="#10B981"
               />
             </div>
           </div>
@@ -96,15 +96,15 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.secondaryColor || '#8B5CF6'}
+                value={state.theme.secondaryColor || '#059669'}
                 onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.secondaryColor || '#8B5CF6'}
+                value={state.theme.secondaryColor || '#059669'}
                 onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
-                placeholder="#8B5CF6"
+                placeholder="#059669"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export const ThemeCustomizer = () => {
             color: state.theme.textColor || '#1F2937',
           }}
         >
-          <h4 className="font-semibold mb-2 transition-colors duration-300" style={{ color: state.theme.primaryColor || '#3B82F6' }}>
+          <h4 className="font-semibold mb-2 transition-colors duration-300" style={{ color: state.theme.primaryColor || '#10B981' }}>
             Primary Color Text
           </h4>
           <p className="text-sm mb-2 transition-colors duration-300">
@@ -169,13 +169,13 @@ export const ThemeCustomizer = () => {
           <div className='flex flex-col gap-2'>
             <button
               className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
-              style={{ backgroundColor: state.theme.primaryColor || '#3B82F6' }}
+              style={{ backgroundColor: state.theme.primaryColor || '#10B981' }}
             >
               Primary Button
             </button>
             <button
               className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
-              style={{ backgroundColor: state.theme.secondaryColor || '#8B5CF6' }}
+              style={{ backgroundColor: state.theme.secondaryColor || '#059669' }}
             >
               Secondary Button
             </button>
