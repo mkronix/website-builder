@@ -1,13 +1,15 @@
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FileText, Layers, Palette, Settings } from 'lucide-react';
+import { FileText, Layers, Palette, Settings, Globe } from 'lucide-react';
 import { ComponentLibrary } from './ComponentLibrary';
 import { PageManager } from './PageManager';
 import { ThemeCustomizer } from './ThemeCustomizer';
+import { SeoSettings } from './SeoSettings';
 
 export const EditorSidebar = () => {
 
@@ -29,6 +31,12 @@ export const EditorSidebar = () => {
       label: 'Theme',
       icon: Palette,
       content: <ThemeCustomizer />
+    },
+    {
+      id: 'seo',
+      label: 'SEO',
+      icon: Globe,
+      content: <SeoSettings />
     },
     {
       id: 'settings',

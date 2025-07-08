@@ -1,257 +1,183 @@
+
+import { Monitor, Tablet, Smartphone, Settings, Home, Save, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useEditor } from '@/contexts/EditorContext';
-import {
-  ArrowLeft,
-  Download,
-  FolderOpen,
-  Monitor,
-  Save,
-  Smartphone,
-  Tablet
-} from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { exportProject } from '@/utils/projectExporter';
 
 export const EditorHeader = () => {
-  const navigate = useNavigate();
   const { state, setPreviewMode, saveProject, currentProject } = useEditor();
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [projectName, setProjectName] = useState(currentProject?.name || '');
-  const [projectDescription, setProjectDescription] = useState(currentProject?.description || '');
+  const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSave = async () => {
-    if (projectName.trim()) {
-      setSaveStatus('saving');
-      try {
-        await saveProject(projectName, projectDescription);
-        setSaveStatus('saved');
-        setShowSaveDialog(false);
-        // Reset status after 2 seconds
-        setTimeout(() => setSaveStatus('idle'), 2000);
-      } catch (error) {
-        setSaveStatus('idle');
-        console.error('Save failed:', error);
-      }
-    }
-  };
-
-  const handleExport = async () => {
+  const handleSaveProject = async () => {
+    if (!currentProject) return;
+    
+    setIsSaving(true);
+    setSaveStatus('saving');
+    
     try {
-      setIsExporting(true);
-
-      // Prepare project data for export
-      const projectData = {
-        project: {
-          id: currentProject?.id || 'temp-id',
-          name: currentProject?.name || 'React Project',
-          description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
-          theme: {
-            primaryColor: state.theme?.primary_color || '#10B981',
-            secondaryColor: state.theme?.secondary_color || '#059669',
-            backgroundColor: state.theme?.background || '#F9FAFB',
-            textColor: state.theme?.text_primary || '#111827'
-          },
-          created_at: currentProject?.created_at || new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        pages: state.pages.map(page => ({
-          id: page.id,
-          name: page.name,
-          slug: page.slug || `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
-          components: page.components.map(component => ({
-            id: component.id,
-            category: component.category || 'general',
-            variant: component.variant || 'default',
-            default_props: component.default_props || {},
-            react_code: component.react_code || `const ${component.category || 'Component'} = () => {
-  return <div>Component</div>;
-};`
-          }))
-        }))
-      };
-
-      // Get all unique components from all pages
-      const allComponents = projectData.pages.reduce((acc, page) => {
-        page.components.forEach(comp => {
-          if (!acc.some(existing => existing.id === comp.id)) {
-            acc.push(comp);
-          }
-        });
-        return acc;
-      }, []);
-
-      // Export settings
-      const exportSettings = {
-        includeAnimations: true,
-        includeRouting: projectData.pages.length > 1,
-        typescript: false,
-        prettier: true,
-        includeSEO: true,
-        includeAnalytics: false,
-        includeSitemap: true,
-        includeRobots: true
-      };
-
-      // Call the export function
-      await exportProject(projectData, allComponents, exportSettings);
-
-      console.log('Project exported successfully!');
+      await saveProject();
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
-      console.error('Export failed:', error);
-      // You might want to show a toast notification here
+      console.error('Failed to save project:', error);
+      setSaveStatus('idle');
     } finally {
-      setIsExporting(false);
+      setIsSaving(false);
     }
   };
 
-  const previewModes = [
+  const getSaveButtonText = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return 'Saving...';
+      case 'saved':
+        return 'Project Saved';
+      default:
+        return 'Save Project';
+    }
+  };
+
+  const responsiveOptions = [
     { mode: 'desktop' as const, icon: Monitor, label: 'Desktop' },
     { mode: 'tablet' as const, icon: Tablet, label: 'Tablet' },
     { mode: 'mobile' as const, icon: Smartphone, label: 'Mobile' },
   ];
 
   return (
-    <>
-      <header className="bg-[#1c1c1c] fixed w-full z-50 border-b border-gray-700 p-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1c1c1c] border-b border-gray-700 px-4 py-3">
+      <div className="flex items-center justify-between">
+        {/* Left side */}
+        <div className="flex items-center space-x-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-gray-300 hover:text-white px-0 hover:border-none"
+            className="text-white hover:bg-[#272725] hidden sm:flex"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <Home className="w-4 h-4 mr-2" />
             Dashboard
           </Button>
+          
+          {/* Mobile menu toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-white hover:bg-[#272725] sm:hidden"
+          >
+            {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </Button>
 
-          <div className="flex items-center gap-2">
-            <FolderOpen className="w-4 h-4 text-gray-400" />
-            <span className="text-white font-medium">
-              {currentProject?.name || 'Untitled Project'}
-            </span>
+          <div className="text-white font-medium hidden sm:block">
+            {currentProject?.name || 'Untitled Project'}
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Preview Mode Toggle */}
-          <div className="hidden md:flex items-center bg-[#272725] rounded-lg">
-            {previewModes.map(({ mode, icon: Icon, label }) => (
-              <Button
-                key={mode}
-                variant={state.previewMode === mode ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setPreviewMode(mode)}
-                className={`px-3 ${state.previewMode === mode
-                  ? 'bg-white text-black'
-                  : 'text-gray-400 hover:text-white'
-                  }`}
-                title={label}
-              >
-                <Icon className="w-4 h-4" />
-              </Button>
-            ))}
-          </div>
+        {/* Center - Responsive Controls (Desktop) */}
+        <div className="hidden md:flex items-center space-x-2 bg-[#272725] rounded-lg p-1">
+          {responsiveOptions.map(({ mode, icon: Icon, label }) => (
+            <Button
+              key={mode}
+              variant={state.previewMode === mode ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setPreviewMode(mode)}
+              className={
+                state.previewMode === mode
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-[#1c1c1c]"
+              }
+            >
+              <Icon className="w-4 h-4" />
+              <span className="ml-1 hidden lg:inline">{label}</span>
+            </Button>
+          ))}
+        </div>
 
-          {/* Mobile Preview Mode Toggle */}
-          <div className="md:hidden">
+        {/* Right side */}
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/settings')}
+            className="text-white hover:bg-[#272725] hidden sm:flex"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            onClick={handleSaveProject}
+            disabled={isSaving}
+            className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+            size="sm"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {getSaveButtonText()}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu dropdown */}
+      {isMobileMenuOpen && (
+        <div className="sm:hidden mt-3 pb-3 border-t border-gray-700 pt-3">
+          <div className="flex flex-col space-y-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                const modes = ['desktop', 'tablet', 'mobile'] as const;
-                const currentIndex = modes.indexOf(state.previewMode);
-                const nextIndex = (currentIndex + 1) % modes.length;
-                setPreviewMode(modes[nextIndex]);
+                navigate('/dashboard');
+                setIsMobileMenuOpen(false);
               }}
-              className="text-gray-400 hover:text-white"
+              className="text-white hover:bg-[#272725] justify-start"
             >
-              {previewModes.find(({ mode }) => mode === state.previewMode)?.icon &&
-                React.createElement(previewModes.find(({ mode }) => mode === state.previewMode)!.icon, { className: "w-4 h-4" })
-              }
+              <Home className="w-4 h-4 mr-2" />
+              Dashboard
             </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                navigate('/settings');
+                setIsMobileMenuOpen(false);
+              }}
+              className="text-white hover:bg-[#272725] justify-start"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+
+            {/* Mobile responsive controls */}
+            <div className="pt-2 border-t border-gray-600">
+              <p className="text-gray-400 text-xs mb-2 px-2">Preview Mode</p>
+              <div className="flex flex-col space-y-1">
+                {responsiveOptions.map(({ mode, icon: Icon, label }) => (
+                  <Button
+                    key={mode}
+                    variant={state.previewMode === mode ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => {
+                      setPreviewMode(mode);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={
+                      state.previewMode === mode
+                        ? "bg-blue-600 text-white justify-start"
+                        : "text-gray-400 hover:text-white hover:bg-[#272725] justify-start"
+                    }
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
-
-          <Button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="bg-white hover:bg-gray-200 text-black disabled:opacity-50"
-            size="sm"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            {isExporting ? 'Exporting...' : 'Export'}
-          </Button>
-
-          <Button
-            onClick={() => setShowSaveDialog(true)}
-            className="bg-black hover:bg-black/25 text-white"
-            size="default"
-            disabled={saveStatus === 'saving'}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Project Saved' : 'Save Project'}
-          </Button>
         </div>
-      </header>
-
-      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <DialogContent className="bg-[#1c1c1c] border-gray-700 text-white">
-          <DialogHeader>
-            <DialogTitle className="text-white">
-              {currentProject ? 'Update Project' : 'Save Project'}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 mt-4">
-            <div>
-              <label htmlFor='projectName' className="block text-sm font-medium text-gray-300 mb-2">
-                Project Name
-              </label>
-              <Input
-                placeholder="Enter project name"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor='projectDescription' className="block text-sm font-medium text-gray-300 mb-2">
-                Description (Optional)
-              </label>
-              <Textarea
-                placeholder="Enter project description"
-                value={projectDescription}
-                onChange={(e) => setProjectDescription(e.target.value)}
-                className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button
-                variant="ghost"
-                onClick={() => setShowSaveDialog(false)}
-                className="text-gray-400 hover:text-white hover:bg-[#272725]"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={!projectName.trim()}
-                className="bg-black hover:bg-black/25 text-white"
-              >
-                {currentProject ? 'Update' : 'Save'} Project
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+      )}
+    </header>
   );
 };
