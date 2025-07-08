@@ -7,16 +7,15 @@ import { FileText, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 export const PageManager = () => {
-  const { state, addPage, removePage, setCurrentPage } = useEditor();
+  const { state, addPage, deletePage, setCurrentPage } = useEditor();
   const [showAddPage, setShowAddPage] = useState(false);
   const [newPageName, setNewPageName] = useState('');
 
   const handleAddPage = () => {
     if (newPageName.trim()) {
       const newPage = {
-        id: newPageName.toLowerCase().replace(/\s+/g, '-'),
         name: newPageName,
-        slug: `/${newPageName.toLowerCase().replace(/\s+/g, '-')}`,
+        path: `/${newPageName.toLowerCase().replace(/\s+/g, '-')}`,
         components: [],
       };
       addPage(newPage);
@@ -59,7 +58,7 @@ export const PageManager = () => {
                 variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
-                  removePage(page.id);
+                  deletePage(page.id);
                 }}
                 className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
               >

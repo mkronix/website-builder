@@ -1,45 +1,14 @@
 
-import { Monitor, Tablet, Smartphone, Settings, Home, Save, Menu, X } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEditor } from '@/contexts/EditorContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const EditorHeader = () => {
-  const { state, setPreviewMode, saveProject, currentProject } = useEditor();
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const { state, setPreviewMode, currentProject } = useEditor();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  const handleSaveProject = async () => {
-    if (!currentProject) return;
-    
-    setIsSaving(true);
-    setSaveStatus('saving');
-    
-    try {
-      await saveProject();
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error) {
-      console.error('Failed to save project:', error);
-      setSaveStatus('idle');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const getSaveButtonText = () => {
-    switch (saveStatus) {
-      case 'saving':
-        return 'Saving...';
-      case 'saved':
-        return 'Project Saved';
-      default:
-        return 'Save Project';
-    }
-  };
 
   const responsiveOptions = [
     { mode: 'desktop' as const, icon: Monitor, label: 'Desktop' },
@@ -106,16 +75,6 @@ export const EditorHeader = () => {
             className="text-white hover:bg-[#272725] hidden sm:flex"
           >
             <Settings className="w-4 h-4" />
-          </Button>
-          
-          <Button
-            onClick={handleSaveProject}
-            disabled={isSaving}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
-            size="sm"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {getSaveButtonText()}
           </Button>
         </div>
       </div>

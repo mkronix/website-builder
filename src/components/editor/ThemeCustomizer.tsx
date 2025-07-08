@@ -1,3 +1,4 @@
+
 import { useEditor } from '@/contexts/EditorContext';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -19,10 +20,10 @@ export const ThemeCustomizer = () => {
 
   const applyPreset = (preset: typeof colorPresets[0]) => {
     updateTheme({
-      primary_color: preset.primary,
-      secondary_color: preset.secondary,
-      background: preset.background,
-      text_primary: preset.text,
+      primaryColor: preset.primary,
+      secondaryColor: preset.secondary,
+      backgroundColor: preset.background,
+      textColor: preset.text,
     });
   };
 
@@ -77,13 +78,13 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.primary_color || '#3B82F6'}
-                onChange={(e) => handleColorChange('primary_color', e.target.value)}
+                value={state.theme.primaryColor || '#3B82F6'}
+                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.primary_color || '#3B82F6'}
-                onChange={(e) => handleColorChange('primary_color', e.target.value)}
+                value={state.theme.primaryColor || '#3B82F6'}
+                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#3B82F6"
               />
@@ -95,13 +96,13 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.secondary_color || '#8B5CF6'}
-                onChange={(e) => handleColorChange('secondary_color', e.target.value)}
+                value={state.theme.secondaryColor || '#8B5CF6'}
+                onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.secondary_color || '#8B5CF6'}
-                onChange={(e) => handleColorChange('secondary_color', e.target.value)}
+                value={state.theme.secondaryColor || '#8B5CF6'}
+                onChange={(e) => handleColorChange('secondaryColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#8B5CF6"
               />
@@ -113,13 +114,13 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.background || '#FFFFFF'}
-                onChange={(e) => handleColorChange('background', e.target.value)}
+                value={state.theme.backgroundColor || '#FFFFFF'}
+                onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.background || '#FFFFFF'}
-                onChange={(e) => handleColorChange('background', e.target.value)}
+                value={state.theme.backgroundColor || '#FFFFFF'}
+                onChange={(e) => handleColorChange('backgroundColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#FFFFFF"
               />
@@ -131,13 +132,13 @@ export const ThemeCustomizer = () => {
             <div className="flex items-center space-x-2">
               <input
                 type="color"
-                value={state.theme.text_primary || '#1F2937'}
-                onChange={(e) => handleColorChange('text_primary', e.target.value)}
+                value={state.theme.textColor || '#1F2937'}
+                onChange={(e) => handleColorChange('textColor', e.target.value)}
                 className="w-10 h-8 border border-gray-600 rounded cursor-pointer bg-transparent"
               />
               <Input
-                value={state.theme.text_primary || '#1F2937'}
-                onChange={(e) => handleColorChange('text_primary', e.target.value)}
+                value={state.theme.textColor || '#1F2937'}
+                onChange={(e) => handleColorChange('textColor', e.target.value)}
                 className="bg-[#272725] border-gray-600 text-white text-sm"
                 placeholder="#1F2937"
               />
@@ -155,11 +156,11 @@ export const ThemeCustomizer = () => {
         <div
           className="p-4 rounded-lg border border-gray-600 transition-all duration-300"
           style={{
-            backgroundColor: state.theme.background || '#FFFFFF',
-            color: state.theme.text_primary || '#1F2937',
+            backgroundColor: state.theme.backgroundColor || '#FFFFFF',
+            color: state.theme.textColor || '#1F2937',
           }}
         >
-          <h4 className="font-semibold mb-2 transition-colors duration-300" style={{ color: state.theme.primary_color || '#3B82F6' }}>
+          <h4 className="font-semibold mb-2 transition-colors duration-300" style={{ color: state.theme.primaryColor || '#3B82F6' }}>
             Primary Color Text
           </h4>
           <p className="text-sm mb-2 transition-colors duration-300">
@@ -168,13 +169,13 @@ export const ThemeCustomizer = () => {
           <div className='flex flex-col gap-2'>
             <button
               className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
-              style={{ backgroundColor: state.theme.primary_color || '#3B82F6' }}
+              style={{ backgroundColor: state.theme.primaryColor || '#3B82F6' }}
             >
               Primary Button
             </button>
             <button
               className="px-4 py-2 rounded text-white text-sm font-medium transition-all duration-300 hover:opacity-90"
-              style={{ backgroundColor: state.theme.secondary_color || '#8B5CF6' }}
+              style={{ backgroundColor: state.theme.secondaryColor || '#8B5CF6' }}
             >
               Secondary Button
             </button>
@@ -183,12 +184,4 @@ export const ThemeCustomizer = () => {
       </div>
     </div>
   );
-};
-
-// Helper function to convert hex to rgb
-const hexToRgb = (hex: string): string => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result 
-    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
-    : '0, 0, 0';
 };

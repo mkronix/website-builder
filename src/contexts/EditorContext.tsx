@@ -1,3 +1,4 @@
+
 import React, {
   createContext,
   useState,
@@ -7,7 +8,7 @@ import React, {
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-interface Theme {
+export interface Theme {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
@@ -15,7 +16,7 @@ interface Theme {
   fontFamily: string;
 }
 
-interface ProjectSettings {
+export interface ProjectSettings {
   global_meta?: {
     site_title?: string;
     site_description?: string;
@@ -25,7 +26,7 @@ interface ProjectSettings {
   favicon?: string;
 }
 
-interface Project {
+export interface Project {
   id: string;
   name: string;
   description: string;
@@ -33,12 +34,14 @@ interface Project {
   updatedAt: Date;
 }
 
-interface Component {
+export interface Component {
   id: string;
   type: string;
   category: string;
   default_props: Record<string, any>;
   react_code?: string;
+  customizableProps?: Record<string, any>;
+  variant?: string;
   seo?: {
     title?: string;
     description?: string;
@@ -48,7 +51,7 @@ interface Component {
   };
 }
 
-interface Page {
+export interface Page {
   id: string;
   name: string;
   path: string;
@@ -62,7 +65,7 @@ interface Page {
   };
 }
 
-interface EditorState {
+export interface EditorState {
   theme: Theme;
   components: Component[];
   pages: Page[];
@@ -72,7 +75,7 @@ interface EditorState {
   settings: ProjectSettings;
 }
 
-interface EditorContextType {
+export interface EditorContextType {
   state: EditorState;
   selectComponent: (componentId: string) => void;
   addComponent: (pageId: string, component: Component) => void;

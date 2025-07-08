@@ -3,7 +3,7 @@ import { useEditor } from '@/contexts/EditorContext';
 import { DraggableComponent } from './DraggableComponent';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 import { cn } from '@/lib/utils';
-import { generateThemeCSS } from '@/utils/themeUtils';
+import { Layers } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -19,6 +19,25 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+
+// Simple theme CSS generation for the original theme structure
+const generateThemeCSS = (theme: any) => {
+  return `
+    :root {
+      --theme-primary: ${theme.primaryColor || '#007BFF'};
+      --theme-secondary: ${theme.secondaryColor || '#6C757D'};
+      --theme-background: ${theme.backgroundColor || '#FAFAFA'};
+      --theme-text: ${theme.textColor || '#333333'};
+    }
+    
+    .editor-canvas {
+      --tw-primary: var(--theme-primary);
+      --tw-secondary: var(--theme-secondary);
+      --tw-background: var(--theme-background);
+      --tw-text: var(--theme-text);
+    }
+  `;
+};
 
 export const EditorCanvas = () => {
   const { state, selectComponent, removeComponent, updatePage } = useEditor();
