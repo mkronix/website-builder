@@ -1,3 +1,4 @@
+
 import { useEditor } from '@/contexts/EditorContext';
 import { DraggableComponent } from './DraggableComponent';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
@@ -230,3 +231,4 @@ export const EditorCanvas = () => {
     </div>
   );
 };
+
