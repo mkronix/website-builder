@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEditor } from '@/contexts/EditorContext';
-import { Component } from '@/contexts/editorTypes';
+import { Component, Theme } from '@/contexts/editorTypes';
 import { applyThemeToCode, generateElementSpecificCSS, generateThemeCSS } from '@/utils/themeUtils';
 import * as Babel from '@babel/standalone';
 import React, { useMemo, useRef, useState, useCallback } from 'react';
@@ -113,7 +113,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
     try {
       // Apply global theme to code with enhanced theme integration
-      let themedCode = applyThemeToCode(component.react_code, state.theme);
+      let themedCode = applyThemeToCode(component.react_code, state.theme as Theme);
 
       // Add unique identifiers with component-specific prefixing
       let elementCounter = 0;
@@ -536,7 +536,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   }, [component.id, component.customizableProps]);
 
   const generateGlobalThemeStyles = useCallback((): string => {
-    return generateThemeCSS(state.theme);
+    return generateThemeCSS(state.theme as Theme);
   }, [state.theme]);
 
   const renderComponent = () => {

@@ -148,11 +148,11 @@ export interface Theme {
     background?: string;
     font_family?: string;
     font_headings?: string;
-    // Legacy support
-    // primaryColor?: string;
-    // secondaryColor?: string;
-    // backgroundColor?: string;
-    // textColor?: string;
+    // Legacy support for backward compatibility
+    primaryColor?: string;
+    secondaryColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
 }
 
 export interface GlobalMeta {
