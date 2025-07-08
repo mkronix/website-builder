@@ -49,6 +49,39 @@ export const SettingsPage = () => {
     });
   };
 
+  // Create mock data for missing properties to match expected structure
+  const mockAnalytics = {
+    page_views: 12540,
+    unique_visitors: 8420,
+    bounce_rate: '42.3',
+    avg_session_duration: '3m 24s'
+  };
+
+  const mockBilling = {
+    current_plan: 'Pro Plan',
+    monthly_cost: 29,
+    next_billing_date: '2025-02-15',
+    payment_method: '**** 4242'
+  };
+
+  const mockNotificationSettings = [
+    {
+      type: 'Email Notifications',
+      enabled: true,
+      last_sent: '2 hours ago'
+    },
+    {
+      type: 'Push Notifications',
+      enabled: false,
+      last_sent: 'Never'
+    },
+    {
+      type: 'SMS Alerts',
+      enabled: true,
+      last_sent: '1 day ago'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] via-[#1a1a1a] to-[#222222] p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -186,7 +219,7 @@ export const SettingsPage = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Page Views</p>
-                      <p className="text-2xl font-bold text-white">{analytics.page_views.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-white">{mockAnalytics.page_views.toLocaleString()}</p>
                     </div>
                     <Activity className="w-8 h-8 text-emerald-500" />
                   </div>
@@ -197,7 +230,7 @@ export const SettingsPage = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Unique Visitors</p>
-                      <p className="text-2xl font-bold text-white">{analytics.unique_visitors.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-white">{mockAnalytics.unique_visitors.toLocaleString()}</p>
                     </div>
                     <TrendingUp className="w-8 h-8 text-emerald-500" />
                   </div>
@@ -208,7 +241,7 @@ export const SettingsPage = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Bounce Rate</p>
-                      <p className="text-2xl font-bold text-white">{analytics.bounce_rate}%</p>
+                      <p className="text-2xl font-bold text-white">{mockAnalytics.bounce_rate}%</p>
                     </div>
                     <BarChart3 className="w-8 h-8 text-emerald-500" />
                   </div>
@@ -219,7 +252,7 @@ export const SettingsPage = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Avg. Session</p>
-                      <p className="text-2xl font-bold text-white">{analytics.avg_session_duration}</p>
+                      <p className="text-2xl font-bold text-white">{mockAnalytics.avg_session_duration}</p>
                     </div>
                     <Activity className="w-8 h-8 text-emerald-500" />
                   </div>
@@ -241,21 +274,21 @@ export const SettingsPage = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <span className="text-white font-medium">Current Plan</span>
-                      <Badge className="bg-emerald-600 text-white">{billing.current_plan}</Badge>
+                      <Badge className="bg-emerald-600 text-white">{mockBilling.current_plan}</Badge>
                     </div>
                     <div className="flex justify-between items-center p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <span className="text-white font-medium">Monthly Cost</span>
-                      <span className="text-white font-bold">${billing.monthly_cost}</span>
+                      <span className="text-white font-bold">${mockBilling.monthly_cost}</span>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <span className="text-white font-medium">Next Billing</span>
-                      <span className="text-gray-300">{billing.next_billing_date}</span>
+                      <span className="text-gray-300">{mockBilling.next_billing_date}</span>
                     </div>
                     <div className="flex justify-between items-center p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <span className="text-white font-medium">Payment Method</span>
-                      <span className="text-gray-300">{billing.payment_method}</span>
+                      <span className="text-gray-300">{mockBilling.payment_method}</span>
                     </div>
                   </div>
                 </div>
@@ -273,7 +306,7 @@ export const SettingsPage = () => {
               </CardHeader>
               <CardContent className="p-6 space-y-6">
                 <div className="space-y-4">
-                  {notifications.settings.map((setting, index) => (
+                  {mockNotificationSettings.map((setting, index) => (
                     <div key={index} className="flex items-center justify-between p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <div className="flex items-center gap-3">
                         {setting.enabled ? (
@@ -304,7 +337,7 @@ export const SettingsPage = () => {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {component_usage_stats.map((stat, index) => (
+                  {analytics.most_used_components.map((stat, index) => (
                     <div key={index} className="p-4 bg-[#1c1c1c] rounded-lg border border-gray-600">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-white font-medium">{stat.component_name}</h4>
@@ -314,7 +347,7 @@ export const SettingsPage = () => {
                       </div>
                       <p className="text-gray-400 text-sm mb-3">{stat.category}</p>
                       <div className="text-xs text-gray-500">
-                        Last used: {stat.last_used}
+                        Component ID: {stat.component_id}
                       </div>
                     </div>
                   ))}
