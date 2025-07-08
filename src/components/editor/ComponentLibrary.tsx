@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Component, useEditor } from '@/contexts/EditorContext';
 import { Button } from '@/components/ui/button';
@@ -48,6 +47,7 @@ export const ComponentLibrary = () => {
   const addComponentToPage = (component: any) => {
     const newComponent: Component = {
       id: `${component.id}-${Date.now()}`,
+      type: component.category, // Add the missing type property
       category: component.category,
       default_props: { ...component.default_props },
       react_code: component.react_code,
@@ -109,7 +109,7 @@ export const ComponentLibrary = () => {
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
-                          target.nextElementSibling.classList.remove('hidden');
+                          target.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
                     ) : null}

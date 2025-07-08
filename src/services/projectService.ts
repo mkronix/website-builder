@@ -1,16 +1,17 @@
 
 import { EditorState, Page, Component } from '@/contexts/EditorContext';
 import components from '@/data/components.json';
+
 export interface Project {
   id: string;
   name: string;
   description?: string;
   pages: Page[];
   theme: {
-    primary_color?: string;
-    secondary_color?: string;
-    background?: string;
-    text_primary?: string;
+    primaryColor?: string;
+    secondaryColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
   };
   created_at: string;
   updated_at: string;
@@ -82,7 +83,12 @@ export class ProjectService {
       name,
       description,
       pages: state.pages,
-      theme: state.theme,
+      theme: {
+        primaryColor: state.theme.primaryColor,
+        secondaryColor: state.theme.secondaryColor,
+        backgroundColor: state.theme.backgroundColor,
+        textColor: state.theme.textColor
+      },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       template_id: state.template
@@ -139,10 +145,10 @@ export class ProjectService {
       description: `Project created from ${template.name} template`,
       pages: projectPages,
       theme: {
-        primary_color: template.theme.primary_color,
-        secondary_color: template.theme.secondary_color,
-        background: template.theme.background || template.theme.background_color,
-        text_primary: template.theme.text_primary || template.theme.text_color
+        primaryColor: template.theme.primary_color || template.theme.primaryColor,
+        secondaryColor: template.theme.secondary_color || template.theme.secondaryColor,
+        backgroundColor: template.theme.background || template.theme.backgroundColor,
+        textColor: template.theme.text_primary || template.theme.textColor
       },
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

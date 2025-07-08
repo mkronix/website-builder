@@ -73,6 +73,7 @@ export interface EditorState {
   previewMode: 'desktop' | 'tablet' | 'mobile';
   selectedComponent: string | null;
   settings: ProjectSettings;
+  template?: string;
 }
 
 export interface EditorContextType {
@@ -84,6 +85,7 @@ export interface EditorContextType {
   addPage: (page: Omit<Page, 'id'>) => void;
   updatePage: (pageId: string, updates: Partial<Page>) => void;
   deletePage: (pageId: string) => void;
+  removePage: (pageId: string) => void;
   setCurrentPage: (pageId: string) => void;
   updateTheme: (updates: Partial<Theme>) => void;
   setPreviewMode: (mode: 'desktop' | 'tablet' | 'mobile') => void;
@@ -91,6 +93,8 @@ export interface EditorContextType {
   updatePageSeo: (pageId: string, seoData: Partial<Page['seo']>) => void;
   currentProject: Project | null;
   setCurrentProject: (project: Project | null) => void;
+  saveProject: () => void;
+  loadTemplate: (template: any) => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -123,7 +127,8 @@ const useInitialState = () => {
     currentPage: null,
     previewMode: 'desktop',
     selectedComponent: null,
-    settings: {}
+    settings: {},
+    template: undefined
   });
 };
 
@@ -202,6 +207,10 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }));
   };
 
+  const removePage = (pageId: string) => {
+    deletePage(pageId);
+  };
+
   const setCurrentPage = (pageId: string) => {
     setState(prev => ({ ...prev, currentPage: pageId }));
   };
@@ -229,6 +238,33 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }));
   };
 
+  const saveProject = () => {
+    console.log('Saving project...', state);
+    // Implementation for saving project
+  };
+
+  const loadTemplate = (template: any) => {
+    console.log('Loading template...', template);
+    // Basic implementation to load a template
+    if (template && template.pages) {
+      const templatePages = template.pages.map((page: any) => ({
+        id: uuidv4(),
+        name: page.name || 'Template Page',
+        path: page.slug || '/',
+        components: page.components || [],
+        seo: page.meta || {}
+      }));
+
+      setState(prev => ({
+        ...prev,
+        pages: templatePages,
+        currentPage: templatePages[0]?.id || null,
+        theme: template.theme || prev.theme,
+        template: template.id
+      }));
+    }
+  };
+
   const value: EditorContextType = {
     state,
     selectComponent,
@@ -238,6 +274,7 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     addPage,
     updatePage,
     deletePage,
+    removePage,
     setCurrentPage,
     updateTheme,
     setPreviewMode,
@@ -245,6 +282,8 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     updatePageSeo,
     currentProject,
     setCurrentProject,
+    saveProject,
+    loadTemplate,
   };
 
   return (
