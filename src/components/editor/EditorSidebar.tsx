@@ -12,7 +12,6 @@ import { ThemeCustomizer } from './ThemeCustomizer';
 import { SeoSettings } from './SeoSettings';
 
 export const EditorSidebar = () => {
-
   const accordionItems = [
     {
       id: 'components',
@@ -51,7 +50,7 @@ export const EditorSidebar = () => {
   ] as const;
 
   return (
-    <div className="w-[17rem] fixed h-full bg-[#1c1c1c] border-r border-gray-700 flex flex-col">
+    <div className="w-full sm:w-[17rem] fixed h-full bg-[#1c1c1c] border-r border-gray-700 flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto">
         <Accordion
           type="single"
@@ -67,14 +66,16 @@ export const EditorSidebar = () => {
                 value={item.id}
                 className="border-b border-gray-700"
               >
-                <AccordionTrigger className="px-4 py-3 hover:bg-[#272725] text-white hover:no-underline">
+                <AccordionTrigger className="px-3 sm:px-4 py-3 hover:bg-[#272725] text-white hover:no-underline transition-all duration-200">
                   <div className="flex items-center">
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.label}
+                    <Icon className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base truncate">{item.label}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="bg-[#1c1c1c] pb-0">
-                  {item.content}
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    {item.content}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             );

@@ -51,7 +51,8 @@ export const EditorCanvas = () => {
   };
 
   const canvasClasses = cn(
-    "ml-[17rem] flex-1 bg-[#1c1c1c] p-6 overflow-auto transition-all duration-300",
+    "flex-1 bg-gradient-to-br from-[#1c1c1c] via-[#1a1a1a] to-[#222222] p-3 sm:p-6 overflow-auto transition-all duration-300",
+    "ml-0 sm:ml-[17rem]",
     {
       'max-w-[375px] mx-auto': state.previewMode === 'mobile',
       'max-w-[768px] mx-auto': state.previewMode === 'tablet',
@@ -61,15 +62,17 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
-      {/* Global theme CSS - single source of truth */}
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
       <ResponsiveWrapper>
-        <div className="bg-background min-h-full rounded-lg shadow-lg border border-gray-600 overflow-hidden editor-canvas">
+        <div className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas">
           {currentPage?.components.length === 0 ? (
-            <div className="flex bg-[#1c1c1c] items-center justify-center w-full h-[calc(100vh_-_7rem)]">
-              <div className="text-center">
-                <h3 className="text-lg text-white font-medium mb-2">Start Building</h3>
-                <p className="text-sm text-white">Add components from the sidebar to get started</p>
+            <div className="flex bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] items-center justify-center w-full h-[calc(100vh_-_8rem)] border-2 border-dashed border-gray-600 rounded-lg">
+              <div className="text-center p-8">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+                  <Layers className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl text-white font-semibold mb-2">Start Building</h3>
+                <p className="text-sm text-gray-400 max-w-xs">Add components from the sidebar to get started with your design</p>
               </div>
             </div>
           ) : (
