@@ -70,17 +70,17 @@ export const applyThemeToCode = (reactCode: string, theme: any, customizableProp
 };
 
 export const generateThemeCSS = (theme: Theme) => {
-  const primaryHover = adjustColorBrightness(theme.primaryColor || '#007BFF', -0.1);
-  const secondaryHover = adjustColorBrightness(theme.secondaryColor || '#6C757D', -0.1);
+  const primaryHover = adjustColorBrightness(theme.primary_color || '#007BFF', -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondary_color || '#6C757D', -0.1);
 
   return `
     :root {
-      --theme-primary: ${theme.primaryColor || '#007BFF'};
-      --theme-secondary: ${theme.secondaryColor || '#6C757D'};
-      --theme-background: ${theme.backgroundColor || '#FAFAFA'};
-      --theme-text: ${theme.textColor || '#333333'};
-      --theme-muted: ${adjustColorOpacity(theme.primaryColor || '#007BFF', 0.7)};
-      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor || '#333333', 0.5)};
+      --theme-primary: ${theme.primary_color || '#007BFF'};
+      --theme-secondary: ${theme.secondary_color || '#6C757D'};
+      --theme-background: ${theme.background || '#FAFAFA'};
+      --theme-text: ${theme.text_primary || '#333333'};
+      --theme-muted: ${adjustColorOpacity(theme.primary_color || '#007BFF', 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.text_primary || '#333333', 0.5)};
       --theme-primary-hover: ${primaryHover};
       --theme-secondary-hover: ${secondaryHover};
     }

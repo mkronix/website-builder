@@ -1,4 +1,3 @@
-
 import { useEditor } from '@/contexts/EditorContext';
 import { DraggableComponent } from './DraggableComponent';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
@@ -22,17 +21,17 @@ import {
 
 // Enhanced theme CSS generation for proper theme integration
 const generateThemeCSS = (theme: any) => {
-  const primaryHover = adjustColorBrightness(theme.primaryColor || '#10B981', -0.1);
-  const secondaryHover = adjustColorBrightness(theme.secondaryColor || '#059669', -0.1);
+  const primaryHover = adjustColorBrightness(theme.primary_color || '#10B981', -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondary_color || '#059669', -0.1);
 
   return `
     :root {
-      --theme-primary: ${theme.primaryColor || '#10B981'};
-      --theme-secondary: ${theme.secondaryColor || '#059669'};
-      --theme-background: ${theme.backgroundColor || '#FFFFFF'};
-      --theme-text: ${theme.textColor || '#1F2937'};
-      --theme-muted: ${adjustColorOpacity(theme.primaryColor || '#10B981', 0.7)};
-      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor || '#1F2937', 0.5)};
+      --theme-primary: ${theme.primary_color || '#10B981'};
+      --theme-secondary: ${theme.secondary_color || '#059669'};
+      --theme-background: ${theme.background || '#FFFFFF'};
+      --theme-text: ${theme.text_primary || '#1F2937'};
+      --theme-muted: ${adjustColorOpacity(theme.primary_color || '#10B981', 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.text_primary || '#1F2937', 0.5)};
       --theme-primary-hover: ${primaryHover};
       --theme-secondary-hover: ${secondaryHover};
     }
@@ -188,8 +187,8 @@ export const EditorCanvas = () => {
         <div 
           className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas"
           style={{
-            backgroundColor: state.theme.backgroundColor || '#FFFFFF',
-            color: state.theme.textColor || '#1F2937'
+            backgroundColor: state.theme.background || '#FFFFFF',
+            color: state.theme.text_primary || '#1F2937'
           }}
         >
           {currentPage?.components.length === 0 ? (

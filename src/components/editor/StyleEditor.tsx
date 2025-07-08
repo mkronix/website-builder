@@ -258,7 +258,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
               width: styles.width,
               height: styles.height,
               display: styles.display,
-              position: styles.position,
+              position: styles.position as React.CSSProperties['position'],
               zIndex: styles.zIndex,
             }}
           >
