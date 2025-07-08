@@ -1,346 +1,282 @@
 
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 interface StyleEditorProps {
   currentStyles: Record<string, string>;
-  onSave: (newStyles: Record<string, string>) => void;
+  onSave: (styles: Record<string, string>) => void;
   onClose: () => void;
 }
-
-const fontSizes = {
-  'text-xs': '0.75rem',
-  'text-sm': '0.875rem',
-  'text-base': '1rem',
-  'text-lg': '1.125rem',
-  'text-xl': '1.25rem',
-  'text-2xl': '1.5rem',
-  'text-3xl': '1.875rem',
-  'text-4xl': '2.25rem'
-};
-
-const fontWeights = {
-  'font-thin': '100',
-  'font-light': '300',
-  'font-normal': '400',
-  'font-medium': '500',
-  'font-semibold': '600',
-  'font-bold': '700',
-  'font-extrabold': '800'
-};
-
-const fontFamilies = {
-  'font-sans': 'ui-sans-serif, system-ui, sans-serif',
-  'font-serif': 'ui-serif, Georgia, serif',
-  'font-mono': 'ui-monospace, monospace'
-};
-
-const spacingValues = {
-  '0': '0px',
-  '1': '0.25rem',
-  '2': '0.5rem',
-  '3': '0.75rem',
-  '4': '1rem',
-  '5': '1.25rem',
-  '6': '1.5rem',
-  '8': '2rem',
-  '10': '2.5rem',
-  '12': '3rem',
-  '16': '4rem',
-  '20': '5rem',
-  '24': '6rem'
-};
-
-const colorOptions = [
-  '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
-  '#808080', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#C0C0C0',
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'
-];
 
 const StyleEditor: React.FC<StyleEditorProps> = ({
   currentStyles,
   onSave,
   onClose
 }) => {
-  const [styles, setStyles] = useState<Record<string, string>>({});
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [customColor, setCustomColor] = useState('#000000');
-  const [customBgColor, setCustomBgColor] = useState('#FFFFFF');
+  const [styles, setStyles] = useState<Record<string, string>>(currentStyles);
+  const [tailwindInput, setTailwindInput] = useState('');
+  const [activeMode, setActiveMode] = useState<'quick' | 'advanced'>('quick');
 
   useEffect(() => {
-    // Convert current styles to proper format
-    const convertedStyles = {
-      fontSize: currentStyles.fontSize || '1rem',
-      fontWeight: currentStyles.fontWeight || '400',
-      fontFamily: currentStyles.fontFamily || 'ui-sans-serif, system-ui, sans-serif',
-      color: currentStyles.color || '#000000',
-      backgroundColor: currentStyles.backgroundColor || 'transparent',
-      margin: currentStyles.margin || '0px',
-      padding: currentStyles.padding || '0px',
-      customClasses: '',
-      customCSS: ''
-    };
-    setStyles(convertedStyles);
+    setStyles(currentStyles);
+    setTailwindInput(currentStyles.className || '');
   }, [currentStyles]);
 
-  const handleStyleChange = (property: string, value: string) => {
-    setStyles(prev => ({
-      ...prev,
-      [property]: value
-    }));
+  // Quick style presets for common styling needs
+  const quickStylePresets = [
+    { name: 'Bold Text', classes: 'font-bold' },
+    { name: 'Large Text', classes: 'text-lg' },
+    { name: 'Extra Large Text', classes: 'text-xl' },
+    { name: 'Small Text', classes: 'text-sm' },
+    { name: 'Center Text', classes: 'text-center' },
+    { name: 'Right Text', classes: 'text-right' },
+    { name: 'Italic', classes: 'italic' },
+    { name: 'Underline', classes: 'underline' },
+    { name: 'Rounded Corners', classes: 'rounded-lg' },
+    { name: 'Full Rounded', classes: 'rounded-full' },
+    { name: 'Shadow', classes: 'shadow-md' },
+    { name: 'Large Shadow', classes: 'shadow-lg' },
+    { name: 'Padding Small', classes: 'p-2' },
+    { name: 'Padding Medium', classes: 'p-4' },
+    { name: 'Padding Large', classes: 'p-6' },
+    { name: 'Margin Small', classes: 'm-2' },
+    { name: 'Margin Medium', classes: 'm-4' },
+    { name: 'Margin Large', classes: 'm-6' },
+    { name: 'Full Width', classes: 'w-full' },
+    { name: 'Auto Width', classes: 'w-auto' },
+    { name: 'Flex Center', classes: 'flex items-center justify-center' },
+    { name: 'Hidden', classes: 'hidden' },
+    { name: 'Block', classes: 'block' },
+    { name: 'Inline Block', classes: 'inline-block' },
+  ];
+
+  // Color presets that work with the theme system
+  const colorPresets = [
+    { name: 'Primary Background', classes: 'bg-[var(--theme-primary)]' },
+    { name: 'Secondary Background', classes: 'bg-[var(--theme-secondary)]' },
+    { name: 'Background', classes: 'bg-[var(--theme-background)]' },
+    { name: 'Primary Text', classes: 'text-[var(--theme-primary)]' },
+    { name: 'Secondary Text', classes: 'text-[var(--theme-secondary)]' },
+    { name: 'Text Color', classes: 'text-[var(--theme-text)]' },
+    { name: 'Transparent', classes: 'bg-transparent' },
+    { name: 'White Background', classes: 'bg-white' },
+    { name: 'Black Background', classes: 'bg-black' },
+    { name: 'Gray Background', classes: 'bg-gray-100' },
+    { name: 'Red Background', classes: 'bg-red-500' },
+    { name: 'Blue Background', classes: 'bg-blue-500' },
+    { name: 'Green Background', classes: 'bg-green-500' },
+    { name: 'Yellow Background', classes: 'bg-yellow-500' },
+    { name: 'Purple Background', classes: 'bg-purple-500' },
+  ];
+
+  const applyPreset = (classes: string) => {
+    const currentClasses = tailwindInput.split(' ').filter(cls => cls.trim());
+    const newClasses = classes.split(' ');
+    
+    // Remove conflicting classes and add new ones
+    const combinedClasses = [...currentClasses, ...newClasses]
+      .filter((cls, index, arr) => arr.indexOf(cls) === index) // Remove duplicates
+      .join(' ');
+    
+    setTailwindInput(combinedClasses);
+    setStyles(prev => ({ ...prev, className: combinedClasses }));
   };
 
-  const handleTailwindToCSS = (property: string, tailwindClass: string) => {
-    let cssValue = '';
+  const removePreset = (classes: string) => {
+    const currentClasses = tailwindInput.split(' ').filter(cls => cls.trim());
+    const classesToRemove = classes.split(' ');
+    
+    const filteredClasses = currentClasses
+      .filter(cls => !classesToRemove.includes(cls))
+      .join(' ');
+    
+    setTailwindInput(filteredClasses);
+    setStyles(prev => ({ ...prev, className: filteredClasses }));
+  };
 
-    if (property === 'fontSize' && tailwindClass in fontSizes) {
-      cssValue = fontSizes[tailwindClass as keyof typeof fontSizes];
-    } else if (property === 'fontWeight' && tailwindClass in fontWeights) {
-      cssValue = fontWeights[tailwindClass as keyof typeof fontWeights];
-    } else if (property === 'fontFamily' && tailwindClass in fontFamilies) {
-      cssValue = fontFamilies[tailwindClass as keyof typeof fontFamilies];
-    } else if ((property === 'margin' || property === 'padding') && tailwindClass in spacingValues) {
-      cssValue = spacingValues[tailwindClass as keyof typeof spacingValues];
-    }
+  const handleTailwindChange = (value: string) => {
+    setTailwindInput(value);
+    setStyles(prev => ({ ...prev, className: value }));
+  };
 
-    if (cssValue) {
-      handleStyleChange(property, cssValue);
-    }
+  const handleCustomCssChange = (property: string, value: string) => {
+    setStyles(prev => ({ ...prev, [property]: value }));
   };
 
   const handleSave = () => {
-    onSave(styles);
+    // Ensure className is properly set from tailwindInput
+    const finalStyles = {
+      ...styles,
+      className: tailwindInput
+    };
+    onSave(finalStyles);
     onClose();
   };
 
-  const applyColorFromPicker = (type: 'text' | 'background') => {
-    const color = type === 'text' ? customColor : customBgColor;
-    const property = type === 'text' ? 'color' : 'backgroundColor';
-    handleStyleChange(property, color);
-  };
+  const appliedClasses = tailwindInput.split(' ').filter(cls => cls.trim());
 
   return (
-    <div className="space-y-6 max-h-[60vh] overflow-y-auto">
-      {/* Typography */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Typography</h3>
+    <div className="space-y-6">
+      <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as 'quick' | 'advanced')}>
+        <TabsList className="grid w-full grid-cols-2 bg-[#272725] text-white">
+          <TabsTrigger value="quick">Quick Style</TabsTrigger>
+          <TabsTrigger value="advanced">Advanced Mode</TabsTrigger>
+        </TabsList>
 
-        <div className="grid grid-cols-2 gap-4">
+        <TabsContent value="quick" className="space-y-4">
           <div>
-            <Label className="text-white text-sm">Font Family</Label>
-            <Select
-              value={Object.keys(fontFamilies).find(key => fontFamilies[key as keyof typeof fontFamilies] === styles.fontFamily) || ''}
-              onValueChange={(value) => handleTailwindToCSS('fontFamily', value)}
-            >
-              <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
-                <SelectValue placeholder="Select font" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#272725] border-gray-600">
-                {Object.entries(fontFamilies).map(([key, value]) => (
-                  <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
-                    {key.replace('font-', '')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label className="text-white text-sm">Font Size</Label>
-            <Select
-              value={Object.keys(fontSizes).find(key => fontSizes[key as keyof typeof fontSizes] === styles.fontSize) || ''}
-              onValueChange={(value) => handleTailwindToCSS('fontSize', value)}
-            >
-              <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
-                <SelectValue placeholder="Select size" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#272725] border-gray-600">
-                {Object.entries(fontSizes).map(([key, value]) => (
-                  <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
-                    {key.replace('text-', '')} ({value})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div>
-          <Label className="text-white text-sm">Font Weight</Label>
-          <Select
-            value={Object.keys(fontWeights).find(key => fontWeights[key as keyof typeof fontWeights] === styles.fontWeight) || ''}
-            onValueChange={(value) => handleTailwindToCSS('fontWeight', value)}
-          >
-            <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
-              <SelectValue placeholder="Select weight" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#272725] border-gray-600">
-              {Object.entries(fontWeights).map(([key, value]) => (
-                <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
-                  {key.replace('font-', '')} ({value})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Colors */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Colors</h3>
-
-        <div className="space-y-4">
-          <div>
-            <Label className="text-white text-sm">Text Color</Label>
-            <div className="flex gap-2 flex-wrap mt-2">
-              {colorOptions.map(color => (
-                <button
-                  key={color}
-                  className="w-8 h-8 rounded border-2 border-gray-600 hover:border-white transition-colors"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleStyleChange('color', color)}
-                />
+            <Label className="text-white mb-3 block">Style Presets</Label>
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              {quickStylePresets.map((preset) => (
+                <Button
+                  key={preset.name}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => applyPreset(preset.classes)}
+                  className="justify-start text-left bg-[#272725] border-gray-600 text-gray-300 hover:bg-[#333] hover:text-white text-xs"
+                >
+                  {preset.name}
+                </Button>
               ))}
             </div>
-            <div className="flex items-center gap-2 mt-2">
-              <input
-                type="color"
-                value={customColor}
-                onChange={(e) => setCustomColor(e.target.value)}
-                className="w-8 h-8 rounded border border-gray-600"
-              />
-              <Button
-                size="sm"
-                onClick={() => applyColorFromPicker('text')}
-                className="bg-black hover:bg-black/30 text-white"
-              >
-                Apply Custom
-              </Button>
-            </div>
           </div>
 
+          <Separator className="bg-gray-600" />
+
           <div>
-            <Label className="text-white text-sm">Background Color</Label>
-            <div className="flex gap-2 flex-wrap mt-2">
-              {colorOptions.map(color => (
-                <button
-                  key={color}
-                  className="w-8 h-8 rounded border-2 border-gray-600 hover:border-white transition-colors"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleStyleChange('backgroundColor', color)}
-                />
+            <Label className="text-white mb-3 block">Color Presets</Label>
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              {colorPresets.map((preset) => (
+                <Button
+                  key={preset.name}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => applyPreset(preset.classes)}
+                  className="justify-start text-left bg-[#272725] border-gray-600 text-gray-300 hover:bg-[#333] hover:text-white text-xs"
+                >
+                  {preset.name}
+                </Button>
               ))}
             </div>
-            <div className="flex items-center gap-2 mt-2">
-              <input
-                type="color"
-                value={customBgColor}
-                onChange={(e) => setCustomBgColor(e.target.value)}
-                className="w-8 h-8 rounded border border-gray-600"
-              />
-              <Button
-                size="sm"
-                onClick={() => applyColorFromPicker('background')}
-                className="bg-black hover:bg-black/30 text-white"
-              >
-                Apply Custom
-              </Button>
-            </div>
           </div>
-        </div>
-      </div>
+        </TabsContent>
 
-      {/* Spacing */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Spacing</h3>
-
-        <div className="grid grid-cols-2 gap-4">
+        <TabsContent value="advanced" className="space-y-4">
           <div>
-            <Label className="text-white text-sm">Margin</Label>
-            <Select
-              value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.margin) || ''}
-              onValueChange={(value) => handleTailwindToCSS('margin', value)}
-            >
-              <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
-                <SelectValue placeholder="Select margin" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#272725] border-gray-600">
-                {Object.entries(spacingValues).map(([key, value]) => (
-                  <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
-                    {key} ({value})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label className="text-white text-sm">Padding</Label>
-            <Select
-              value={Object.keys(spacingValues).find(key => spacingValues[key as keyof typeof spacingValues] === styles.padding) || ''}
-              onValueChange={(value) => handleTailwindToCSS('padding', value)}
-            >
-              <SelectTrigger className="bg-[#272725] border-gray-600 text-white">
-                <SelectValue placeholder="Select padding" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#272725] border-gray-600">
-                {Object.entries(spacingValues).map(([key, value]) => (
-                  <SelectItem key={key} value={key} className="text-white hover:bg-[#1c1c1c]">
-                    {key} ({value})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-
-      {/* Advanced Options */}
-      <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
-        <CollapsibleTrigger className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors">
-          {showAdvanced ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          <span>Show Advanced</span>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-4 mt-4">
-          <div>
-            <Label className="text-white text-sm">Custom Tailwind Classes</Label>
-            <Input
-              value={styles.customClasses || ''}
-              onChange={(e) => handleStyleChange('customClasses', e.target.value)}
-              placeholder="Enter Tailwind classes..."
-              className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400"
-            />
-          </div>
-
-          <div>
-            <Label className="text-white text-sm">Custom CSS</Label>
-            <textarea
-              value={styles.customCSS || ''}
-              onChange={(e) => handleStyleChange('customCSS', e.target.value)}
-              placeholder="Enter custom CSS..."
-              className="w-full p-2 bg-[#272725] border border-gray-600 text-white placeholder:text-gray-400 rounded-md resize-none"
+            <Label className="text-white mb-2 block">TailwindCSS Classes</Label>
+            <Textarea
+              value={tailwindInput}
+              onChange={(e) => handleTailwindChange(e.target.value)}
+              placeholder="Enter Tailwind CSS classes (e.g., bg-blue-500 text-white p-4 rounded-lg)"
+              className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 min-h-[100px] font-mono text-sm"
               rows={4}
             />
+            <div className="text-xs text-gray-400 mt-1">
+              Separate multiple classes with spaces. Use theme variables like bg-[var(--theme-primary)] for theme integration.
+            </div>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+
+          {appliedClasses.length > 0 && (
+            <div>
+              <Label className="text-white mb-2 block">Applied Classes</Label>
+              <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+                {appliedClasses.map((cls, index) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 cursor-pointer text-xs"
+                    onClick={() => removePreset(cls)}
+                    title="Click to remove"
+                  >
+                    {cls} ×
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <Separator className="bg-gray-600" />
+
+          <div>
+            <Label className="text-white mb-3 block">Custom CSS Properties</Label>
+            <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto">
+              {[
+                { key: 'fontSize', label: 'Font Size', placeholder: '16px, 1rem, etc.' },
+                { key: 'fontWeight', label: 'Font Weight', placeholder: 'bold, 400, etc.' },
+                { key: 'color', label: 'Text Color', placeholder: '#333333, rgb(51,51,51), etc.' },
+                { key: 'backgroundColor', label: 'Background Color', placeholder: '#ffffff, transparent, etc.' },
+                { key: 'padding', label: 'Padding', placeholder: '10px, 1rem 2rem, etc.' },
+                { key: 'margin', label: 'Margin', placeholder: '10px, 1rem 2rem, etc.' },
+                { key: 'borderRadius', label: 'Border Radius', placeholder: '4px, 0.5rem, etc.' },
+                { key: 'border', label: 'Border', placeholder: '1px solid #ccc' },
+                { key: 'boxShadow', label: 'Box Shadow', placeholder: '0 2px 4px rgba(0,0,0,0.1)' },
+                { key: 'width', label: 'Width', placeholder: '100px, 50%, auto, etc.' },
+                { key: 'height', label: 'Height', placeholder: '100px, 50vh, auto, etc.' },
+                { key: 'display', label: 'Display', placeholder: 'block, flex, inline, etc.' },
+                { key: 'position', label: 'Position', placeholder: 'relative, absolute, etc.' },
+                { key: 'zIndex', label: 'Z-Index', placeholder: '1, 10, 100, etc.' },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key} className="grid grid-cols-3 gap-2 items-center">
+                  <Label className="text-gray-300 text-xs">{label}</Label>
+                  <Input
+                    value={styles[key] || ''}
+                    onChange={(e) => handleCustomCssChange(key, e.target.value)}
+                    placeholder={placeholder}
+                    className="col-span-2 bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-500 text-xs"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      <Separator className="bg-gray-600" />
+
+      {/* Style Preview */}
+      <div>
+        <Label className="text-white mb-2 block">Live Preview</Label>
+        <div className="p-4 bg-[#1c1c1c] border border-gray-600 rounded-lg">
+          <div
+            className={tailwindInput}
+            style={{
+              fontSize: styles.fontSize,
+              fontWeight: styles.fontWeight,
+              color: styles.color,
+              backgroundColor: styles.backgroundColor,
+              padding: styles.padding,
+              margin: styles.margin,
+              borderRadius: styles.borderRadius,
+              border: styles.border,
+              boxShadow: styles.boxShadow,
+              width: styles.width,
+              height: styles.height,
+              display: styles.display,
+              position: styles.position,
+              zIndex: styles.zIndex,
+            }}
+          >
+            Preview Text - This shows how your styles will look
+          </div>
+        </div>
+      </div>
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button
-
           onClick={onClose}
-          className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
+          className="border-gray-600 text-white bg-[#272725] hover:bg-[#333]"
         >
           Cancel
         </Button>
         <Button
           onClick={handleSave}
-          className="bg-black hover:bg-black/30 text-white"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
         >
           Apply Styles
         </Button>

@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -7,9 +8,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEditor } from '@/contexts/EditorContext';
 import { Component } from '@/contexts/editorTypes';
-import { applyThemeToCode, generateElementSpecificCSS } from '@/utils/themeUtils';
+import { applyThemeToCode, generateElementSpecificCSS, generateThemeCSS } from '@/utils/themeUtils';
 import * as Babel from '@babel/standalone';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import ContentEditor from './ContentEditor';
 import { DynamicFieldEditor } from './DynamicFieldEditor';
 import { SmartArrayCRUD } from './SmartArrayCRUD';
@@ -20,7 +21,7 @@ interface EditableComponentRendererProps {
   isSelected: boolean;
 }
 
-// Helper function to normalize props from old to new format
+// Enhanced prop normalization with better type handling
 const normalizeProps = (props: any): any => {
   if (!props) return {};
 
@@ -28,14 +29,10 @@ const normalizeProps = (props: any): any => {
 
   Object.entries(props).forEach(([key, value]: [string, any]) => {
     if (value && typeof value === 'object') {
-      // Check if it's already in new format (has type, value, tailwindCss)
       if (value.type && (value.value !== undefined || value.tailwindCss)) {
         normalized[key] = value;
-      }
-      // Check if it's an array of objects
-      else if (Array.isArray(value)) {
-        // Check if array items are in new format
-        if (value.length > 0 && value[0].tailwindCss !== undefined) {
+      } else if (Array.isArray(value)) {
+        if (value.length > 0 && value[0]?.tailwindCss !== undefined) {
           normalized[key] = {
             type: 'array',
             value: value,
@@ -43,7 +40,6 @@ const normalizeProps = (props: any): any => {
             customCss: {}
           };
         } else {
-          // Convert old array format to new format
           normalized[key] = {
             type: 'array',
             value: value.map(item => ({
@@ -55,32 +51,30 @@ const normalizeProps = (props: any): any => {
             customCss: {}
           };
         }
-      }
-      // Check if it's a nested object (like contact_button, hero_image)
-      else if (value.text || value.src || value.href || value.email) {
+      } else if (value.text || value.src || value.href || value.email || Object.keys(value).length > 0) {
         normalized[key] = {
           type: 'object',
           value: {
             ...value,
             tailwindCss: value.tailwindCss || '',
             customCss: value.customCss || {}
-          }
+          },
+          tailwindCss: '',
+          customCss: {}
         };
-      }
-      // Handle other object cases
-      else {
+      } else {
         normalized[key] = {
           type: 'object',
           value: {
             ...value,
             tailwindCss: value.tailwindCss || '',
             customCss: value.customCss || {}
-          }
+          },
+          tailwindCss: '',
+          customCss: {}
         };
       }
-    }
-    // Handle simple strings/primitives
-    else {
+    } else {
       normalized[key] = {
         type: 'text',
         value: value,
@@ -110,29 +104,30 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const [currentElementId, setCurrentElementId] = useState<string>('');
   const componentRef = useRef<HTMLDivElement>(null);
 
+  // Enhanced dynamic component with better theme integration
   const DynamicComponent = useMemo(() => {
-    console.log("component.react_code:", component);
+    console.log("Rendering component with theme:", state.theme);
     if (!component?.react_code) {
       console.error('No react_code found in component:', component);
       return null;
     }
 
     try {
-      // Apply global theme to code
+      // Apply global theme to code with enhanced theme integration
       let themedCode = applyThemeToCode(component.react_code, state.theme);
 
-      // Add unique identifiers to elements for individual styling
+      // Add unique identifiers with component-specific prefixing
       let elementCounter = 0;
       themedCode = themedCode.replace(
         /(<[^>]+)(className="[^"]*")([^>]*>)/g,
         (match, start, classNamePart, end) => {
           elementCounter++;
-          const elementId = `${component.id}-el-${elementCounter}`;
-          return `${start}${classNamePart} data-element-id="${elementId}"${end}`;
+          const elementId = `${component.id}-element-${elementCounter}`;
+          return `${start}${classNamePart} data-element-id="${elementId}" data-component-id="${component.id}"${end}`;
         }
       );
 
-      // Apply content customizations
+      // Enhanced content customization with proper prop handling
       if (component.customizableProps) {
         Object.entries(component.customizableProps).forEach(([key, value]) => {
           if (key.endsWith('_content') && !key.endsWith('_styles')) {
@@ -141,7 +136,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
               themedCode = themedCode.replace(regex, value);
             }
           } else if (!key.endsWith('_styles') && !key.endsWith('_content')) {
-            // Handle other prop replacements
             const regex = new RegExp(`{${key}}`, 'g');
             if (Array.isArray(value)) {
               themedCode = themedCode.replace(regex, JSON.stringify(value));
@@ -150,6 +144,30 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
             } else {
               themedCode = themedCode.replace(regex, `"${value}"`);
             }
+          }
+        });
+      }
+
+      // Enhanced default props handling
+      if (component.default_props) {
+        Object.entries(component.default_props).forEach(([key, propValue]) => {
+          const regex = new RegExp(`{${key}}`, 'g');
+          
+          if (propValue && typeof propValue === 'object' && propValue.value !== undefined) {
+            // New format with value property
+            if (Array.isArray(propValue.value)) {
+              themedCode = themedCode.replace(regex, JSON.stringify(propValue.value));
+            } else if (typeof propValue.value === 'object') {
+              themedCode = themedCode.replace(regex, JSON.stringify(propValue.value));
+            } else {
+              themedCode = themedCode.replace(regex, `"${propValue.value}"`);
+            }
+          } else if (Array.isArray(propValue)) {
+            themedCode = themedCode.replace(regex, JSON.stringify(propValue));
+          } else if (typeof propValue === 'object' && propValue !== null) {
+            themedCode = themedCode.replace(regex, JSON.stringify(propValue));
+          } else {
+            themedCode = themedCode.replace(regex, `"${propValue}"`);
           }
         });
       }
@@ -197,7 +215,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       console.error('Error compiling component:', error);
       return null;
     }
-  }, [component.react_code, component.customizableProps, state.theme]);
+  }, [component.react_code, component.customizableProps, component.default_props, state.theme]);
 
   const detectContentType = (element: HTMLElement): 'text' | 'url' | 'image' | 'video' | null => {
     if (element.tagName === 'IMG') return 'image';
@@ -216,22 +234,23 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const getElementStyles = (element: HTMLElement): Record<string, string> => {
     const elementId = element.getAttribute('data-element-id');
+    const componentId = element.getAttribute('data-component-id');
 
-    // Try to get existing styles from component customizable props
+    // Enhanced element-specific style retrieval
     if (elementId && component.customizableProps) {
       const styleKey = `${elementId}_styles`;
       const existingStyles = component.customizableProps[styleKey];
 
-      if (existingStyles) {
+      if (existingStyles && typeof existingStyles === 'object') {
         return {
           className: existingStyles.tailwindCss || '',
           ...existingStyles.customCss || {},
-          ...existingStyles // Include any direct style properties
+          ...existingStyles
         };
       }
     }
 
-    // Fallback to computed styles if no custom styles found
+    // Fallback to computed styles
     const computedStyles = window.getComputedStyle(element);
     return {
       fontSize: computedStyles.fontSize,
@@ -241,10 +260,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       backgroundColor: computedStyles.backgroundColor,
       margin: computedStyles.margin,
       padding: computedStyles.padding,
+      className: element.className || ''
     };
   };
 
   const getElementSelector = (element: HTMLElement): string => {
+    const elementId = element.getAttribute('data-element-id');
+    if (elementId) return `[data-element-id="${elementId}"]`;
     if (element.id) return `#${element.id}`;
     if (element.className) {
       const classes = element.className.split(' ').filter(cls => cls.trim());
@@ -253,13 +275,12 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     return element.tagName.toLowerCase();
   };
 
-  // Check if element has complex children (non-text children)
   const hasComplexChildren = (element: HTMLElement): boolean => {
     const children = Array.from(element.children);
     return children.length > 0 || element.querySelector('button, a, img, video, input, select, textarea') !== null;
   };
 
-  const handleElementClick = (event: React.MouseEvent) => {
+  const handleElementClick = useCallback((event: React.MouseEvent) => {
     if (!isSelected) return;
 
     event.stopPropagation();
@@ -270,11 +291,11 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const selector = getElementSelector(target);
       setElementSelector(selector);
 
-      // Get unique element ID for individual styling
       let elementId = target.getAttribute('data-element-id');
       if (!elementId) {
-        elementId = `${component.id}-${Date.now()}`;
+        elementId = `${component.id}-element-${Date.now()}`;
         target.setAttribute('data-element-id', elementId);
+        target.setAttribute('data-component-id', component.id);
       }
       setCurrentElementId(elementId);
 
@@ -333,7 +354,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }
       }
 
-      // Fallback to old detection method
       const dataKey = target.getAttribute('data-prop-key');
       if (dataKey && component.default_props && component.default_props[dataKey]) {
         const propValue = component.default_props[dataKey];
@@ -349,7 +369,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         }
       }
 
-      // For elements with complex children, only show style editor
       if (isComplexElement) {
         setContentType(null);
         setCurrentStyles(getElementStyles(target));
@@ -358,7 +377,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         return;
       }
 
-      // Default behavior for simple elements
       if (type && !isComplexElement) {
         setContentType(type);
         setCurrentContent(getElementContent(target));
@@ -372,16 +390,14 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         setEditModalOpen(true);
       }
     }
-  };
+  }, [isSelected, component.default_props, component.id]);
 
-  // Helper function to get nested prop by path
   const getPropByPath = (obj: any, path: string): any => {
     return path.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : null;
     }, obj);
   };
 
-  // Helper function to set nested prop by path
   const setPropByPath = (obj: any, path: string, value: any): any => {
     const keys = path.split('.');
     const result = { ...obj };
@@ -403,26 +419,26 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     return result;
   };
 
-  const handleContentSave = (newContent: string) => {
+  const handleContentSave = useCallback((newContent: string) => {
     if (!selectedElement || !elementSelector) return;
 
-    let contentKey = '';
-    const tagName = selectedElement.tagName.toLowerCase();
     const propPath = selectedElement.getAttribute('data-prop-path');
     const elementId = selectedElement.getAttribute('data-element-id');
 
     if (propPath) {
-      const updatedProps = setPropByPath(component.default_props, propPath, {
-        ...getPropByPath(component.default_props, propPath),
+      const existingProp = getPropByPath(component.default_props, propPath);
+      const updatedProp = {
+        ...existingProp,
         value: newContent
-      });
+      };
+
+      const updatedProps = setPropByPath(component.default_props, propPath, updatedProp);
 
       updateComponent(state.currentPage, component.id, {
         default_props: updatedProps
       });
     } else {
-      // Create a unique key for this specific element
-      contentKey = elementId ? `${elementId}_content` : `${tagName}_content_${Date.now()}`;
+      const contentKey = elementId ? `${elementId}_content` : `content_${Date.now()}`;
 
       const updatedProps = {
         ...component.customizableProps,
@@ -435,9 +451,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     }
 
     setEditModalOpen(false);
-  };
+  }, [selectedElement, elementSelector, component, updateComponent, state.currentPage]);
 
-  const handleStyleSave = (newStyles: Record<string, string>) => {
+  const handleStyleSave = useCallback((newStyles: Record<string, string>) => {
     if (!selectedElement || !elementSelector) return;
 
     const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
@@ -447,10 +463,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       return;
     }
 
-    // Create a unique style key for this specific element
     const styleKey = `${elementId}_styles`;
-
-    // Separate Tailwind classes from custom CSS
     const tailwindCss = newStyles.className || '';
     const customCss = { ...newStyles };
     delete customCss.className;
@@ -458,7 +471,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     const elementStyles = {
       tailwindCss,
       customCss,
-      ...customCss // Keep other direct style properties for backward compatibility
+      ...customCss
     };
 
     const updatedProps = {
@@ -471,9 +484,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     });
 
     setEditModalOpen(false);
-  };
+  }, [selectedElement, elementSelector, currentElementId, component, updateComponent, state.currentPage]);
 
-  const handleDynamicFieldSave = (key: string, value: any) => {
+  const handleDynamicFieldSave = useCallback((key: string, value: any) => {
     const updatedProps = {
       ...component.customizableProps,
       [key]: value
@@ -488,23 +501,20 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     });
 
     setDynamicFieldEditor(null);
-  };
+  }, [component, updateComponent, state.currentPage]);
 
-  const handleArraySave = (key: string, newData: any[]) => {
+  const handleArraySave = useCallback((key: string, newData: any[]) => {
     console.log('Saving array data:', { key, newData });
 
-    // Get the existing prop structure to maintain other properties
     const existingProp = getPropByPath(component.default_props, key);
 
     let updatedPropValue;
     if (existingProp && typeof existingProp === 'object' && existingProp.type) {
-      // New structure - update the value while keeping type and styling
       updatedPropValue = {
         ...existingProp,
         value: newData
       };
     } else {
-      // Create new structure
       updatedPropValue = {
         type: 'array',
         value: newData,
@@ -515,23 +525,24 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
     const updatedProps = setPropByPath(component.default_props, key, updatedPropValue);
 
-    console.log('Updated props:', updatedProps);
-
     updateComponent(state.currentPage, component.id, {
       default_props: updatedProps
     });
 
     setArrayEditor(null);
-  };
+  }, [component, updateComponent, state.currentPage]);
 
-  const generateCustomStyles = (): string => {
+  const generateCustomStyles = useCallback((): string => {
     return generateElementSpecificCSS(component.id, component.customizableProps);
-  };
+  }, [component.id, component.customizableProps]);
+
+  const generateGlobalThemeStyles = useCallback((): string => {
+    return generateThemeCSS(state.theme);
+  }, [state.theme]);
 
   const renderComponent = () => {
     if (DynamicComponent) {
       try {
-        // Normalize props to ensure compatibility
         const normalizedProps = normalizeProps(component.default_props);
         const result = DynamicComponent(normalizedProps);
         if (React.isValidElement(result)) {
@@ -569,31 +580,36 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   return (
     <>
-      {/* Only generate custom styles for individual elements, not global theme */}
+      {/* Enhanced styling with both global theme and element-specific styles */}
       <style dangerouslySetInnerHTML={{
-        __html: generateCustomStyles()
+        __html: `
+          ${generateGlobalThemeStyles()}
+          ${generateCustomStyles()}
+        `
       }} />
+      
       <div
         ref={componentRef}
-        className={`relative cursor-pointer`}
+        className="relative cursor-pointer"
         onClick={(e) => {
           e.stopPropagation();
           selectComponent(component.id);
           handleElementClick(e);
         }}
-        style={{
-          position: 'relative'
-        }}
+        style={{ position: 'relative' }}
       >
         {renderComponent()}
       </div>
 
-      {/* Edit Modal with Tabs */}
+      {/* Enhanced Edit Modal with better tab handling */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
         <DialogContent className="max-w-2xl bg-[#1c1c1c] border-none">
           <DialogHeader>
             <DialogTitle className='text-white'>
               Edit {selectedElement?.tagName.toLowerCase()} Element
+              {currentElementId && (
+                <span className="text-sm text-gray-400 ml-2">({currentElementId})</span>
+              )}
             </DialogTitle>
           </DialogHeader>
 
@@ -627,7 +643,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         </DialogContent>
       </Dialog>
 
-      {/* Dynamic Field Editor */}
+      {/* Enhanced Dynamic Field Editor */}
       {dynamicFieldEditor && (
         <DynamicFieldEditor
           data={dynamicFieldEditor.data}
@@ -637,7 +653,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         />
       )}
 
-      {/* Smart Array CRUD Editor */}
+      {/* Enhanced Smart Array CRUD Editor */}
       {arrayEditor && (
         <SmartArrayCRUD
           title={`Edit ${arrayEditor.key}`}

@@ -20,14 +20,21 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-// Simple theme CSS generation for the original theme structure
+// Enhanced theme CSS generation for proper theme integration
 const generateThemeCSS = (theme: any) => {
+  const primaryHover = adjustColorBrightness(theme.primaryColor || '#10B981', -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondaryColor || '#059669', -0.1);
+
   return `
     :root {
-      --theme-primary: ${theme.primaryColor || '#007BFF'};
-      --theme-secondary: ${theme.secondaryColor || '#6C757D'};
-      --theme-background: ${theme.backgroundColor || '#FAFAFA'};
-      --theme-text: ${theme.textColor || '#333333'};
+      --theme-primary: ${theme.primaryColor || '#10B981'};
+      --theme-secondary: ${theme.secondaryColor || '#059669'};
+      --theme-background: ${theme.backgroundColor || '#FFFFFF'};
+      --theme-text: ${theme.textColor || '#1F2937'};
+      --theme-muted: ${adjustColorOpacity(theme.primaryColor || '#10B981', 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor || '#1F2937', 0.5)};
+      --theme-primary-hover: ${primaryHover};
+      --theme-secondary-hover: ${secondaryHover};
     }
     
     .editor-canvas {
@@ -35,8 +42,101 @@ const generateThemeCSS = (theme: any) => {
       --tw-secondary: var(--theme-secondary);
       --tw-background: var(--theme-background);
       --tw-text: var(--theme-text);
+      
+      /* Enhanced background and text theming */
+      background-color: var(--theme-background);
+      color: var(--theme-text);
+    }
+
+    /* Comprehensive theme integration for all components */
+    .editor-canvas * {
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Theme-aware component styling */
+    .editor-canvas .bg-primary,
+    .editor-canvas [data-theme-element="primary-bg"] { 
+      background-color: var(--theme-primary) !important; 
+    }
+    .editor-canvas .bg-secondary,
+    .editor-canvas [data-theme-element="secondary-bg"] { 
+      background-color: var(--theme-secondary) !important; 
+    }
+    .editor-canvas .bg-background,
+    .editor-canvas [data-theme-element="background"] { 
+      background-color: var(--theme-background) !important; 
+    }
+    .editor-canvas .text-primary,
+    .editor-canvas [data-theme-element="primary-text"] { 
+      color: var(--theme-primary) !important; 
+    }
+    .editor-canvas .text-secondary,
+    .editor-canvas [data-theme-element="secondary-text"] { 
+      color: var(--theme-secondary) !important; 
+    }
+    .editor-canvas .text-foreground,
+    .editor-canvas [data-theme-element="text"] { 
+      color: var(--theme-text) !important; 
+    }
+    
+    /* Enhanced button theming */
+    .editor-canvas button:not([class*="bg-"]) {
+      background-color: var(--theme-primary);
+      color: var(--theme-background);
+    }
+    .editor-canvas button:not([class*="bg-"]):hover {
+      background-color: var(--theme-primary-hover);
+    }
+    
+    /* Enhanced link theming */
+    .editor-canvas a:not([class*="text-"]) {
+      color: var(--theme-primary);
+    }
+    .editor-canvas a:not([class*="text-"]):hover {
+      color: var(--theme-primary-hover);
+    }
+    
+    /* Form element theming */
+    .editor-canvas input:not([class*="bg-"]),
+    .editor-canvas textarea:not([class*="bg-"]),
+    .editor-canvas select:not([class*="bg-"]) {
+      background-color: var(--theme-background);
+      color: var(--theme-text);
+      border-color: var(--theme-secondary);
+    }
+    
+    .editor-canvas input:focus:not([class*="ring-"]),
+    .editor-canvas textarea:focus:not([class*="ring-"]),
+    .editor-canvas select:focus:not([class*="ring-"]) {
+      ring-color: var(--theme-primary);
+      border-color: var(--theme-primary);
     }
   `;
+};
+
+// Helper functions for color manipulation
+const adjustColorBrightness = (color: string, amount: number): string => {
+  if (color.startsWith('#')) {
+    const hex = color.slice(1);
+    const num = parseInt(hex, 16);
+    const r = Math.max(0, Math.min(255, (num >> 16) + Math.round(255 * amount)));
+    const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + Math.round(255 * amount)));
+    const b = Math.max(0, Math.min(255, (num & 0x0000FF) + Math.round(255 * amount)));
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+  }
+  return color;
+};
+
+const adjustColorOpacity = (color: string, opacity: number): string => {
+  if (color.startsWith('#')) {
+    const hex = color.slice(1);
+    const num = parseInt(hex, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+  return color;
 };
 
 export const EditorCanvas = () => {
@@ -81,13 +181,21 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
+      {/* Enhanced theme CSS injection with proper cascade */}
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
+      
       <ResponsiveWrapper>
-        <div className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas">
+        <div 
+          className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas"
+          style={{
+            backgroundColor: state.theme.backgroundColor || '#FFFFFF',
+            color: state.theme.textColor || '#1F2937'
+          }}
+        >
           {currentPage?.components.length === 0 ? (
             <div className="flex bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] items-center justify-center w-full h-[calc(100vh_-_8rem)] border-2 border-dashed border-gray-600 rounded-lg">
               <div className="text-center p-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-lg flex items-center justify-center shadow-lg">
                   <Layers className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl text-white font-semibold mb-2">Start Building</h3>
