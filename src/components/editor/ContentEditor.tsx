@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import React, { useEffect, useState } from 'react';
+import { MediaUploadModal } from './MediaUploadModal';
 
 interface ContentEditorProps {
   contentType: 'text' | 'url' | 'image' | 'video' | null;
@@ -19,6 +20,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   onClose
 }) => {
   const [value, setValue] = useState(currentValue);
+  const [showMediaModal, setShowMediaModal] = useState(false);
 
   useEffect(() => {
     setValue(currentValue);
@@ -27,6 +29,11 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   const handleSave = () => {
     onSave(value);
     onClose();
+  };
+
+  const handleMediaSave = (mediaUrl: string) => {
+    setValue(mediaUrl);
+    setShowMediaModal(false);
   };
 
   const renderContentEditor = () => {
@@ -69,15 +76,23 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="image-url" className="text-white">Image URL</Label>
-              <Input
-                id="image-url"
-                type="url"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
-              />
+              <Label className="text-white">Image</Label>
+              <div className="mt-2 space-y-3">
+                <Input
+                  type="url"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMediaModal(true)}
+                  className="w-full border-gray-600 text-white hover:bg-[#272725]"
+                >
+                  Upload Image
+                </Button>
+              </div>
             </div>
             {value && (
               <div className="mt-4">
@@ -86,7 +101,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                   <img
                     src={value}
                     alt="Preview"
-                    className="max-w-full h-32 object-fill"
+                    className="max-w-full h-32 object-contain mx-auto bg-black"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
@@ -102,16 +117,40 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="video-url" className="text-white">Video URL</Label>
-              <Input
-                id="video-url"
-                type="url"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="https://youtube.com/watch?v=... or direct video URL"
-                className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400 mt-2"
-              />
+              <Label className="text-white">Video</Label>
+              <div className="mt-2 space-y-3">
+                <Input
+                  type="url"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  placeholder="https://youtube.com/watch?v=... or direct video URL"
+                  className="bg-[#272725] border-gray-600 text-white placeholder:text-gray-400"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMediaModal(true)}
+                  className="w-full border-gray-600 text-white hover:bg-[#272725]"
+                >
+                  Upload Video
+                </Button>
+              </div>
             </div>
+            {value && (
+              <div className="mt-4">
+                <Label className="text-white">Preview:</Label>
+                <div className="mt-2 border border-gray-600 rounded-lg overflow-hidden bg-black">
+                  <video
+                    src={value}
+                    controls
+                    className="max-w-full h-32 object-contain mx-auto"
+                    onError={(e) => {
+                      const target = e.target as HTMLVideoElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         );
 
@@ -125,25 +164,35 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      {renderContentEditor()}
-      <div className="flex justify-end space-x-2 pt-4">
-        <Button
-
-          onClick={onClose}
-          className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSave}
-          className="bg-black hover:bg-black/30 text-white"
-          disabled={!value.trim()}
-        >
-          Save Changes
-        </Button>
+    <>
+      <div className="space-y-4">
+        {renderContentEditor()}
+        <div className="flex justify-end space-x-2 pt-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="border-gray-600 text-white bg-[#272725] hover:bg-[#272725]"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            className="bg-black hover:bg-black/30 text-white"
+            disabled={!value.trim()}
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
-    </div>
+
+      <MediaUploadModal
+        isOpen={showMediaModal}
+        onClose={() => setShowMediaModal(false)}
+        onSave={handleMediaSave}
+        mediaType={contentType === 'image' ? 'image' : 'video'}
+        currentValue={value}
+      />
+    </>
   );
 };
 

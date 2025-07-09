@@ -1,4 +1,3 @@
-
 import React, {
   createContext,
   useCallback,
@@ -94,7 +93,7 @@ export interface EditorContextType {
   updatePageSeo: (pageId: string, seoData: Partial<Page['seo']>) => void;
   currentProject: Project | null;
   setCurrentProject: (project: Project | null) => void;
-  saveProject: () => void;
+  saveProject: (projectData?: { name: string; description: string }) => void;
   loadTemplate: (template: any) => void;
 }
 
@@ -280,9 +279,21 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }));
   }, []);
 
-  const saveProject = useCallback(() => {
-    console.log('Saving project...', state);
-  }, [state]);
+  const saveProject = useCallback((projectData?: { name: string; description: string }) => {
+    if (projectData) {
+      const newProject: Project = {
+        id: currentProject?.id || uuidv4(),
+        name: projectData.name,
+        description: projectData.description,
+        createdAt: currentProject?.createdAt || new Date(),
+        updatedAt: new Date()
+      };
+      setCurrentProject(newProject);
+      console.log('Project saved:', newProject, 'State:', state);
+    } else {
+      console.log('Saving current project...', currentProject, 'State:', state);
+    }
+  }, [state, currentProject]);
 
   const loadTemplate = useCallback((template: any) => {
     // Basic implementation to load a template
