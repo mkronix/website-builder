@@ -205,3 +205,9 @@ Fix the issue where theme updates are not correctly applying to all elements. En
 - in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
 - add a delete modal before deleting any thing in the project like page deletion , compoent deletion etc.
+
+- agr data strucuture array h or uske koi bhi 1 element ko select kru to bhi pura dynamicArryCrud wala moda1 open ho no chahiye naa ki single element ka modal open ho
+
+- saari fucntuonality ko test kro hr 1 element ko update kr skey uska content uski styles everything
+
+- img tag ko select krra hu lekin text edit ka modal open ho rha hai fix the bug
