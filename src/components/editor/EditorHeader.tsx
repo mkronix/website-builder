@@ -22,7 +22,7 @@ export const EditorHeader = () => {
     saveProject(projectData);
   };
 
-  const isProjectSaved = currentProject && currentProject.name;
+  const isProjectSaved = Boolean(currentProject?.name);
 
   return (
     <>
