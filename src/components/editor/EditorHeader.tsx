@@ -5,11 +5,13 @@ import { useEditor } from '@/contexts/EditorContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SaveProjectModal } from './SaveProjectModal';
+import { exportProject } from '@/utils/projectExporter';
 
 export const EditorHeader = () => {
   const { state, setPreviewMode, currentProject, saveProject } = useEditor();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const navigate = useNavigate();
 
   const responsiveOptions = [
@@ -21,6 +23,75 @@ export const EditorHeader = () => {
   const handleSaveProject = (projectData: { name: string; description: string }) => {
     saveProject(projectData);
   };
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+
+      const projectData = {
+        project: {
+          id: currentProject?.id || 'temp-id',
+          name: currentProject?.name || 'React Project',
+          description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
+          theme: {
+            primaryColor: state.theme?.primaryColor || '#10B981',
+            secondaryColor: state.theme?.secondaryColor || '#059669',
+            backgroundColor: state.theme?.backgroundColor || '#F9FAFB',
+            textColor: state.theme?.textColor || '#111827'
+          },
+          created_at: (currentProject?.createdAt || new Date()).toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        pages: state.pages.map(page => ({
+          id: page.id,
+          name: page.name,
+          slug: page.name || `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
+          components: page.components.map(component => ({
+            id: component.id,
+            category: component.category || 'general',
+            variant: component.variant || 'default',
+            default_props: component.default_props || {},
+            react_code: component.react_code || `const ${component.category || 'Component'} = () => {
+  return <div>Component</div>;
+};`
+          }))
+        }))
+      };
+
+      // Get all unique components from all pages
+      const allComponents = projectData.pages.reduce((acc, page) => {
+        page.components.forEach(comp => {
+          if (!acc.some(existing => existing.id === comp.id)) {
+            acc.push(comp);
+          }
+        });
+        return acc;
+      }, []);
+
+      // Export settings
+      const exportSettings = {
+        includeAnimations: true,
+        includeRouting: projectData.pages.length > 1,
+        typescript: false,
+        prettier: true,
+        includeSEO: true,
+        includeAnalytics: false,
+        includeSitemap: true,
+        includeRobots: true
+      };
+
+      // Call the export function
+      await exportProject(projectData, allComponents, exportSettings);
+
+      console.log('Project exported successfully!');
+    } catch (error) {
+      console.error('Export failed:', error);
+      // You might want to show a toast notification here
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
 
   const isProjectSaved = Boolean(currentProject?.name);
 

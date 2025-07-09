@@ -190,16 +190,12 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 <!-- Remaining Task to complet  -->
 
 - Image & Video Upload with Live Preview:
-Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. When exporting code, these paths should be used to upload assets to our server and set the final URL in the component’s props correctly.
-
-- each and every componet content which will be editable must be propperly updated in that component and must be saved in the currrent proejct json
+Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. where ever the user clicks on the image or video it should at thier open a modal for uploading the image or video using url or browse from the local and show the real time preview of the image or video. and render it in the editor. where that element was selected
 
 
 - Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
 
-- Component Customization & JSON Update:
-Fully review and update the component.json file. Every single element used in the components must support customizable styles and editable content, ensuring maximum flexibility for users.
 
 - Theme Integration Fix:
 Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
@@ -208,6 +204,4 @@ Fix the issue where theme updates are not correctly applying to all elements. En
 
 - in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
-- add a delete modal before deleting any thing
-
-- when click on save open modal with projectName and description and then save and change the text of the save project button to update project 
+- add a delete modal before deleting any thing in the project like page deletion , compoent deletion etc.

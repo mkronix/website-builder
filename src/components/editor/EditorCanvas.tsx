@@ -186,7 +186,7 @@ export const EditorCanvas = () => {
 
       <ResponsiveWrapper>
         <div
-          className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas"
+          className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas relative"
           style={{
             backgroundColor: state.theme.backgroundColor || '#FFFFFF',
             color: state.theme.textColor || '#1F2937'

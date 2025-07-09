@@ -40,7 +40,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-white hover:bg-[#1c1c1c]"
           >
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
       </div>
@@ -82,7 +82,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   setSidebarOpen(false);
                 }}
               >
-                <Icon className="mr-3 w-5 h-5" />
+                <Icon className="w-6 h-6" />
                 {item.label}
               </Button>
             );
@@ -95,7 +95,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             className="w-full text-base justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200"
             onClick={handleLogout}
           >
-            <LogOut className="mr-3 w-5 h-5" />
+            <LogOut className="w-6 h-6" />
             Logout
           </Button>
         </div>
