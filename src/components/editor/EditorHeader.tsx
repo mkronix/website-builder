@@ -1,4 +1,5 @@
 
+
 import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X, Save, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEditor } from '@/contexts/EditorContext';
@@ -34,10 +35,10 @@ export const EditorHeader = () => {
           name: currentProject?.name || 'React Project',
           description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
           theme: {
-            primaryColor: state.theme?.primary_color || '#10B981',
-            secondaryColor: state.theme?.secondary_color || '#059669',
-            backgroundColor: state.theme?.background || '#F9FAFB',
-            textColor: state.theme?.text_primary || '#111827'
+            primaryColor: state.theme?.primaryColor || '#10B981',
+            secondaryColor: state.theme?.secondaryColor || '#059669',
+            backgroundColor: state.theme?.backgroundColor || '#F9FAFB',
+            textColor: state.theme?.textColor || '#111827'
           },
           created_at: (currentProject?.createdAt || new Date()).toISOString(),
           updated_at: new Date().toISOString()
@@ -50,8 +51,8 @@ export const EditorHeader = () => {
             id: component.id,
             category: component.category || 'general',
             variant: component.variant || 'default',
-            default_props: component.props || {},
-            react_code: component.content || `const ${component.category || 'Component'} = () => {
+            default_props: component.default_props || {},
+            react_code: component.react_code || `const ${component.category || 'Component'} = () => {
   return <div>Component</div>;
 };`
           }))
@@ -270,3 +271,4 @@ export const EditorHeader = () => {
     </>
   );
 };
+
