@@ -1,5 +1,5 @@
 
-import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X, Save } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, Settings, Home, Menu, X, Save, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEditor } from '@/contexts/EditorContext';
 import { useState } from 'react';
@@ -34,10 +34,10 @@ export const EditorHeader = () => {
           name: currentProject?.name || 'React Project',
           description: currentProject?.description || 'A modern React application built with Vite and TailwindCSS',
           theme: {
-            primaryColor: state.theme?.primaryColor || '#10B981',
-            secondaryColor: state.theme?.secondaryColor || '#059669',
-            backgroundColor: state.theme?.backgroundColor || '#F9FAFB',
-            textColor: state.theme?.textColor || '#111827'
+            primaryColor: state.theme?.primary_color || '#10B981',
+            secondaryColor: state.theme?.secondary_color || '#059669',
+            backgroundColor: state.theme?.background || '#F9FAFB',
+            textColor: state.theme?.text_primary || '#111827'
           },
           created_at: (currentProject?.createdAt || new Date()).toISOString(),
           updated_at: new Date().toISOString()
@@ -45,13 +45,13 @@ export const EditorHeader = () => {
         pages: state.pages.map(page => ({
           id: page.id,
           name: page.name,
-          slug: page.name || `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
+          slug: page.name ? `/${page.name.toLowerCase().replace(/\s+/g, '-')}` : '/',
           components: page.components.map(component => ({
             id: component.id,
             category: component.category || 'general',
             variant: component.variant || 'default',
-            default_props: component.default_props || {},
-            react_code: component.react_code || `const ${component.category || 'Component'} = () => {
+            default_props: component.props || {},
+            react_code: component.content || `const ${component.category || 'Component'} = () => {
   return <div>Component</div>;
 };`
           }))
@@ -66,7 +66,7 @@ export const EditorHeader = () => {
           }
         });
         return acc;
-      }, []);
+      }, [] as any[]);
 
       // Export settings
       const exportSettings = {
@@ -86,12 +86,10 @@ export const EditorHeader = () => {
       console.log('Project exported successfully!');
     } catch (error) {
       console.error('Export failed:', error);
-      // You might want to show a toast notification here
     } finally {
       setIsExporting(false);
     }
   };
-
 
   const isProjectSaved = Boolean(currentProject?.name);
 
@@ -151,6 +149,19 @@ export const EditorHeader = () => {
             <Button
               variant="ghost"
               size="sm"
+              onClick={handleExport}
+              disabled={isExporting}
+              className="text-white hover:bg-[#272725] bg-[#272725]"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">
+                {isExporting ? 'Exporting...' : 'Export'}
+              </span>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowSaveModal(true)}
               className="text-white hover:bg-[#272725] bg-[#272725]"
             >
@@ -177,6 +188,20 @@ export const EditorHeader = () => {
               >
                 <Home className="w-4 h-4 mr-2" />
                 Dashboard
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleExport();
+                  setIsMobileMenuOpen(false);
+                }}
+                disabled={isExporting}
+                className="text-white hover:bg-[#272725] justify-start bg-[#272725]"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {isExporting ? 'Exporting...' : 'Export'}
               </Button>
 
               <Button
@@ -240,7 +265,7 @@ export const EditorHeader = () => {
         onClose={() => setShowSaveModal(false)}
         onSave={handleSaveProject}
         currentProject={currentProject}
-        isUpdate={isProjectSaved}
+        isUpdate={Boolean(isProjectSaved)}
       />
     </>
   );
