@@ -195,7 +195,7 @@ export const EditorCanvas = () => {
           {currentPage?.components.length === 0 ? (
             <div className="flex bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] items-center justify-center w-full h-[calc(100vh_-_8rem)] border-2 border-dashed border-gray-600 rounded-lg">
               <div className="text-center p-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-lg flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#414141] to-[#2a2a2a] rounded-lg flex items-center justify-center shadow-lg">
                   <Layers className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl text-white font-semibold mb-2">Start Building</h3>

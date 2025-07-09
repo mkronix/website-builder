@@ -151,7 +151,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       if (component.default_props) {
         Object.entries(component.default_props).forEach(([key, propValue]) => {
           const regex = new RegExp(`{${key}}`, 'g');
-          
+
           if (propValue && typeof propValue === 'object' && propValue.value !== undefined) {
             // New format with value property
             if (Array.isArray(propValue.value)) {
@@ -586,7 +586,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           ${generateCustomStyles()}
         `
       }} />
-      
+
       <div
         ref={componentRef}
         className="relative cursor-pointer"
@@ -602,23 +602,20 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
       {/* Enhanced Edit Modal with better tab handling */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="max-w-2xl bg-[#1c1c1c] border-none">
+        <DialogContent className="max-w-5xl max-h-[80vh] bg-[#1c1c1c] border-none overflow-auto">
           <DialogHeader>
             <DialogTitle className='text-white'>
               Edit {selectedElement?.tagName.toLowerCase()} Element
-              {currentElementId && (
-                <span className="text-sm text-gray-400 ml-2">({currentElementId})</span>
-              )}
             </DialogTitle>
           </DialogHeader>
 
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'content' | 'style')}>
-            <TabsList className={`grid w-full ${contentType ? 'grid-cols-2' : 'grid-cols-1'} bg-[#272725] text-white`}>
-              {contentType && (
+            {contentType && (
+              <TabsList className={`grid w-full ${contentType ? 'grid-cols-2' : 'grid-cols-1'} bg-[#272725] text-white`}>
                 <TabsTrigger value="content">Content</TabsTrigger>
-              )}
-              <TabsTrigger value="style">Style</TabsTrigger>
-            </TabsList>
+                <TabsTrigger value="style">Style</TabsTrigger>
+              </TabsList>
+            )}
 
             {contentType && (
               <TabsContent value="content" className="mt-4">
