@@ -93,6 +93,7 @@ export const generateThemeCSS = (theme: Theme) => {
       --tw-text: var(--theme-text);
     }
     
+<<<<<<< Updated upstream
     /* Direct theme element targeting with high specificity */
     .editor-canvas [data-theme-element="primary-bg"] { 
       background-color: var(--theme-primary) !important; 
@@ -155,9 +156,14 @@ export const generateThemeCSS = (theme: Theme) => {
     /* Legacy class support for backward compatibility */
     .editor-canvas .bg-blue-600,
     .editor-canvas .bg-blue-500,
+=======
+    /* Direct class replacements for theme colors */
+    .editor-canvas .bg-[#272725],
+    .editor-canvas .bg-[#272725],
+>>>>>>> Stashed changes
     .editor-canvas .bg-indigo-600,
     .editor-canvas .bg-purple-600,
-    .editor-canvas .bg-emerald-600,
+    .editor-canvas .bg-[#272725],
     .editor-canvas .bg-emerald-500,
     .editor-canvas .bg-primary { 
       background-color: var(--theme-primary) !important; 
@@ -223,13 +229,19 @@ export const generateThemeCSS = (theme: Theme) => {
     }
     
     /* Hover states */
+<<<<<<< Updated upstream
     .editor-canvas .hover\\:bg-blue-700:hover,
     .editor-canvas .hover\\:bg-blue-600:hover,
     .editor-canvas .hover\\:bg-emerald-700:hover,
-    .editor-canvas .hover\\:bg-emerald-600:hover,
+    .editor-canvas .hover\\:bg-[#272725]:hover,
     .editor-canvas .hover\\:bg-primary\\/80:hover { 
       background-color: var(--theme-primary-hover) !important; 
     }
+=======
+    .editor-canvas .hover\\:bg-[#272725]:hover,
+    .editor-canvas .hover\\:bg-[#272725]:hover,
+    .editor-canvas .hover\\:bg-primary\\/80:hover { background-color: var(--theme-primary-hover) !important; }
+>>>>>>> Stashed changes
     
     .editor-canvas .hover\\:text-blue-600:hover,
     .editor-canvas .hover\\:text-emerald-600:hover,

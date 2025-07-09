@@ -36,16 +36,6 @@ export const EditorSidebar = () => {
       label: 'SEO',
       icon: Globe,
       content: <SeoSettings />
-    },
-    {
-      id: 'settings',
-      label: 'Settings',
-      icon: Settings,
-      content: (
-        <div className="p-4">
-          <p className="text-gray-400 text-sm">Settings panel coming soon...</p>
-        </div>
-      )
     }
   ] as const;
 

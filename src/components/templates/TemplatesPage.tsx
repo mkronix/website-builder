@@ -44,7 +44,7 @@ export const TemplatesPage = () => {
                   </div>
                 )}
                 <div className="absolute top-2 right-2">
-                  <Badge className="bg-black text-white">
+                  <Badge className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
                     {template.category}
                   </Badge>
                 </div>
@@ -56,12 +56,12 @@ export const TemplatesPage = () => {
                 {template.tags && Array.isArray(template.tags) && template.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {template.tags.slice(0, 3).map((tag: string, index: number) => (
-                      <Badge key={index} className="text-xs bg-black text-white">
+                      <Badge key={index} className="text-xs bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
                         {tag}
                       </Badge>
                     ))}
                     {template.tags.length > 3 && (
-                      <Badge className="text-xs bg-black text-white">
+                      <Badge className="text-xs bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
                         +{template.tags.length - 3}
                       </Badge>
                     )}
@@ -70,7 +70,7 @@ export const TemplatesPage = () => {
 
                 <Button
                   onClick={() => createProjectFromTemplate(template)}
-                  className="w-full bg-black text-white hover:bg-black/30"
+                  className="w-full bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]"
                 >
                   Use This Template
                 </Button>

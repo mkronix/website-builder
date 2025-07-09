@@ -61,7 +61,7 @@ export const DashboardPage = () => {
           </div>
           <Button
             onClick={handleCreateProject}
-            className={`${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-black hover:bg-black/30'} text-white`}
+            className={`${userCredits <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-white hover:bg-white hover:text-[#1c1c1c] '} text-[#1c1c1c] `}
             disabled={userCredits <= 0}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -106,47 +106,6 @@ export const DashboardPage = () => {
           })}
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-            onClick={() => navigate('/projects')}>
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                My Projects
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-400">View and manage your existing projects</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-            onClick={() => navigate('/templates')}>
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Palette className="w-5 h-5" />
-                Templates
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-400">Start with a professional template</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[#272725] border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
-            onClick={() => navigate('/settings')}>
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-400">Manage your account and preferences</p>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Recent Activity */}
         <Card className="bg-[#272725] border-gray-600">
@@ -161,7 +120,7 @@ export const DashboardPage = () => {
                     <p className="text-white font-medium">{activity.action_type}</p>
                     <p className="text-gray-400 text-sm">{new Date(activity.created_at).toLocaleDateString()}</p>
                   </div>
-                  <Badge className="bg-blue-500 text-white">
+                  <Badge className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
                     {activity.action_type.replace('_', ' ')}
                   </Badge>
                 </div>

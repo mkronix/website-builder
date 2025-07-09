@@ -47,15 +47,15 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       {/* Overlay for mobile */}
       {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 z-40 bg-black/50" 
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed lg:static inset-y-0 left-0 z-50 w-60 bg-[#272725] border-r border-gray-700 flex flex-col transition-transform duration-300 ease-in-out",
+        "fixed inset-y-0 left-0 z-50 w-60 bg-[#272725] border-r border-gray-700 flex flex-col transition-transform duration-300 ease-in-out",
         "lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
@@ -72,10 +72,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 key={item.id}
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start text-base font-medium transition-all duration-200",
+                  "w-full justify-start text-base font-medium transition-all duration-200 h",
                   active
-                    ? 'bg-blue-600 text-white shadow-lg transform scale-[1.02]'
-                    : 'hover:bg-[#1c1c1c] text-gray-300 hover:text-white hover:shadow-md'
+                    ? 'bg-white text-[#1c1c1c]'
+                    : 'text-white'
                 )}
                 onClick={() => {
                   navigate(item.path);
@@ -102,7 +102,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0 pt-16 lg:pt-0">
+      <div className="flex-1 pl-60 pt-16 lg:pt-0">
         <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] via-[#1a1a1a] to-[#222222]">
           {children}
         </div>

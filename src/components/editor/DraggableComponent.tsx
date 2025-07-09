@@ -93,7 +93,7 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
 
       {/* Selection overlay for better visual feedback */}
       {isSelected && (
-        <div className="absolute inset-0 bg-blue-500/5 pointer-events-none rounded" />
+        <div className="absolute inset-0 bg-[#272725]/5 pointer-events-none rounded" />
       )}
     </div>
   );

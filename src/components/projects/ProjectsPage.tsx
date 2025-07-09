@@ -1,13 +1,11 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Plus, Eye, Edit, Trash2, Download, Calendar, Settings } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import websiteData from '@/data/data.json';
+import { Calendar, Clock, Download, Eye, Layers, Plus, Settings, Trash2, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
 
 export const ProjectsPage = () => {
   const projectsArray = Object.values(websiteData.projects);
@@ -70,24 +68,24 @@ export const ProjectsPage = () => {
 
   const handleSeoSave = () => {
     if (selectedProject) {
-      const updatedProjects = projects.map(p => 
-        p.id === selectedProject.id 
+      const updatedProjects = projects.map(p =>
+        p.id === selectedProject.id
           ? {
-                  ...p,
-                  settings: {
-                    ...p.settings,
-                    seo: {
-                      title: seoData.title,
-                      description: seoData.description,
-                      keywords: seoData.keywords.split(',').map(k => k.trim()).filter(k => k),
-                      author: seoData.author,
-                      siteName: seoData.siteName,
-                      twitterHandle: seoData.twitterHandle,
-                      ogImage: seoData.ogImage
-                    },
-                    custom_css: (p.settings as any)?.custom_css || ''
-                  }
-                }
+            ...p,
+            settings: {
+              ...p.settings,
+              seo: {
+                title: seoData.title,
+                description: seoData.description,
+                keywords: seoData.keywords.split(',').map(k => k.trim()).filter(k => k),
+                author: seoData.author,
+                siteName: seoData.siteName,
+                twitterHandle: seoData.twitterHandle,
+                ogImage: seoData.ogImage
+              },
+              custom_css: (p.settings as any)?.custom_css || ''
+            }
+          }
           : p
       );
       setProjects(updatedProjects);
@@ -125,7 +123,7 @@ export const ProjectsPage = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">My Projects</h1>
           <Button
-            className="bg-[#272725] hover:bg-gray-600 text-white"
+            className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]"
             onClick={() => setShowCreateDialog(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -133,66 +131,105 @@ export const ProjectsPage = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {projects.map((project) => (
-            <Card key={project.id} className="bg-[#272725] border-gray-600 hover:border-gray-500 transition-colors">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-white">{project.name}</CardTitle>
-                  <Badge className={`${getStatusColor(project.is_exported)} text-white`}>
-                    {project.is_exported ? 'exported' : 'draft'}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-gray-300 text-sm space-y-2">
-                  <div className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Created: {new Date(project.created_at).toLocaleDateString()}
-                  </div>
-                  <div className="flex items-center">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Modified: {new Date(project.last_modified).toLocaleDateString()}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 pt-2">
-                    <div className="text-center">
-                      <p className="text-white font-bold">{project.pages.length}</p>
-                      <p className="text-gray-400 text-xs">Pages</p>
+            <div
+              key={project.id}
+              className="group relative bg-[#272725] rounded-xl border border-gray-700/50 hover:border-gray-600/80 transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-2xl overflow-hidden"
+            >
+              {/* Gradient overlay for visual depth */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/20 pointer-events-none" />
+
+              {/* Header with floating status badge */}
+              <div className="relative p-6 pb-4">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-white font-semibold text-lg truncate group-hover:text-gray-100 transition-colors">
+                      {project.name}
+                    </h3>
+                    <div className="flex items-center mt-2 text-gray-400 text-sm">
+                      <Clock className="w-4 h-4 mr-1.5" />
+                      <span>{new Date(project.last_modified).toLocaleDateString()}</span>
                     </div>
-                    <div className="text-center">
-                      <p className="text-white font-bold">{project.export_count}</p>
-                      <p className="text-gray-400 text-xs">Exports</p>
+                  </div>
+
+                  {/* Status badge with modern design */}
+                  <div className={`
+            px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-sm
+            ${project.is_exported
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                      : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                    }
+          `}>
+                    {project.is_exported ? 'Published' : 'Draft'}
+                  </div>
+                </div>
+
+                {/* Stats grid with modern cards */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="bg-[#1c1c1c]/60 rounded-lg p-3 border border-gray-700/30">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white font-bold text-lg">{project.pages.length}</p>
+                        <p className="text-gray-400 text-xs">Pages</p>
+                      </div>
+                      <Layers className="w-5 h-5 text-gray-500" />
+                    </div>
+                  </div>
+
+                  <div className="bg-[#1c1c1c]/60 rounded-lg p-3 border border-gray-700/30">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white font-bold text-lg">{project.export_count}</p>
+                        <p className="text-gray-400 text-xs">Exports</p>
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-gray-500" />
                     </div>
                   </div>
                 </div>
 
-                <div className="flex space-x-2">
-                  <Button size="sm" className="flex-1 bg-black hover:bg-black/30 text-white">
-                    <Eye className="w-4 h-4 mr-1" />
-                    Open
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="text-gray-400 hover:text-white hover:bg-[#1c1c1c]"
-                    onClick={() => openSeoDialog(project)}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white hover:bg-[#1c1c1c]">
-                    <Download className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                    onClick={() => deleteProject(project.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                {/* Created date with icon */}
+                <div className="flex items-center text-gray-400 text-sm mb-2">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+
+              {/* Action buttons with modern design */}
+              <div className="px-6 pb-6">
+                <div className="flex gap-2">
+                  {/* Primary action - Open */}
+                  <button className="flex-1 bg-white hover:bg-gray-100 text-[#1c1c1c] px-3 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center group/btn">
+                    <Eye className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
+                    Open
+                  </button>
+
+                  {/* Secondary actions */}
+                  <div className="flex gap-1">
+                    <button
+                      className="p-2.5 rounded-lg bg-[#1c1c1c]/60 hover:bg-[#1c1c1c] text-gray-400 hover:text-white transition-all duration-200 border border-gray-700/30 hover:border-gray-600"
+                      onClick={() => openSeoDialog(project)}
+                    >
+                      <Settings className="w-4 h-4" />
+                    </button>
+
+                    <button className="p-2.5 rounded-lg bg-[#1c1c1c]/60 hover:bg-[#1c1c1c] text-gray-400 hover:text-white transition-all duration-200 border border-gray-700/30 hover:border-gray-600">
+                      <Download className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      className="p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 hover:border-red-500/30"
+                      onClick={() => deleteProject(project.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subtle hover indicator */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           ))}
         </div>
 
@@ -208,7 +245,7 @@ export const ProjectsPage = () => {
                 placeholder="Project name"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleCreateProject()}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateProject()}
                 className="bg-[#272725] border-gray-600 text-white placeholder-gray-400"
               />
 
@@ -216,13 +253,13 @@ export const ProjectsPage = () => {
                 <Button
                   variant="ghost"
                   onClick={() => setShowCreateDialog(false)}
-                  className="text-gray-400 hover:text-white hover:bg-[#272725]"
+                  className="text-white bg-[#272725]"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleCreateProject}
-                  className="bg-black hover:bg-black/30 text-white"
+                  className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]"
                 >
                   Create Project
                 </Button>
@@ -314,13 +351,13 @@ export const ProjectsPage = () => {
                 <Button
                   variant="ghost"
                   onClick={() => setShowSeoDialog(false)}
-                  className="text-gray-400 hover:text-white hover:bg-[#272725]"
+                  className="text-white bg-[#272725]"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleSeoSave}
-                  className="bg-black hover:bg-black/30 text-white"
+                  className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]"
                 >
                   Save SEO Settings
                 </Button>

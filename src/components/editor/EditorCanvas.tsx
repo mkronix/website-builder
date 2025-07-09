@@ -183,13 +183,13 @@ export const EditorCanvas = () => {
     <div className={canvasClasses}>
       {/* Enhanced theme CSS injection with proper cascade */}
       <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
-      
+
       <ResponsiveWrapper>
-        <div 
+        <div
           className="bg-background min-h-full rounded-lg shadow-2xl border border-gray-600 overflow-hidden editor-canvas"
           style={{
-            backgroundColor: state.theme.background || '#FFFFFF',
-            color: state.theme.text_primary || '#1F2937'
+            backgroundColor: state.theme.backgroundColor || '#FFFFFF',
+            color: state.theme.textColor || '#1F2937'
           }}
         >
           {currentPage?.components.length === 0 ? (

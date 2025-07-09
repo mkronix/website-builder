@@ -192,13 +192,8 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 - Image & Video Upload with Live Preview:
 Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. When exporting code, these paths should be used to upload assets to our server and set the final URL in the component’s props correctly.
 
-- The toggle menu in the header must display correctly on smaller screens.
-The responsive view options (laptop, tablet, mobile) are functional, but the components themselves are not adapting properly. This needs to be fixed.
-
 - each and every componet content which will be editable must be propperly updated in that component and must be saved in the currrent proejct json
 
-- Responsive Design Improvements:
-Ensure that the react_code is fully responsive.
 
 - Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
@@ -213,9 +208,6 @@ Fix the issue where theme updates are not correctly applying to all elements. En
 
 - in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
-- need to add the SEO management feature like meta tags , title, description, favicon, keywords etc. In settings Tab and that data must be saved in the project json file
+- add a delete modal before deleting any thing
 
-- update the text after save the project from update the project beside the export button in Ui and that information must be saved in the project json file
-
-- need to make the dashboard , projects , template , settings tab perfecly responsive for all the devices and all the components must be responsive
-
+- when click on save open modal with projectName and description and then save and change the text of the save project button to update project 

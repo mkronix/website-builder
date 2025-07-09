@@ -78,12 +78,12 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
   const applyPreset = (classes: string) => {
     const currentClasses = tailwindInput.split(' ').filter(cls => cls.trim());
     const newClasses = classes.split(' ');
-    
+
     // Remove conflicting classes and add new ones
     const combinedClasses = [...currentClasses, ...newClasses]
       .filter((cls, index, arr) => arr.indexOf(cls) === index) // Remove duplicates
       .join(' ');
-    
+
     setTailwindInput(combinedClasses);
     setStyles(prev => ({ ...prev, className: combinedClasses }));
   };
@@ -91,11 +91,11 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
   const removePreset = (classes: string) => {
     const currentClasses = tailwindInput.split(' ').filter(cls => cls.trim());
     const classesToRemove = classes.split(' ');
-    
+
     const filteredClasses = currentClasses
       .filter(cls => !classesToRemove.includes(cls))
       .join(' ');
-    
+
     setTailwindInput(filteredClasses);
     setStyles(prev => ({ ...prev, className: filteredClasses }));
   };
@@ -190,7 +190,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 cursor-pointer text-xs"
+                    className="bg-[#272725] text-emerald-300 hover:bg-[#272725]/30 cursor-pointer text-xs"
                     onClick={() => removePreset(cls)}
                     title="Click to remove"
                   >
@@ -276,7 +276,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
         </Button>
         <Button
           onClick={handleSave}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="bg-[#272725] hover:bg-emerald-700 text-white"
         >
           Apply Styles
         </Button>

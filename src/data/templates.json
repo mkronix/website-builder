@@ -81,7 +81,7 @@
                     "text": "Get Quote",
                     "href": "/contact",
                     "active": false,
-                    "tailwindCss": "bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg w-full md:w-auto text-center",
+                    "tailwindCss": "bg-[#272725] hover:bg-[#272725] text-white px-4 md:px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg w-full md:w-auto text-center",
                     "customCss": {}
                   }
                 },
@@ -164,7 +164,7 @@
                   "type": "object",
                   "value": {
                     "text": "Send Message",
-                    "tailwindCss": "w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md font-semibold transition-colors text-sm md:text-base",
+                    "tailwindCss": "w-full bg-[#272725] hover:bg-[#272725] text-white py-3 px-6 rounded-md font-semibold transition-colors text-sm md:text-base",
                     "customCss": {}
                   }
                 },

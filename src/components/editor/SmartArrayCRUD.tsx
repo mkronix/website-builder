@@ -267,7 +267,7 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => setEditingIndex(index)}
-                                                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 h-8 w-8 p-0"
+                                                        className="text-blue-400 hover:text-blue-300 hover:bg-[#272725]/20 h-8 w-8 p-0"
                                                         title="Edit"
                                                     >
                                                         <Edit className="w-4 h-4" />
@@ -365,7 +365,7 @@ const ItemEditor: React.FC<{
                         value={value || ''}
                         onChange={(e) => handleFieldChange(key, e.target.value)}
                         className="bg-[#1c1c1c] border-gray-600 text-white placeholder:text-gray-400"
-                        placeholder="text-lg font-bold bg-blue-500"
+                        placeholder="text-lg font-bold bg-[#272725]"
                     />
                 </div>
             );

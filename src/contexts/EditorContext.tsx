@@ -1,10 +1,11 @@
 
 import React, {
   createContext,
-  useState,
+  useCallback,
   useContext,
   useEffect,
-  useCallback,
+  useMemo,
+  useState
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -111,19 +112,60 @@ const useInitialState = () => {
   return useState<EditorState>({
     theme: defaultTheme,
     components: [],
-    pages: [{
-      id: uuidv4(),
-      name: 'Home',
-      path: '/',
-      components: [],
-      seo: {
-        title: 'Home',
-        description: 'Home page',
-        keywords: 'home',
-        og_image: '',
-        favicon: ''
-      }
-    }],
+    pages: [
+      {
+        id: uuidv4(),
+        name: 'Home',
+        path: '/',
+        components: [],
+        seo: {
+          title: 'Home',
+          description: 'Home page',
+          keywords: 'home',
+          og_image: '',
+          favicon: ''
+        }
+      },
+      {
+        id: uuidv4(),
+        name: 'About us',
+        path: '/about',
+        components: [],
+        seo: {
+          title: 'About us',
+          description: 'About us page',
+          keywords: 'about us',
+          og_image: '',
+          favicon: ''
+        }
+      },
+      {
+        id: uuidv4(),
+        name: 'Service',
+        path: '/service',
+        components: [],
+        seo: {
+          title: 'Service',
+          description: 'Service page',
+          keywords: 'service',
+          og_image: '',
+          favicon: ''
+        }
+      },
+      {
+        id: uuidv4(),
+        name: 'Contact us',
+        path: '/contact',
+        components: [],
+        seo: {
+          title: 'Contact',
+          description: 'Contact page',
+          keywords: 'home',
+          og_image: '',
+          favicon: ''
+        }
+      },
+    ],
     currentPage: null,
     previewMode: 'desktop',
     selectedComponent: null,
@@ -142,11 +184,11 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [state.pages, state.currentPage, setState]);
 
-  const selectComponent = (componentId: string) => {
+  const selectComponent = useCallback((componentId: string) => {
     setState(prev => ({ ...prev, selectedComponent: componentId }));
-  };
+  }, []);
 
-  const addComponent = (pageId: string, component: Component) => {
+  const addComponent = useCallback((pageId: string, component: Component) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -155,9 +197,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           : page
       )
     }));
-  };
+  }, []);
 
-  const removeComponent = (pageId: string, componentId: string) => {
+  const removeComponent = useCallback((pageId: string, componentId: string) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -167,9 +209,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       ),
       selectedComponent: null
     }));
-  };
+  }, []);
 
-  const updateComponent = (pageId: string, componentId: string, updates: Partial<Component>) => {
+  const updateComponent = useCallback((pageId: string, componentId: string, updates: Partial<Component>) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -183,51 +225,51 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           : page
       )
     }));
-  };
+  }, []);
 
-  const addPage = (page: Omit<Page, 'id'>) => {
+  const addPage = useCallback((page: Omit<Page, 'id'>) => {
     const newPage: Page = { ...page, id: uuidv4(), components: [] };
     setState(prev => ({ ...prev, pages: [...prev.pages, newPage] }));
-  };
+  }, []);
 
-  const updatePage = (pageId: string, updates: Partial<Page>) => {
+  const updatePage = useCallback((pageId: string, updates: Partial<Page>) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
         page.id === pageId ? { ...page, ...updates } : page
       )
     }));
-  };
+  }, []);
 
-  const deletePage = (pageId: string) => {
+  const deletePage = useCallback((pageId: string) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.filter(page => page.id !== pageId),
       currentPage: prev.pages.length > 1 ? prev.pages[0].id : null
     }));
-  };
+  }, []);
 
-  const removePage = (pageId: string) => {
+  const removePage = useCallback((pageId: string) => {
     deletePage(pageId);
-  };
+  }, [deletePage]);
 
-  const setCurrentPage = (pageId: string) => {
+  const setCurrentPage = useCallback((pageId: string) => {
     setState(prev => ({ ...prev, currentPage: pageId }));
-  };
+  }, []);
 
-  const updateTheme = (updates: Partial<Theme>) => {
+  const updateTheme = useCallback((updates: Partial<Theme>) => {
     setState(prev => ({ ...prev, theme: { ...prev.theme, ...updates } }));
-  };
+  }, []);
 
-  const setPreviewMode = (mode: 'desktop' | 'tablet' | 'mobile') => {
+  const setPreviewMode = useCallback((mode: 'desktop' | 'tablet' | 'mobile') => {
     setState(prev => ({ ...prev, previewMode: mode }));
-  };
+  }, []);
 
-  const updateSettings = (updates: Partial<ProjectSettings>) => {
+  const updateSettings = useCallback((updates: Partial<ProjectSettings>) => {
     setState(prev => ({ ...prev, settings: { ...prev.settings, ...updates } }));
-  };
+  }, []);
 
-  const updatePageSeo = (pageId: string, seoData: Partial<Page['seo']>) => {
+  const updatePageSeo = useCallback((pageId: string, seoData: Partial<Page['seo']>) => {
     setState(prev => ({
       ...prev,
       pages: prev.pages.map(page =>
@@ -236,15 +278,13 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           : page
       )
     }));
-  };
+  }, []);
 
-  const saveProject = () => {
+  const saveProject = useCallback(() => {
     console.log('Saving project...', state);
-    // Implementation for saving project
-  };
+  }, [state]);
 
-  const loadTemplate = (template: any) => {
-    console.log('Loading template...', template);
+  const loadTemplate = useCallback((template: any) => {
     // Basic implementation to load a template
     if (template && template.pages) {
       const templatePages = template.pages.map((page: any) => ({
@@ -263,9 +303,9 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         template: template.id
       }));
     }
-  };
+  }, []);
 
-  const value: EditorContextType = {
+  const value = useMemo(() => ({
     state,
     selectComponent,
     addComponent,
@@ -284,7 +324,26 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setCurrentProject,
     saveProject,
     loadTemplate,
-  };
+  }), [
+    state,
+    selectComponent,
+    addComponent,
+    removeComponent,
+    updateComponent,
+    addPage,
+    updatePage,
+    deletePage,
+    removePage,
+    setCurrentPage,
+    updateTheme,
+    setPreviewMode,
+    updateSettings,
+    updatePageSeo,
+    currentProject,
+    setCurrentProject,
+    saveProject,
+    loadTemplate
+  ]);
 
   return (
     <EditorContext.Provider value={value}>

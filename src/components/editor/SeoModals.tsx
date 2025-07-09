@@ -1,12 +1,12 @@
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { X, Plus, Image as ImageIcon, Globe, FileText, Tag, Monitor } from 'lucide-react';
 import { useEditor } from '@/contexts/EditorContext';
+import { FileText, Image as ImageIcon, Plus, Tag, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface SeoModalProps {
   pageId?: string;
@@ -17,7 +17,7 @@ export const SeoTitleModal = ({ pageId, isGlobal = false }: SeoModalProps) => {
   const { state, updateSettings, updatePageSeo, currentProject } = useEditor();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(
-    isGlobal 
+    isGlobal
       ? (state.settings?.global_meta?.site_title || currentProject?.name || '')
       : (state.pages.find(p => p.id === pageId)?.seo?.title || '')
   );
@@ -59,10 +59,10 @@ export const SeoTitleModal = ({ pageId, isGlobal = false }: SeoModalProps) => {
             className="bg-[#1c1c1c] border-gray-600 text-white"
           />
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600 text-white hover:bg-[#1c1c1c]">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="text-white bg-[#1c1c1c]">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
               Save
             </Button>
           </div>
@@ -76,7 +76,7 @@ export const SeoDescriptionModal = ({ pageId, isGlobal = false }: SeoModalProps)
   const { state, updateSettings, updatePageSeo, currentProject } = useEditor();
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState(
-    isGlobal 
+    isGlobal
       ? (state.settings?.global_meta?.site_description || currentProject?.description || '')
       : (state.pages.find(p => p.id === pageId)?.seo?.description || '')
   );
@@ -119,10 +119,10 @@ export const SeoDescriptionModal = ({ pageId, isGlobal = false }: SeoModalProps)
             className="bg-[#1c1c1c] border-gray-600 text-white"
           />
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600 text-white hover:bg-[#1c1c1c]">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="text-white bg-[#1c1c1c]">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
               Save
             </Button>
           </div>
@@ -136,7 +136,7 @@ export const SeoKeywordsModal = ({ pageId, isGlobal = false }: SeoModalProps) =>
   const { state, updateSettings, updatePageSeo } = useEditor();
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState<string[]>(
-    isGlobal 
+    isGlobal
       ? (state.settings?.global_meta?.keywords?.split(', ') || [])
       : (state.pages.find(p => p.id === pageId)?.seo?.keywords?.split(', ') || [])
   );
@@ -188,29 +188,29 @@ export const SeoKeywordsModal = ({ pageId, isGlobal = false }: SeoModalProps) =>
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
+              onKeyDown={(e) => e.key === 'Enter' && addKeyword()}
               placeholder="Add keyword..."
-              className="bg-[#1c1c1c] border-gray-600 text-white flex-1"
+              className="bg-[#1c1c1c] border-0 text-white flex-1"
             />
-            <Button onClick={addKeyword} size="sm" className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={addKeyword} size="sm" className="bg-[#1c1c1c]">
               <Plus className="w-4 h-4" />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2 min-h-[100px] p-3 bg-[#1c1c1c] rounded-md border border-gray-600">
+          <div className="flex flex-wrap gap-2 min-h-[50px] p-3 bg-[#1c1c1c] rounded-md border-0">
             {keywords.map((keyword) => (
-              <Badge key={keyword} className="bg-blue-600 text-white flex items-center gap-1">
+              <Badge key={keyword} className="bg-[#272725] hover:bg-[#272725] text-white flex items-center gap-1 rounded-md">
                 {keyword}
-                <button onClick={() => removeKeyword(keyword)} className="ml-1 hover:bg-blue-700 rounded-full">
+                <button onClick={() => removeKeyword(keyword)} className="ml-1 hover:bg-[#272725]">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
             ))}
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600 text-white hover:bg-[#1c1c1c]">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="text-white bg-[#1c1c1c]">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
               Save Keywords
             </Button>
           </div>
@@ -224,7 +224,7 @@ export const SeoImageModal = ({ pageId, isGlobal = false, type = 'og_image' }: S
   const { state, updateSettings, updatePageSeo } = useEditor();
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(
-    isGlobal 
+    isGlobal
       ? (type === 'favicon' ? state.settings?.favicon || '' : state.settings?.global_meta?.og_image || '')
       : (type === 'favicon' ? state.pages.find(p => p.id === pageId)?.seo?.favicon || '' : state.pages.find(p => p.id === pageId)?.seo?.og_image || '')
   );
@@ -272,9 +272,9 @@ export const SeoImageModal = ({ pageId, isGlobal = false, type = 'og_image' }: S
           {imageUrl && (
             <div className="p-4 bg-[#1c1c1c] rounded-md border border-gray-600">
               <p className="text-sm text-gray-400 mb-2">Preview:</p>
-              <img 
-                src={imageUrl} 
-                alt="Preview" 
+              <img
+                src={imageUrl}
+                alt="Preview"
                 className="max-w-full h-32 object-contain rounded border border-gray-600"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
@@ -283,10 +283,10 @@ export const SeoImageModal = ({ pageId, isGlobal = false, type = 'og_image' }: S
             </div>
           )}
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} className="border-gray-600 text-white hover:bg-[#1c1c1c]">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="text-white bg-[#1c1c1c]">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-white hover:bg-white hover:text-[#1c1c1c] text-[#1c1c1c]">
               Save
             </Button>
           </div>

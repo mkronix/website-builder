@@ -30,7 +30,7 @@ export const EditorHeader = () => {
             <Home className="w-4 h-4 mr-2" />
             Dashboard
           </Button>
-          
+
           {/* Mobile menu toggle */}
           <Button
             variant="ghost"
@@ -47,7 +47,7 @@ export const EditorHeader = () => {
         </div>
 
         {/* Center - Responsive Controls (Desktop) */}
-        <div className="hidden md:flex items-center space-x-2 bg-[#272725] rounded-lg p-1">
+        <div className="hidden md:flex items-center space-x-1 bg-[#272725] rounded-lg p-1">
           {responsiveOptions.map(({ mode, icon: Icon, label }) => (
             <Button
               key={mode}
@@ -56,7 +56,7 @@ export const EditorHeader = () => {
               onClick={() => setPreviewMode(mode)}
               className={
                 state.previewMode === mode
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-[#1c1c1c] text-white"
                   : "text-gray-400 hover:text-white hover:bg-[#1c1c1c]"
               }
             >
@@ -72,18 +72,10 @@ export const EditorHeader = () => {
             variant="ghost"
             size="sm"
             onClick={saveProject}
-            className="text-white hover:bg-[#272725] bg-emerald-600 hover:bg-emerald-700"
+            className="text-white hover:bg-[#272725] bg-[#272725]"
           >
             <Save className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Save</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/settings')}
-            className="text-white hover:bg-[#272725] hidden sm:flex"
-          >
-            <Settings className="w-4 h-4" />
           </Button>
         </div>
       </div>
@@ -104,7 +96,7 @@ export const EditorHeader = () => {
               <Home className="w-4 h-4 mr-2" />
               Dashboard
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -112,12 +104,12 @@ export const EditorHeader = () => {
                 saveProject();
                 setIsMobileMenuOpen(false);
               }}
-              className="text-white hover:bg-[#272725] justify-start bg-emerald-600 hover:bg-emerald-700"
+              className="text-white hover:bg-[#272725] justify-start bg-[#272725] "
             >
               <Save className="w-4 h-4 mr-2" />
               Save Project
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -146,7 +138,7 @@ export const EditorHeader = () => {
                     }}
                     className={
                       state.previewMode === mode
-                        ? "bg-emerald-600 text-white justify-start"
+                        ? "bg-[#272725] text-white justify-start"
                         : "text-gray-400 hover:text-white hover:bg-[#272725] justify-start"
                     }
                   >
