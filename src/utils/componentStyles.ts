@@ -11,11 +11,13 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
       
       let elementCSS = '';
       
-      if (value.tailwindCss) {
+      // Type guard for tailwindCss property
+      if (value && typeof value === 'object' && 'tailwindCss' in value && value.tailwindCss) {
         elementCSS += `${selector} { @apply ${value.tailwindCss}; }`;
       }
       
-      if (value.customCss && typeof value.customCss === 'object') {
+      // Type guard for customCss property
+      if (value && typeof value === 'object' && 'customCss' in value && value.customCss && typeof value.customCss === 'object') {
         const customRules = Object.entries(value.customCss)
           .filter(([prop, val]) => prop !== 'className' && val)
           .map(([prop, val]) => `${prop.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${val};`)
