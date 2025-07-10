@@ -1,16 +1,16 @@
 
-import React, { useState, useRef } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Link, X } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
+import React, { useRef, useState } from 'react';
 
 interface MediaUploadModalProps {
   isOpen: boolean;
@@ -93,9 +93,8 @@ export const MediaUploadModal: React.FC<MediaUploadModalProps> = ({
                 />
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleClear}
-                  className="border-gray-600 text-white hover:bg-[#272725]"
+                  className="border-gray-600 text-white bg-[#272725]"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -117,7 +116,7 @@ export const MediaUploadModal: React.FC<MediaUploadModalProps> = ({
                 <Button
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full border-gray-600 text-white hover:bg-[#272725] border-dashed"
+                  className="w-full border-gray-600 text-white bg-[#272725] border-dashed"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Choose {mediaType === 'image' ? 'Image' : 'Video'} File
@@ -167,7 +166,7 @@ export const MediaUploadModal: React.FC<MediaUploadModalProps> = ({
           <Button
             onClick={handleSave}
             disabled={!previewUrl}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-black hover:bg-black/30 text-white"
           >
             Save {mediaType === 'image' ? 'Image' : 'Video'}
           </Button>

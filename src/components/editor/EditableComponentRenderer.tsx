@@ -24,7 +24,7 @@ interface EditableComponentRendererProps {
 const normalizeProps = (props: any): any => {
   if (!props) return {};
   const normalized: any = {};
-  
+
   Object.entries(props).forEach(([key, value]: [string, any]) => {
     if (value && typeof value === 'object') {
       if (value.type && (value.value !== undefined || value.tailwindCss)) {
@@ -61,7 +61,7 @@ const normalizeProps = (props: any): any => {
       };
     }
   });
-  
+
   return normalized;
 };
 
@@ -89,7 +89,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
     try {
       let themedCode = applyThemeToCode(component.react_code, state.theme as Theme);
-      
+
       let elementCounter = 0;
       themedCode = themedCode.replace(
         /(<[^>]+)(className="[^"]*")([^>]*>)/g,
@@ -110,7 +110,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
               themedCode = themedCode.replace(regex, `$1${value}$2`);
             }
           }
-          
+
           if (!key.endsWith('_styles') && !key.endsWith('_content')) {
             const regex = new RegExp(`{${key}}`, 'g');
             if (Array.isArray(value)) {
@@ -127,7 +127,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       if (component.default_props) {
         Object.entries(component.default_props).forEach(([key, propValue]) => {
           const regex = new RegExp(`{${key}}`, 'g');
-          
+
           if (propValue && typeof propValue === 'object' && propValue.value !== undefined) {
             if (Array.isArray(propValue.value)) {
               themedCode = themedCode.replace(regex, JSON.stringify(propValue.value));
@@ -157,7 +157,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
       const functionMatches = transpiledCode.matchAll(/function\s+([A-Za-z0-9_]+)\s*\(/g);
       const functions = Array.from(functionMatches).map(match => match[1]);
-      
+
       const componentFunction = functions.find(name =>
         !name.startsWith('_') &&
         !['extends', 'objectSpread', 'defineProperty', 'slicedToArray'].includes(name) &&
@@ -193,17 +193,17 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     if (element.tagName === 'IMG') return 'image';
     if (element.tagName === 'VIDEO') return 'video';
     if (element.tagName === 'A') return 'url';
-    
+
     const src = element.getAttribute('src');
     if (src) {
       if (src.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) return 'image';
       if (src.match(/\.(mp4|webm|ogg|mov)$/i)) return 'video';
     }
-    
+
     if (element.textContent && element.textContent.trim() && !hasComplexChildren(element)) {
       return 'text';
     }
-    
+
     return null;
   };
 
@@ -223,11 +223,11 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const getElementStyles = (element: HTMLElement): Record<string, string> => {
     const elementId = element.getAttribute('data-element-id');
-    
+
     if (elementId && component.customizableProps) {
       const styleKey = `${elementId}_styles`;
       const existingStyles = component.customizableProps[styleKey];
-      
+
       if (existingStyles && typeof existingStyles === 'object') {
         return {
           className: existingStyles.tailwindCss || '',
@@ -236,7 +236,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         };
       }
     }
-    
+
     const computedStyles = window.getComputedStyle(element);
     return {
       fontSize: computedStyles.fontSize,
@@ -268,15 +268,15 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
 
   const handleElementClick = useCallback((event: React.MouseEvent) => {
     if (!isSelected) return;
-    
+
     event.stopPropagation();
     const target = event.target as HTMLElement;
-    
+
     if (target !== componentRef.current) {
       setSelectedElement(target);
       const selector = getElementSelector(target);
       setElementSelector(selector);
-      
+
       let elementId = target.getAttribute('data-element-id');
       if (!elementId) {
         elementId = `${component.id}-element-${Date.now()}`;
@@ -284,28 +284,28 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         target.setAttribute('data-component-id', component.id);
       }
       setCurrentElementId(elementId);
-      
+
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
-      
+
       // Handle array elements first
       if (editableType && propPath) {
         const pathParts = propPath.split('.');
         let isPartOfArray = false;
         let arrayPath = '';
         let arrayData = [];
-        
+
         for (let i = pathParts.length - 1; i >= 0; i--) {
           const currentPath = pathParts.slice(0, i + 1).join('.');
           const currentValue = getPropByPath(component.default_props, currentPath);
-          
+
           if (Array.isArray(currentValue) ||
             (currentValue?.type === 'array' && Array.isArray(currentValue.value)) ||
             (currentValue?.value && Array.isArray(currentValue.value))) {
-            
+
             isPartOfArray = true;
             arrayPath = currentPath;
-            
+
             if (currentValue?.value && Array.isArray(currentValue.value)) {
               arrayData = currentValue.value;
             } else if (Array.isArray(currentValue)) {
@@ -316,16 +316,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
             break;
           }
         }
-        
+
         if (isPartOfArray && arrayData.length > 0) {
           setArrayEditor({ key: arrayPath, data: arrayData });
           return;
         }
-        
+
         if (editableType === 'array') {
           const propValue = getPropByPath(component.default_props, propPath);
           let arrayData = [];
-          
+
           if (propValue?.value && Array.isArray(propValue.value)) {
             arrayData = propValue.value;
           } else if (Array.isArray(propValue)) {
@@ -333,27 +333,27 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           } else if (propValue?.type === 'array' && propValue?.value) {
             arrayData = propValue.value;
           }
-          
+
           setArrayEditor({ key: propPath, data: arrayData });
           return;
         } else if (editableType === 'object' && !hasComplexChildren(target)) {
           const propValue = getPropByPath(component.default_props, propPath);
           let objectData = {};
-          
+
           if (propValue?.value && typeof propValue.value === 'object') {
             objectData = propValue.value;
           } else if (typeof propValue === 'object' && !Array.isArray(propValue)) {
             objectData = propValue;
           }
-          
+
           setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
         }
       }
-      
+
       // Enhanced content type detection - prioritize image/video elements
       const type = detectContentType(target);
-      
+
       if (type === 'image' || type === 'video') {
         setContentType(type);
         setCurrentContent(getElementContent(target));
@@ -362,7 +362,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         setEditModalOpen(true);
         return;
       }
-      
+
       if (type === 'text' && !hasComplexChildren(target)) {
         setContentType('text');
         setCurrentContent(getElementContent(target));
@@ -371,7 +371,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         setEditModalOpen(true);
         return;
       }
-      
+
       if (type === 'url') {
         setContentType('url');
         setCurrentContent(getElementContent(target));
@@ -380,7 +380,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         setEditModalOpen(true);
         return;
       }
-      
+
       // Fallback to style editor for complex elements
       setContentType(null);
       setCurrentStyles(getElementStyles(target));
@@ -399,7 +399,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     const keys = path.split('.');
     const result = { ...obj };
     let current = result;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const key = keys[i];
       if (!current[key] || typeof current[key] !== 'object') {
@@ -409,68 +409,68 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       }
       current = current[key];
     }
-    
+
     const lastKey = keys[keys.length - 1];
     current[lastKey] = value;
-    
+
     return result;
   };
 
   const handleContentSave = useCallback((newContent: string) => {
     if (!selectedElement || !elementSelector) return;
-    
+
     const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
-    
+
     if (!elementId) {
       console.error('No element ID found for content saving');
       return;
     }
-    
+
     // For image/video elements, store the content with a specific key
     const contentKey = `${elementId}_content`;
-    
+
     const updatedProps = {
       ...component.customizableProps,
       [contentKey]: newContent
     };
-    
+
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
-    
+
     setEditModalOpen(false);
   }, [selectedElement, elementSelector, currentElementId, component, updateComponent, state.currentPage]);
 
   const handleStyleSave = useCallback((newStyles: Record<string, string>) => {
     if (!selectedElement || !elementSelector) return;
-    
+
     const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
-    
+
     if (!elementId) {
       console.error('No element ID found for styling');
       return;
     }
-    
+
     const styleKey = `${elementId}_styles`;
     const tailwindCss = newStyles.className || '';
     const customCss = { ...newStyles };
     delete customCss.className;
-    
+
     const elementStyles = {
       tailwindCss,
       customCss,
       ...customCss
     };
-    
+
     const updatedProps = {
       ...component.customizableProps,
       [styleKey]: elementStyles
     };
-    
+
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
-    
+
     setEditModalOpen(false);
   }, [selectedElement, elementSelector, currentElementId, component, updateComponent, state.currentPage]);
 
@@ -479,7 +479,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       ...component.customizableProps,
       [key]: value
     };
-    
+
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps,
       default_props: {
@@ -487,13 +487,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         [key]: value
       }
     });
-    
+
     setDynamicFieldEditor(null);
   }, [component, updateComponent, state.currentPage]);
 
   const handleArraySave = useCallback((key: string, newData: any[]) => {
     const existingProp = getPropByPath(component.default_props, key);
-    
+
     let updatedPropValue;
     if (existingProp && typeof existingProp === 'object' && existingProp.type) {
       updatedPropValue = {
@@ -508,13 +508,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         customCss: existingProp?.customCss || {}
       };
     }
-    
+
     const updatedProps = setPropByPath(component.default_props, key, updatedPropValue);
-    
+
     updateComponent(state.currentPage, component.id, {
       default_props: updatedProps
     });
-    
+
     setArrayEditor(null);
   }, [component, updateComponent, state.currentPage]);
 
@@ -538,7 +538,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         console.error('Error executing dynamic component:', error);
       }
     }
-    
+
     return (
       <div className="p-4 text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
         <div className="font-semibold">Component Compilation Error</div>
@@ -570,16 +570,16 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       </div>
 
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="max-w-5xl max-h-[80vh] bg-background border-border overflow-auto">
+        <DialogContent className="max-w-5xl max-h-[80vh] bg-[#1c1c1c] border-0 overflow-auto">
           <DialogHeader>
-            <DialogTitle className='text-foreground'>
+            <DialogTitle className='text-white'>
               Edit {selectedElement?.tagName.toLowerCase()} Element
             </DialogTitle>
           </DialogHeader>
 
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'content' | 'style')}>
             {contentType && (
-              <TabsList className={`grid w-full ${contentType ? 'grid-cols-2' : 'grid-cols-1'} bg-muted`}>
+              <TabsList className={`grid w-full ${contentType ? 'grid-cols-2' : 'grid-cols-1'} `}>
                 <TabsTrigger value="content">Content</TabsTrigger>
                 <TabsTrigger value="style">Style</TabsTrigger>
               </TabsList>

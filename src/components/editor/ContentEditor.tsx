@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import React, { useEffect, useState } from 'react';
 import { MediaUploadModal } from './MediaUploadModal';
+import { Upload } from 'lucide-react';
 
 interface ContentEditorProps {
   contentType: 'text' | 'url' | 'image' | 'video' | null;
@@ -90,7 +91,8 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                   onClick={() => setShowMediaModal(true)}
                   className="w-full border-gray-600 text-white bg-[#272725]"
                 >
-                  Upload Image
+                  <Upload size={16} className="mr-1" />
+                  Upload
                 </Button>
               </div>
             </div>

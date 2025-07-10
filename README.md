@@ -191,6 +191,8 @@ The project succeeds when:
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
 
 
+-- still the image or video is not been renderend in the live preivew of the component
+
 - in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
 - saari fucntuonality ko test kro hr 1 element ko update kr skey uska content uski styles everything
