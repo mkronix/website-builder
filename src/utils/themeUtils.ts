@@ -70,17 +70,17 @@ export const applyThemeToCode = (reactCode: string, theme: any, customizableProp
 };
 
 export const generateThemeCSS = (theme: Theme) => {
-  const primaryHover = adjustColorBrightness(theme.primary_color || '#007BFF', -0.1);
-  const secondaryHover = adjustColorBrightness(theme.secondary_color || '#6C757D', -0.1);
+  const primaryHover = adjustColorBrightness(theme.primaryColor || '#10B981', -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondaryColor || '#059669', -0.1);
 
   return `
     :root {
-      --theme-primary: ${theme.primary_color || '#007BFF'};
-      --theme-secondary: ${theme.secondary_color || '#6C757D'};
-      --theme-background: ${theme.background || '#FAFAFA'};
-      --theme-text: ${theme.text_primary || '#333333'};
-      --theme-muted: ${adjustColorOpacity(theme.primary_color || '#007BFF', 0.7)};
-      --theme-muted-foreground: ${adjustColorOpacity(theme.text_primary || '#333333', 0.5)};
+      --theme-primary: ${theme.primaryColor || '#10B981'};
+      --theme-secondary: ${theme.secondaryColor || '#059669'};
+      --theme-background: ${theme.backgroundColor || '#FFFFFF'};
+      --theme-text: ${theme.textColor || '#1F2937'};
+      --theme-muted: ${adjustColorOpacity(theme.primaryColor || '#10B981', 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor || '#1F2937', 0.5)};
       --theme-primary-hover: ${primaryHover};
       --theme-secondary-hover: ${secondaryHover};
     }
@@ -91,9 +91,12 @@ export const generateThemeCSS = (theme: Theme) => {
       --tw-secondary: var(--theme-secondary);
       --tw-background: var(--theme-background);
       --tw-text: var(--theme-text);
+      
+      /* Force theme application */
+      background-color: var(--theme-background) !important;
+      color: var(--theme-text) !important;
     }
     
-<<<<<<< Updated upstream
     /* Direct theme element targeting with high specificity */
     .editor-canvas [data-theme-element="primary-bg"] { 
       background-color: var(--theme-primary) !important; 
@@ -151,26 +154,23 @@ export const generateThemeCSS = (theme: Theme) => {
     .editor-canvas [data-theme-element="primary-ring-focus"]:focus { 
       ring-color: var(--theme-primary) !important; 
       --tw-ring-color: var(--theme-primary) !important;
+      outline-color: var(--theme-primary) !important;
     }
     
-    /* Legacy class support for backward compatibility */
+    /* Legacy class support for backward compatibility with enhanced targeting */
     .editor-canvas .bg-blue-600,
     .editor-canvas .bg-blue-500,
-=======
-    /* Direct class replacements for theme colors */
-    .editor-canvas .bg-[#272725],
-    .editor-canvas .bg-[#272725],
->>>>>>> Stashed changes
     .editor-canvas .bg-indigo-600,
     .editor-canvas .bg-purple-600,
-    .editor-canvas .bg-[#272725],
     .editor-canvas .bg-emerald-500,
+    .editor-canvas .bg-emerald-600,
     .editor-canvas .bg-primary { 
       background-color: var(--theme-primary) !important; 
     }
     
     .editor-canvas .bg-gray-100,
     .editor-canvas .bg-gray-50,
+    .editor-canvas .bg-gray-200,
     .editor-canvas .bg-secondary { 
       background-color: var(--theme-secondary) !important; 
     }
@@ -228,20 +228,13 @@ export const generateThemeCSS = (theme: Theme) => {
       border-color: var(--theme-secondary) !important; 
     }
     
-    /* Hover states */
-<<<<<<< Updated upstream
+    /* Hover states with proper escaping */
     .editor-canvas .hover\\:bg-blue-700:hover,
     .editor-canvas .hover\\:bg-blue-600:hover,
     .editor-canvas .hover\\:bg-emerald-700:hover,
-    .editor-canvas .hover\\:bg-[#272725]:hover,
     .editor-canvas .hover\\:bg-primary\\/80:hover { 
       background-color: var(--theme-primary-hover) !important; 
     }
-=======
-    .editor-canvas .hover\\:bg-[#272725]:hover,
-    .editor-canvas .hover\\:bg-[#272725]:hover,
-    .editor-canvas .hover\\:bg-primary\\/80:hover { background-color: var(--theme-primary-hover) !important; }
->>>>>>> Stashed changes
     
     .editor-canvas .hover\\:text-blue-600:hover,
     .editor-canvas .hover\\:text-emerald-600:hover,
@@ -255,6 +248,12 @@ export const generateThemeCSS = (theme: Theme) => {
     .editor-canvas .focus\\:ring-primary:focus { 
       ring-color: var(--theme-primary) !important; 
       --tw-ring-color: var(--theme-primary) !important;
+      outline-color: var(--theme-primary) !important;
+    }
+    
+    /* Force refresh of all elements when theme changes */
+    .editor-canvas * {
+      transition: all 0.2s ease-in-out !important;
     }
   `;
 };
@@ -300,10 +299,8 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
       Object.entries(styles).forEach(([property, val]) => {
         if (val && val !== 'undefined' && val !== '') {
           if (property === 'tailwindCss' && val) {
-            // Collect Tailwind classes for separate application
             tailwindClasses.push(val);
           } else if (property === 'customCss' && typeof val === 'object') {
-            // Handle custom CSS object
             Object.entries(val as Record<string, string>).forEach(([cssProp, cssVal]) => {
               if (cssVal && cssVal !== 'undefined') {
                 const cssProperty = cssProp.replace(/([A-Z])/g, '-$1').toLowerCase();
@@ -311,23 +308,18 @@ export const generateElementSpecificCSS = (componentId: string, customizableProp
               }
             });
           } else if (property !== 'tailwindCss' && property !== 'customCss') {
-            // Handle direct CSS properties
             const cssProperty = property.replace(/([A-Z])/g, '-$1').toLowerCase();
             cssRules.push(`${cssProperty}: ${val}`);
           }
         }
       });
 
-      // Generate CSS for element with high specificity
       if (cssRules.length > 0) {
         css += `.editor-canvas [data-element-id="${elementId}"] { ${cssRules.join('; ')} !important; }\n`;
       }
 
-      // Handle Tailwind CSS classes by adding them to the element
       if (tailwindClasses.length > 0) {
         const tailwindRule = tailwindClasses.join(' ');
-        // For Tailwind classes, we need to ensure they're applied through the class attribute
-        // This is handled in the component rendering phase
         css += `/* Tailwind classes for ${elementId}: ${tailwindRule} */\n`;
       }
     }

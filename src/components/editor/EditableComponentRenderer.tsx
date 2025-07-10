@@ -217,10 +217,23 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   }, [component.react_code, component.customizableProps, component.default_props, state.theme]);
 
   const detectContentType = (element: HTMLElement): 'text' | 'url' | 'image' | 'video' | null => {
+    // Enhanced detection for image and video elements
     if (element.tagName === 'IMG') return 'image';
     if (element.tagName === 'VIDEO') return 'video';
     if (element.tagName === 'A') return 'url';
-    if (element.textContent && element.textContent.trim()) return 'text';
+    
+    // Check for elements with image/video sources
+    const src = element.getAttribute('src');
+    if (src) {
+      if (src.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) return 'image';
+      if (src.match(/\.(mp4|webm|ogg|mov)$/i)) return 'video';
+    }
+    
+    // Only return text if element has actual text content and is not a complex element
+    if (element.textContent && element.textContent.trim() && !hasComplexChildren(element)) {
+      return 'text';
+    }
+    
     return null;
   };
 
@@ -298,20 +311,62 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       }
       setCurrentElementId(elementId);
 
-      const type = detectContentType(target);
       const editableType = target.getAttribute('data-editable');
       const propPath = target.getAttribute('data-prop-path');
       const isComplexElement = hasComplexChildren(target);
 
-      console.log('Element clicked:', { editableType, propPath, target, elementId, isComplexElement });
+      console.log('Element clicked:', { 
+        tagName: target.tagName,
+        editableType, 
+        propPath, 
+        target, 
+        elementId, 
+        isComplexElement 
+      });
 
+      // Enhanced array handling - check if ANY parent prop is an array
       if (editableType && propPath) {
         const propValue = getPropByPath(component.default_props, propPath);
         console.log('Prop value found:', propValue);
 
-        if (editableType === 'array') {
-          let arrayData = [];
+        // Check if this is part of an array structure
+        const pathParts = propPath.split('.');
+        let isPartOfArray = false;
+        let arrayPath = '';
+        let arrayData = [];
 
+        // Check each level of the path to see if any parent is an array
+        for (let i = pathParts.length - 1; i >= 0; i--) {
+          const currentPath = pathParts.slice(0, i + 1).join('.');
+          const currentValue = getPropByPath(component.default_props, currentPath);
+          
+          if (Array.isArray(currentValue) || 
+              (currentValue?.type === 'array' && Array.isArray(currentValue.value)) ||
+              (currentValue?.value && Array.isArray(currentValue.value))) {
+            
+            isPartOfArray = true;
+            arrayPath = currentPath;
+            
+            if (currentValue?.value && Array.isArray(currentValue.value)) {
+              arrayData = currentValue.value;
+            } else if (Array.isArray(currentValue)) {
+              arrayData = currentValue;
+            } else if (currentValue?.type === 'array' && currentValue?.value) {
+              arrayData = currentValue.value;
+            }
+            break;
+          }
+        }
+
+        // If this element is part of an array, open the array editor
+        if (isPartOfArray && arrayData.length > 0) {
+          console.log('Opening array editor for array element:', { arrayPath, arrayData });
+          setArrayEditor({ key: arrayPath, data: arrayData });
+          return;
+        }
+
+        // Handle direct array properties
+        if (editableType === 'array') {
           if (propValue?.value && Array.isArray(propValue.value)) {
             arrayData = propValue.value;
           } else if (Array.isArray(propValue)) {
@@ -323,7 +378,7 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           console.log('Opening array editor with data:', arrayData);
           setArrayEditor({ key: propPath, data: arrayData });
           return;
-        } else if (editableType === 'object') {
+        } else if (editableType === 'object' && !isComplexElement) {
           let objectData = {};
 
           if (propValue?.value && typeof propValue.value === 'object') {
@@ -335,54 +390,45 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
           console.log('Opening object editor with data:', objectData);
           setDynamicFieldEditor({ key: propPath, data: objectData });
           return;
-        } else if (editableType === 'content' && propValue && !isComplexElement) {
-          let contentValue = '';
-
-          if (propValue.value !== undefined) {
-            contentValue = propValue.value;
-          } else if (typeof propValue === 'string') {
-            contentValue = propValue;
-          }
-
-          setContentType('text');
-          setCurrentContent(contentValue);
-          setCurrentStyles(getElementStyles(target));
-          setActiveTab('content');
-          setEditModalOpen(true);
-          return;
         }
       }
 
-      const dataKey = target.getAttribute('data-prop-key');
-      if (dataKey && component.default_props && component.default_props[dataKey]) {
-        const propValue = component.default_props[dataKey];
+      // Enhanced content type detection for direct element interaction
+      const type = detectContentType(target);
+      console.log('Detected content type:', type, 'for element:', target.tagName);
 
-        if (Array.isArray(propValue)) {
-          console.log('Opening array editor (fallback) with data:', propValue);
-          setArrayEditor({ key: dataKey, data: propValue });
-          return;
-        } else if (typeof propValue === 'object' && propValue !== null) {
-          console.log('Opening object editor (fallback) with data:', propValue);
-          setDynamicFieldEditor({ key: dataKey, data: propValue });
-          return;
-        }
-      }
-
-      if (isComplexElement) {
-        setContentType(null);
-        setCurrentStyles(getElementStyles(target));
-        setActiveTab('style');
-        setEditModalOpen(true);
-        return;
-      }
-
-      if (type && !isComplexElement) {
+      // Handle image and video elements specifically
+      if (type === 'image' || type === 'video') {
         setContentType(type);
         setCurrentContent(getElementContent(target));
         setCurrentStyles(getElementStyles(target));
         setActiveTab('content');
         setEditModalOpen(true);
-      } else {
+        return;
+      }
+
+      // Handle text content for non-complex elements
+      if (type === 'text' && !isComplexElement) {
+        setContentType('text');
+        setCurrentContent(getElementContent(target));
+        setCurrentStyles(getElementStyles(target));
+        setActiveTab('content');
+        setEditModalOpen(true);
+        return;
+      }
+
+      // Handle URL elements
+      if (type === 'url') {
+        setContentType('url');
+        setCurrentContent(getElementContent(target));
+        setCurrentStyles(getElementStyles(target));
+        setActiveTab('content');
+        setEditModalOpen(true);
+        return;
+      }
+
+      // Fallback to style editor for complex elements
+      if (isComplexElement || !type) {
         setContentType(null);
         setCurrentStyles(getElementStyles(target));
         setActiveTab('style');

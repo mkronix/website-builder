@@ -22,17 +22,17 @@ import {
 
 // Enhanced theme CSS generation for proper theme integration
 const generateThemeCSS = (theme: any) => {
-  const primaryHover = adjustColorBrightness(theme.primary_color || '#10B981', -0.1);
-  const secondaryHover = adjustColorBrightness(theme.secondary_color || '#059669', -0.1);
+  const primaryHover = adjustColorBrightness(theme.primaryColor || '#10B981', -0.1);
+  const secondaryHover = adjustColorBrightness(theme.secondaryColor || '#059669', -0.1);
 
   return `
     :root {
-      --theme-primary: ${theme.primary_color || '#10B981'};
-      --theme-secondary: ${theme.secondary_color || '#059669'};
-      --theme-background: ${theme.background || '#FFFFFF'};
-      --theme-text: ${theme.text_primary || '#1F2937'};
-      --theme-muted: ${adjustColorOpacity(theme.primary_color || '#10B981', 0.7)};
-      --theme-muted-foreground: ${adjustColorOpacity(theme.text_primary || '#1F2937', 0.5)};
+      --theme-primary: ${theme.primaryColor || '#10B981'};
+      --theme-secondary: ${theme.secondaryColor || '#059669'};
+      --theme-background: ${theme.backgroundColor || '#FFFFFF'};
+      --theme-text: ${theme.textColor || '#1F2937'};
+      --theme-muted: ${adjustColorOpacity(theme.primaryColor || '#10B981', 0.7)};
+      --theme-muted-foreground: ${adjustColorOpacity(theme.textColor || '#1F2937', 0.5)};
       --theme-primary-hover: ${primaryHover};
       --theme-secondary-hover: ${secondaryHover};
     }
@@ -44,8 +44,8 @@ const generateThemeCSS = (theme: any) => {
       --tw-text: var(--theme-text);
       
       /* Enhanced background and text theming */
-      background-color: var(--theme-background);
-      color: var(--theme-text);
+      background-color: var(--theme-background) !important;
+      color: var(--theme-text) !important;
     }
 
     /* Comprehensive theme integration for all components */
@@ -53,7 +53,7 @@ const generateThemeCSS = (theme: any) => {
       transition: all 0.2s ease-in-out;
     }
 
-    /* Theme-aware component styling */
+    /* Enhanced theme-aware component styling with forced application */
     .editor-canvas .bg-primary,
     .editor-canvas [data-theme-element="primary-bg"] { 
       background-color: var(--theme-primary) !important; 
@@ -79,37 +79,72 @@ const generateThemeCSS = (theme: any) => {
       color: var(--theme-text) !important; 
     }
     
-    /* Enhanced button theming */
-    .editor-canvas button:not([class*="bg-"]) {
-      background-color: var(--theme-primary);
-      color: var(--theme-background);
+    /* Enhanced button theming with broader selectors */
+    .editor-canvas button:not([class*="bg-"]),
+    .editor-canvas .btn,
+    .editor-canvas [role="button"] {
+      background-color: var(--theme-primary) !important;
+      color: var(--theme-background) !important;
     }
-    .editor-canvas button:not([class*="bg-"]):hover {
-      background-color: var(--theme-primary-hover);
+    .editor-canvas button:not([class*="bg-"]):hover,
+    .editor-canvas .btn:hover,
+    .editor-canvas [role="button"]:hover {
+      background-color: var(--theme-primary-hover) !important;
     }
     
     /* Enhanced link theming */
     .editor-canvas a:not([class*="text-"]) {
-      color: var(--theme-primary);
+      color: var(--theme-primary) !important;
     }
     .editor-canvas a:not([class*="text-"]):hover {
-      color: var(--theme-primary-hover);
+      color: var(--theme-primary-hover) !important;
     }
     
     /* Form element theming */
     .editor-canvas input:not([class*="bg-"]),
     .editor-canvas textarea:not([class*="bg-"]),
     .editor-canvas select:not([class*="bg-"]) {
-      background-color: var(--theme-background);
-      color: var(--theme-text);
-      border-color: var(--theme-secondary);
+      background-color: var(--theme-background) !important;
+      color: var(--theme-text) !important;
+      border-color: var(--theme-secondary) !important;
     }
     
     .editor-canvas input:focus:not([class*="ring-"]),
     .editor-canvas textarea:focus:not([class*="ring-"]),
     .editor-canvas select:focus:not([class*="ring-"]) {
-      ring-color: var(--theme-primary);
-      border-color: var(--theme-primary);
+      ring-color: var(--theme-primary) !important;
+      border-color: var(--theme-primary) !important;
+      outline-color: var(--theme-primary) !important;
+    }
+    
+    /* Force all common Tailwind color classes to use theme */
+    .editor-canvas .bg-blue-500,
+    .editor-canvas .bg-blue-600,
+    .editor-canvas .bg-indigo-500,
+    .editor-canvas .bg-indigo-600,
+    .editor-canvas .bg-purple-500,
+    .editor-canvas .bg-purple-600,
+    .editor-canvas .bg-emerald-500,
+    .editor-canvas .bg-emerald-600 {
+      background-color: var(--theme-primary) !important;
+    }
+    
+    .editor-canvas .text-blue-500,
+    .editor-canvas .text-blue-600,
+    .editor-canvas .text-indigo-500,
+    .editor-canvas .text-indigo-600,
+    .editor-canvas .text-purple-500,
+    .editor-canvas .text-purple-600,
+    .editor-canvas .text-emerald-500,
+    .editor-canvas .text-emerald-600 {
+      color: var(--theme-primary) !important;
+    }
+
+    /* Force theme refresh on key elements */
+    .editor-canvas [class*="bg-"],
+    .editor-canvas [class*="text-"],
+    .editor-canvas [class*="border-"] {
+      transition: all 0.2s ease-in-out !important;
     }
   `;
 };
@@ -181,8 +216,11 @@ export const EditorCanvas = () => {
 
   return (
     <div className={canvasClasses}>
-      {/* Enhanced theme CSS injection with proper cascade */}
-      <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} />
+      {/* Enhanced theme CSS injection with forced re-render key */}
+      <style 
+        key={`theme-${JSON.stringify(state.theme)}`}
+        dangerouslySetInnerHTML={{ __html: generateThemeCSS(state.theme) }} 
+      />
 
       <ResponsiveWrapper>
         <div
@@ -191,6 +229,7 @@ export const EditorCanvas = () => {
             backgroundColor: state.theme.backgroundColor || '#FFFFFF',
             color: state.theme.textColor || '#1F2937'
           }}
+          key={`canvas-${JSON.stringify(state.theme)}`}
         >
           {currentPage?.components.length === 0 ? (
             <div className="flex bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] items-center justify-center w-full h-[calc(100vh_-_8rem)] border-2 border-dashed border-gray-600 rounded-lg">
@@ -215,7 +254,7 @@ export const EditorCanvas = () => {
                 <div className="space-y-0">
                   {currentPage?.components.map((component) => (
                     <DraggableComponent
-                      key={component.id}
+                      key={`${component.id}-${JSON.stringify(state.theme)}`}
                       component={component}
                       isSelected={state.selectedComponent === component.id}
                       onSelect={selectComponent}
@@ -231,4 +270,3 @@ export const EditorCanvas = () => {
     </div>
   );
 };
-
