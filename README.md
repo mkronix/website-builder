@@ -189,25 +189,10 @@ Start with frontend-only implementation using JSON for data persistence. Focus o
 
 <!-- Remaining Task to complet  -->
 
-- Image & Video Upload with Live Preview:
-Implement image and video upload functionality with live previews. For now, store the files locally and make sure the file path is saved properly. where ever the user clicks on the image or video it should at thier open a modal for uploading the image or video using url or browse from the local and show the real time preview of the image or video. and render it in the editor. where that element was selected
-
-
 - Dynamic Array/Object Input Handling: ✅ [need to test it again for each component array ]
 When an element is selected in a component and its type is an array or object, we want to dynamically render inputs based on the array.length, prefilled with the existing data. Users should be able to add, update, or delete any item in that array/object directly through the UI. 
 
 
-- Theme Integration Fix:
-Fix the issue where theme updates are not correctly applying to all elements. Ensure that every component properly reflects the selected theme.
-
-- when editing any one element particularly like changing it content or style, the all the elements are refeclitng the changes. so fix that issue
-
 - in advnaced mode, the tailwindCss or customCss is not been applied correct to that element
 
-- add a delete modal before deleting any thing in the project like page deletion , compoent deletion etc.
-
-- agr data strucuture array h or uske koi bhi 1 element ko select kru to bhi pura dynamicArryCrud wala moda1 open ho no chahiye naa ki single element ka modal open ho
-
 - saari fucntuonality ko test kro hr 1 element ko update kr skey uska content uski styles everything
-
-- img tag ko select krra hu lekin text edit ka modal open ho rha hai fix the bug

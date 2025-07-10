@@ -77,7 +77,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
           <div className="space-y-4">
             <div>
               <Label className="text-white">Image</Label>
-              <div className="mt-2 space-y-3">
+              <div className="flex items-center gap-4">
                 <Input
                   type="url"
                   value={value}
@@ -88,7 +88,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                 <Button
                   variant="outline"
                   onClick={() => setShowMediaModal(true)}
-                  className="w-full border-gray-600 text-white hover:bg-[#272725]"
+                  className="w-full border-gray-600 text-white bg-[#272725]"
                 >
                   Upload Image
                 </Button>
@@ -101,7 +101,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                   <img
                     src={value}
                     alt="Preview"
-                    className="max-w-full h-32 object-contain mx-auto bg-black"
+                    className="max-w-full h-56 object-contain mx-auto bg-black"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = 'none';
@@ -147,7 +147,9 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                       const target = e.target as HTMLVideoElement;
                       target.style.display = 'none';
                     }}
-                  />
+                  >
+                    <track kind="captions" src="" label="English" />
+                  </video>
                 </div>
               </div>
             )}

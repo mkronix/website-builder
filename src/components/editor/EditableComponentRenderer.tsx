@@ -9,7 +9,7 @@ import { useEditor } from '@/contexts/EditorContext';
 import { Component, Theme } from '@/contexts/editorTypes';
 import { applyThemeToCode, generateElementSpecificCSS, generateThemeCSS } from '@/utils/themeUtils';
 import * as Babel from '@babel/standalone';
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import ContentEditor from './ContentEditor';
 import { DynamicFieldEditor } from './DynamicFieldEditor';
 import { SmartArrayCRUD } from './SmartArrayCRUD';
@@ -221,19 +221,19 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     if (element.tagName === 'IMG') return 'image';
     if (element.tagName === 'VIDEO') return 'video';
     if (element.tagName === 'A') return 'url';
-    
+
     // Check for elements with image/video sources
     const src = element.getAttribute('src');
     if (src) {
       if (src.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) return 'image';
       if (src.match(/\.(mp4|webm|ogg|mov)$/i)) return 'video';
     }
-    
+
     // Only return text if element has actual text content and is not a complex element
     if (element.textContent && element.textContent.trim() && !hasComplexChildren(element)) {
       return 'text';
     }
-    
+
     return null;
   };
 
@@ -315,13 +315,13 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const propPath = target.getAttribute('data-prop-path');
       const isComplexElement = hasComplexChildren(target);
 
-      console.log('Element clicked:', { 
+      console.log('Element clicked:', {
         tagName: target.tagName,
-        editableType, 
-        propPath, 
-        target, 
-        elementId, 
-        isComplexElement 
+        editableType,
+        propPath,
+        target,
+        elementId,
+        isComplexElement
       });
 
       // Enhanced array handling - check if ANY parent prop is an array
@@ -339,14 +339,14 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
         for (let i = pathParts.length - 1; i >= 0; i--) {
           const currentPath = pathParts.slice(0, i + 1).join('.');
           const currentValue = getPropByPath(component.default_props, currentPath);
-          
-          if (Array.isArray(currentValue) || 
-              (currentValue?.type === 'array' && Array.isArray(currentValue.value)) ||
-              (currentValue?.value && Array.isArray(currentValue.value))) {
-            
+
+          if (Array.isArray(currentValue) ||
+            (currentValue?.type === 'array' && Array.isArray(currentValue.value)) ||
+            (currentValue?.value && Array.isArray(currentValue.value))) {
+
             isPartOfArray = true;
             arrayPath = currentPath;
-            
+
             if (currentValue?.value && Array.isArray(currentValue.value)) {
               arrayData = currentValue.value;
             } else if (Array.isArray(currentValue)) {
