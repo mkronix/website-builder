@@ -331,7 +331,6 @@ export const SmartArrayCRUD: React.FC<SmartArrayCRUDProps> = ({
                 </DialogContent>
             </Dialog>
 
-            {/* Delete Confirmation Modal */}
             <DeleteConfirmationModal
                 isOpen={deleteModal.isOpen}
                 onClose={() => setDeleteModal({ isOpen: false, index: null })}

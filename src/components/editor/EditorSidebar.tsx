@@ -5,11 +5,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FileText, Layers, Palette, Settings, Globe } from 'lucide-react';
+import { FileText, Globe, Layers, Palette } from 'lucide-react';
 import { ComponentLibrary } from './ComponentLibrary';
 import { PageManager } from './PageManager';
-import { ThemeCustomizer } from './ThemeCustomizer';
 import { SeoSettings } from './SeoSettings';
+import { ThemeCustomizer } from './ThemeCustomizer';
 
 export const EditorSidebar = () => {
   const accordionItems = [

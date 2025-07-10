@@ -1,15 +1,16 @@
-
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useEditor } from '@/contexts/EditorContext';
 import { FileText, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { DeleteConfirmationModal } from '../ui/delete-confirmation-modal';
 
 export const PageManager = () => {
   const { state, addPage, deletePage, setCurrentPage } = useEditor();
   const [showAddPage, setShowAddPage] = useState(false);
   const [newPageName, setNewPageName] = useState('');
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, pageId: null });
 
   const handleAddPage = () => {
     if (newPageName.trim()) {
@@ -21,6 +22,17 @@ export const PageManager = () => {
       addPage(newPage);
       setNewPageName('');
       setShowAddPage(false);
+    }
+  };
+
+  const handleDeleteClick = (pageId) => {
+    setDeleteModal({ isOpen: true, pageId });
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.pageId) {
+      deletePage(deleteModal.pageId);
+      setDeleteModal({ isOpen: false, pageId: null });
     }
   };
 
@@ -58,7 +70,7 @@ export const PageManager = () => {
                 variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
-                  deletePage(page.id);
+                  handleDeleteClick(page.id);
                 }}
                 className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
               >
@@ -102,6 +114,14 @@ export const PageManager = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, pageId: null })}
+        onConfirm={confirmDelete}
+        title="Delete this page?"
+        description="This action cannot be undone. The page and all its components will be permanently removed."
+      />
     </div>
   );
 };

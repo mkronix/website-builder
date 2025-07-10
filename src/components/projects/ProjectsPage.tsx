@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import websiteData from '@/data/data.json';
 import { Calendar, Clock, Download, Eye, Layers, Plus, Settings, Trash2, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { DeleteConfirmationModal } from '../ui/delete-confirmation-modal';
 
 export const ProjectsPage = () => {
   const projectsArray = Object.values(websiteData.projects);
@@ -14,6 +15,7 @@ export const ProjectsPage = () => {
   const [showSeoDialog, setShowSeoDialog] = useState(false);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [newProjectName, setNewProjectName] = useState('');
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, projectId: null });
   const [seoData, setSeoData] = useState({
     title: '',
     description: '',
@@ -23,10 +25,6 @@ export const ProjectsPage = () => {
     twitterHandle: '',
     ogImage: ''
   });
-
-  const getStatusColor = (isExported: boolean) => {
-    return isExported ? 'bg-green-500' : 'bg-gray-500';
-  };
 
   const handleCreateProject = () => {
     if (newProjectName.trim()) {
@@ -62,8 +60,15 @@ export const ProjectsPage = () => {
     }
   };
 
-  const deleteProject = (projectId: string) => {
-    setProjects(projects.filter(p => p.id !== projectId));
+  const handleDeleteClick = (projectId: string) => {
+    setDeleteModal({ isOpen: true, projectId });
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.projectId) {
+      setProjects(projects.filter(p => p.id !== deleteModal.projectId));
+      setDeleteModal({ isOpen: false, projectId: null });
+    }
   };
 
   const handleSeoSave = () => {
@@ -219,7 +224,7 @@ export const ProjectsPage = () => {
 
                     <button
                       className="p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 hover:border-red-500/30"
-                      onClick={() => deleteProject(project.id)}
+                      onClick={() => handleDeleteClick(project.id)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -365,6 +370,15 @@ export const ProjectsPage = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={deleteModal.isOpen}
+          onClose={() => setDeleteModal({ isOpen: false, projectId: null })}
+          onConfirm={confirmDelete}
+          title="Delete this project?"
+          description="This action cannot be undone. The project and all its pages will be permanently removed."
+        />
       </div>
     </div>
   );
