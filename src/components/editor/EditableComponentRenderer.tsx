@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEditor } from '@/contexts/EditorContext';
 import { Component, Theme } from '@/contexts/editorTypes';
-import { applyThemeToCode, generateElementSpecificCSS, generateThemeCSS } from '@/utils/themeUtils';
+import { applyThemeToCode } from '@/utils/codeTransformer';
+import { generateElementSpecificCSS } from '@/utils/componentStyles';
+import { generateThemeCSS } from '@/utils/themeStyles';
 import * as Babel from '@babel/standalone';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import ContentEditor from './ContentEditor';
@@ -75,7 +76,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   const [contentType, setContentType] = useState<'text' | 'url' | 'image' | 'video' | null>(null);
   const [currentContent, setCurrentContent] = useState('');
   const [currentStyles, setCurrentStyles] = useState<Record<string, string>>({});
-  const [elementSelector, setElementSelector] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'content' | 'style'>('content');
   const [dynamicFieldEditor, setDynamicFieldEditor] = useState<{ key: string, data: any } | null>(null);
   const [arrayEditor, setArrayEditor] = useState<{ key: string, data: any[] } | null>(null);
@@ -229,14 +229,27 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       const existingStyles = component.customizableProps[styleKey];
 
       if (existingStyles && typeof existingStyles === 'object') {
-        return {
-          className: existingStyles.tailwindCss || '',
-          ...existingStyles.customCss || {},
-          ...existingStyles
-        };
+        const styles: Record<string, string> = {};
+        
+        // Get Tailwind classes
+        if (existingStyles.tailwindCss) {
+          styles.className = existingStyles.tailwindCss;
+        }
+        
+        // Get custom CSS properties
+        if (existingStyles.customCss && typeof existingStyles.customCss === 'object') {
+          Object.entries(existingStyles.customCss).forEach(([prop, value]) => {
+            if (prop !== 'className' && value) {
+              styles[prop] = value;
+            }
+          });
+        }
+        
+        return styles;
       }
     }
 
+    // Fallback to computed styles
     const computedStyles = window.getComputedStyle(element);
     return {
       fontSize: computedStyles.fontSize,
@@ -275,7 +288,6 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     if (target !== componentRef.current) {
       setSelectedElement(target);
       const selector = getElementSelector(target);
-      setElementSelector(selector);
 
       let elementId = target.getAttribute('data-element-id');
       if (!elementId) {
@@ -417,17 +429,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   };
 
   const handleContentSave = useCallback((newContent: string) => {
-    if (!selectedElement || !elementSelector) return;
+    if (!selectedElement || !currentElementId) return;
 
-    const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
-
-    if (!elementId) {
-      console.error('No element ID found for content saving');
-      return;
-    }
-
-    // For image/video elements, store the content with a specific key
-    const contentKey = `${elementId}_content`;
+    const contentKey = `${currentElementId}_content`;
 
     const updatedProps = {
       ...component.customizableProps,
@@ -439,27 +443,21 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
     });
 
     setEditModalOpen(false);
-  }, [selectedElement, elementSelector, currentElementId, component, updateComponent, state.currentPage]);
+  }, [selectedElement, currentElementId, component, updateComponent, state.currentPage]);
 
   const handleStyleSave = useCallback((newStyles: Record<string, string>) => {
-    if (!selectedElement || !elementSelector) return;
+    if (!selectedElement || !currentElementId) return;
 
-    const elementId = selectedElement.getAttribute('data-element-id') || currentElementId;
-
-    if (!elementId) {
-      console.error('No element ID found for styling');
-      return;
-    }
-
-    const styleKey = `${elementId}_styles`;
+    const styleKey = `${currentElementId}_styles`;
     const tailwindCss = newStyles.className || '';
+    
+    // Separate custom CSS properties from className
     const customCss = { ...newStyles };
     delete customCss.className;
 
     const elementStyles = {
       tailwindCss,
       customCss,
-      ...customCss
     };
 
     const updatedProps = {
@@ -467,12 +465,19 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
       [styleKey]: elementStyles
     };
 
+    console.log('Saving element styles:', {
+      elementId: currentElementId,
+      styleKey,
+      elementStyles,
+      updatedProps
+    });
+
     updateComponent(state.currentPage, component.id, {
       customizableProps: updatedProps
     });
 
     setEditModalOpen(false);
-  }, [selectedElement, elementSelector, currentElementId, component, updateComponent, state.currentPage]);
+  }, [selectedElement, currentElementId, component, updateComponent, state.currentPage]);
 
   const handleDynamicFieldSave = useCallback((key: string, value: any) => {
     const updatedProps = {
@@ -519,7 +524,9 @@ export const EditableComponentRenderer: React.FC<EditableComponentRendererProps>
   }, [component, updateComponent, state.currentPage]);
 
   const generateCustomStyles = useCallback((): string => {
-    return generateElementSpecificCSS(component.id, component.customizableProps);
+    const styles = generateElementSpecificCSS(component.id, component.customizableProps);
+    console.log('Generated custom styles for component:', component.id, styles);
+    return styles;
   }, [component.id, component.customizableProps]);
 
   const generateGlobalThemeStyles = useCallback((): string => {

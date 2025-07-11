@@ -18,12 +18,107 @@ const generateComponentCode = (component: Component, settings: ExportSettings): 
   // Add error boundaries and accessibility improvements
   const enhancedCode = addAccessibilityEnhancements(cleanCode);
 
+  // Generate custom styles for this component
+  const customStyles = generateComponentCustomStyles(component);
+
   return `${imports}
 
 ${enhancedCode}
 
+${customStyles ? `
+// Custom styles for this component
+const customStyles = \`${customStyles}\`;
+
+// Inject custom styles
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = customStyles;
+  document.head.appendChild(styleElement);
+}
+` : ''}
+
 export default ${componentName};
 `;
+};
+
+const generateComponentCustomStyles = (component: Component): string => {
+  if (!component.customizableProps) return '';
+
+  let css = '';
+  
+  Object.entries(component.customizableProps).forEach(([key, value]) => {
+    if (key.endsWith('_styles') && value && typeof value === 'object') {
+      const elementId = key.replace('_styles', '');
+      const selector = `[data-element-id="${elementId}"]`;
+      
+      let elementCSS = '';
+      
+      // Handle Tailwind CSS classes
+      if ('tailwindCss' in value && value.tailwindCss && typeof value.tailwindCss === 'string') {
+        // For export, we need to convert Tailwind classes to actual CSS
+        elementCSS += `${selector} { ${convertTailwindToCSS(value.tailwindCss)} }`;
+      }
+      
+      // Handle custom CSS properties
+      if ('customCss' in value && value.customCss && typeof value.customCss === 'object') {
+        const customRules = Object.entries(value.customCss)
+          .filter(([prop, val]) => prop !== 'className' && val && val !== '')
+          .map(([prop, val]) => {
+            const kebabProp = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+            return `${kebabProp}: ${val};`;
+          })
+          .join(' ');
+        
+        if (customRules) {
+          elementCSS += `${selector} { ${customRules} }`;
+        }
+      }
+      
+      css += elementCSS;
+    }
+  });
+  
+  return css;
+};
+
+const convertTailwindToCSS = (tailwindClasses: string): string => {
+  // Basic Tailwind to CSS conversion - this is a simplified version
+  // In a real implementation, you'd want a more comprehensive mapping
+  const classMap: Record<string, string> = {
+    'text-center': 'text-align: center;',
+    'text-left': 'text-align: left;',
+    'text-right': 'text-align: right;',
+    'font-bold': 'font-weight: bold;',
+    'italic': 'font-style: italic;',
+    'underline': 'text-decoration: underline;',
+    'text-lg': 'font-size: 1.125rem;',
+    'text-xl': 'font-size: 1.25rem;',
+    'text-sm': 'font-size: 0.875rem;',
+    'p-2': 'padding: 0.5rem;',
+    'p-4': 'padding: 1rem;',
+    'p-6': 'padding: 1.5rem;',
+    'm-2': 'margin: 0.5rem;',
+    'm-4': 'margin: 1rem;',
+    'm-6': 'margin: 1.5rem;',
+    'rounded-lg': 'border-radius: 0.5rem;',
+    'rounded-full': 'border-radius: 9999px;',
+    'rounded-none': 'border-radius: 0;',
+    'shadow-md': 'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);',
+    'shadow-lg': 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);',
+    'shadow-2xl': 'box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);',
+    'w-full': 'width: 100%;',
+    'w-auto': 'width: auto;',
+    'block': 'display: block;',
+    'inline-block': 'display: inline-block;',
+    'flex': 'display: flex;',
+    'items-center': 'align-items: center;',
+    'justify-center': 'justify-content: center;',
+  };
+
+  const classes = tailwindClasses.split(' ').filter(cls => cls.trim());
+  const cssRules = classes.map(cls => classMap[cls] || '').filter(rule => rule);
+  
+  return cssRules.join(' ');
 };
 
 const generateComponentImports = (component: Component, settings: ExportSettings): string => {
@@ -55,7 +150,6 @@ const generateComponentImports = (component: Component, settings: ExportSettings
 
   return imports.join('\n');
 };
-
 
 const generatePageCode = (
   page: Page,
