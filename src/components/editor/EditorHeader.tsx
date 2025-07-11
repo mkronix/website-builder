@@ -102,11 +102,10 @@ export const EditorHeader = () => {
           <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
-              size="sm"
               onClick={() => navigate('/dashboard')}
-              className="text-white hover:bg-[#272725] hidden sm:flex"
+              className="text-white hover:bg-[#272725] hidden sm:flex text-lg px-0"
             >
-              <Home className="w-4 h-4 mr-2" />
+              <Home size={25} />
               Dashboard
             </Button>
 
@@ -120,9 +119,6 @@ export const EditorHeader = () => {
               {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </Button>
 
-            <div className="text-white font-medium hidden sm:block">
-              {currentProject?.name || 'Untitled Project'}
-            </div>
           </div>
 
           {/* Center - Responsive Controls (Desktop) */}
@@ -147,6 +143,9 @@ export const EditorHeader = () => {
 
           {/* Right side */}
           <div className="flex items-center space-x-2">
+            <div className="text-white font-medium hidden sm:block mr-2">
+              {currentProject?.name || 'Untitled Project'}
+            </div>
             <Button
               variant="ghost"
               size="sm"
@@ -159,7 +158,7 @@ export const EditorHeader = () => {
                 {isExporting ? 'Exporting...' : 'Export'}
               </span>
             </Button>
-            
+
             <Button
               variant="ghost"
               size="sm"

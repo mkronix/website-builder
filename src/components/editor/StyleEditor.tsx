@@ -12,7 +12,6 @@ import {
   Brush,
   Circle,
   Code,
-  Eye,
   Italic,
   Layers,
   Layout,
@@ -209,7 +208,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
     <div className="min-h-screen bg-[#1c1c1c] flex">
       {/* Left Panel - Style Controls (Scrollable) */}
       <div className="flex-1 overflow-y-auto">
-        <div className="px-3 py-6">
+        <div className="px-3 ">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
@@ -222,8 +221,7 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
               </div>
             </div>
           </div>
-
-          <div className="max-w-4xl space-y-6">
+          <div className="max-w-5xl space-y-6">
             <Tabs value={activeMode} onValueChange={(value) => setActiveMode(value as 'quick' | 'advanced')}>
               <TabsList className="grid w-full grid-cols-2 bg-[#272725] p-1 rounded-lg">
                 <TabsTrigger
@@ -407,90 +405,6 @@ const StyleEditor: React.FC<StyleEditorProps> = ({
                 <Save className="w-4 h-4" />
                 Apply Styles
               </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Panel - Preview (Fixed/Sticky) */}
-      <div className="w-80 bg-[#1c1c1c] border-l border-gray-700/50 flex-shrink-0">
-        <div className="px-3 py-6 space-y-4">
-          {/* Preview Header */}
-          <div className="bg-[#272725] rounded-xl p-4 border border-gray-700/50">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-lg font-semibold text-white">Live Preview</h3>
-              </div>
-            </div>
-
-            {/* Preview Container */}
-            <div className="bg-[#1c1c1c] rounded-lg p-4 border border-gray-600">
-              <div className={`transition-all duration-300 mx-auto`}>
-                <div
-                  className={tailwindInput}
-                  style={{
-                    fontSize: styles.fontSize,
-                    fontWeight: styles.fontWeight,
-                    fontFamily: styles.fontFamily,
-                    color: styles.color,
-                    backgroundColor: styles.backgroundColor,
-                    padding: styles.padding,
-                    margin: styles.margin,
-                    borderRadius: styles.borderRadius,
-                    border: styles.border,
-                    boxShadow: styles.boxShadow,
-                    width: styles.width,
-                    height: styles.height,
-                    display: styles.display,
-                    position: styles.position as React.CSSProperties['position'],
-                    zIndex: styles.zIndex,
-                  }}
-                >
-                  <div className="space-y-2">
-                    <div className="text-lg font-semibold">Preview Heading</div>
-                    <div>This is how your styles will look when applied to content. You can see the real-time changes as you modify the styling options.</div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <div className="w-4 h-4 bg-current rounded-full opacity-50"></div>
-                      <div className="text-sm opacity-75">Sample element</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Style Info */}
-          <div className="bg-[#272725] rounded-xl p-4 border border-gray-700/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Settings className="w-4 h-4 text-yellow-400" />
-              <h4 className="text-sm font-semibold text-white">Style Info</h4>
-            </div>
-            <div className="space-y-2 text-xs text-gray-400">
-              <div className="flex justify-between">
-                <span>Classes Applied:</span>
-                <span className="text-white">{appliedClasses.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Custom CSS:</span>
-                <span className="text-white">{Object.keys(styles).filter(k => k !== 'className' && styles[k]).length}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Current Style Values */}
-          <div className="bg-[#272725] rounded-xl p-4 border border-gray-700/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Code className="w-4 h-4 text-blue-400" />
-              <h4 className="text-sm font-semibold text-white">Current Values</h4>
-            </div>
-            <div className="space-y-2 text-xs text-gray-400">
-              {Object.entries(styles).filter(([key, value]) => value && key !== 'className').map(([key, value]) => (
-                <div key={key} className="flex justify-between">
-                  <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
-                  <span className="text-white truncate max-w-24" title={value}>{value}</span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
