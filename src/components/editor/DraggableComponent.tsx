@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Component } from '@/contexts/EditorContext';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { EditableComponentRenderer } from './EditableComponentRenderer';
-import { Component } from '@/contexts/EditorContext';
-import { Button } from '@/components/ui/button';
-import { GripVertical, Trash2, Edit } from 'lucide-react';
+import { GripVertical, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { DeleteConfirmationModal } from '../ui/delete-confirmation-modal';
+import { EditableComponentRenderer } from './EditableComponentRenderer';
 
 interface DraggableComponentProps {
   component: Component;
@@ -77,18 +77,6 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = ({
               title="Drag to reorder"
             >
               <GripVertical className="h-3 w-3" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 w-7 p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(component.id);
-              }}
-              title="Edit component"
-            >
-              <Edit className="h-3 w-3" />
             </Button>
             <Button
               size="sm"

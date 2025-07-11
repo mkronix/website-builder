@@ -10,12 +10,48 @@ export const ThemeCustomizer = () => {
   const { state, updateTheme } = useEditor();
 
   const colorPresets = [
-    { name: 'Ocean Emerald', primary: '#10B981', secondary: '#059669', backgroundColor: '#FFFFFF', text: '#1F2937' },
-    { name: 'Forest Green', primary: '#10B981', secondary: '#059669', backgroundColor: '#F9FAFB', text: '#111827' },
-    { name: 'Sunset Purple', primary: '#8B5CF6', secondary: '#A855F7', backgroundColor: '#FFFFFF', text: '#1F2937' },
-    { name: 'Rose Pink', primary: '#EC4899', secondary: '#F472B6', backgroundColor: '#FDF2F8', text: '#831843' },
-    { name: 'Amber Orange', primary: '#F59E0B', secondary: '#F97316', backgroundColor: '#FFFBEB', text: '#92400E' },
-    { name: 'Dark Mode', primary: '#10B981', secondary: '#059669', backgroundColor: '#111827', text: '#F9FAFB' },
+    {
+      name: 'Ocean Emerald',
+      primary: '#10B981',
+      secondary: '#059669',
+      backgroundColor: '#FFFFFF',
+      text: '#1F2937'
+    },
+    {
+      name: 'Forest Green',
+      primary: '#22C55E',
+      secondary: '#16A34A',
+      backgroundColor: '#F0FDF4',
+      text: '#14532D'
+    },
+    {
+      name: 'Sunset Purple',
+      primary: '#8B5CF6',
+      secondary: '#A855F7',
+      backgroundColor: '#FFFFFF',
+      text: '#1F2937'
+    },
+    {
+      name: 'Rose Pink',
+      primary: '#EC4899',
+      secondary: '#F472B6',
+      backgroundColor: '#FDF2F8',
+      text: '#831843'
+    },
+    {
+      name: 'Amber Orange',
+      primary: '#F59E0B',
+      secondary: '#F97316',
+      backgroundColor: '#FFFBEB',
+      text: '#92400E'
+    },
+    {
+      name: 'Dark Mode',
+      primary: '#06B6D4',
+      secondary: '#0891B2',
+      backgroundColor: '#111827',
+      text: '#F9FAFB'
+    },
   ];
 
   const applyPreset = (preset: typeof colorPresets[0]) => {
